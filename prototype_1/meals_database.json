@@ -1,0 +1,207 @@
+{
+    "meals": [
+        {
+            "id": "meat_001",
+            "name": "Grilled Chicken Breast",
+            "image": "images/grilled_chicken.jpg",
+            "dietary_info": [
+                "gluten-free"
+            ],
+            "vegetarian": false,
+            "vegan": false,
+            "category": "meat"
+        },
+        {
+            "id": "meat_002",
+            "name": "Beef Burger",
+            "image": "images/beef_burger.jpg",
+            "dietary_info": [
+                "gluten",
+                "dairy"
+            ],
+            "vegetarian": false,
+            "vegan": false,
+            "category": "meat"
+        },
+        {
+            "id": "meat_003",
+            "name": "Pork Schnitzel",
+            "image": "images/pork_schnitzel.jpg",
+            "dietary_info": [
+                "gluten",
+                "eggs"
+            ],
+            "vegetarian": false,
+            "vegan": false,
+            "category": "meat"
+        },
+        {
+            "id": "fish_001",
+            "name": "Salmon Fillet",
+            "image": "images/salmon.jpg",
+            "dietary_info": [
+                "gluten-free"
+            ],
+            "vegetarian": false,
+            "vegan": false,
+            "category": "fish"
+        },
+        {
+            "id": "fish_002",
+            "name": "Fish and Chips",
+            "image": "images/fish_chips.jpg",
+            "dietary_info": [
+                "gluten"
+            ],
+            "vegetarian": false,
+            "vegan": false,
+            "category": "fish"
+        },
+        {
+            "id": "fish_003",
+            "name": "Tuna Pasta",
+            "image": "images/tuna_pasta.jpg",
+            "dietary_info": [
+                "gluten",
+                "dairy"
+            ],
+            "vegetarian": false,
+            "vegan": false,
+            "category": "fish"
+        },
+        {
+            "id": "veg_001",
+            "name": "Vegetarian Burger",
+            "image": "images/veg_burger.jpg",
+            "dietary_info": [
+                "gluten",
+                "dairy"
+            ],
+            "vegetarian": true,
+            "vegan": false,
+            "category": "vegetarian"
+        },
+        {
+            "id": "veg_002",
+            "name": "Quinoa Bowl",
+            "image": "images/quinoa_bowl.jpg",
+            "dietary_info": [
+                "gluten-free",
+                "vegan"
+            ],
+            "vegetarian": true,
+            "vegan": true,
+            "category": "vegetarian"
+        },
+        {
+            "id": "veg_003",
+            "name": "Vegetable Stir Fry",
+            "image": "images/veg_stirfry.jpg",
+            "dietary_info": [
+                "gluten-free",
+                "vegan"
+            ],
+            "vegetarian": true,
+            "vegan": true,
+            "category": "vegetarian"
+        },
+        {
+            "id": "veg_004",
+            "name": "Caesar Salad",
+            "image": "images/caesar_salad.jpg",
+            "dietary_info": [
+                "gluten",
+                "dairy"
+            ],
+            "vegetarian": true,
+            "vegan": false,
+            "category": "vegetarian"
+        },
+        {
+            "id": "veg_005",
+            "name": "Pasta Primavera",
+            "image": "images/pasta_primavera.jpg",
+            "dietary_info": [
+                "gluten",
+                "dairy"
+            ],
+            "vegetarian": true,
+            "vegan": false,
+            "category": "vegetarian"
+        },
+        {
+            "id": "veg_006",
+            "name": "Lentil Curry",
+            "image": "images/lentil_curry.jpg",
+            "dietary_info": [
+                "gluten-free",
+                "vegan"
+            ],
+            "vegetarian": true,
+            "vegan": true,
+            "category": "vegetarian"
+        }
+    ],
+    "meal_combinations": [
+        {
+            "id": "combo_001",
+            "name": "Burger Combo",
+            "meals": [
+                {
+                    "id": "meat_002",
+                    "name": "Beef Burger",
+                    "image": "images/beef_burger.jpg",
+                    "dietary_info": [
+                        "gluten",
+                        "dairy"
+                    ],
+                    "vegetarian": false,
+                    "vegan": false,
+                    "category": "meat"
+                },
+                {
+                    "id": "veg_001",
+                    "name": "Vegetarian Burger",
+                    "image": "images/veg_burger.jpg",
+                    "dietary_info": [
+                        "gluten",
+                        "dairy"
+                    ],
+                    "vegetarian": true,
+                    "vegan": false,
+                    "category": "vegetarian"
+                }
+            ]
+        },
+        {
+            "id": "combo_002",
+            "name": "Pasta Combo",
+            "meals": [
+                {
+                    "id": "fish_003",
+                    "name": "Tuna Pasta",
+                    "image": "images/tuna_pasta.jpg",
+                    "dietary_info": [
+                        "gluten",
+                        "dairy"
+                    ],
+                    "vegetarian": false,
+                    "vegan": false,
+                    "category": "fish"
+                },
+                {
+                    "id": "veg_005",
+                    "name": "Pasta Primavera",
+                    "image": "images/pasta_primavera.jpg",
+                    "dietary_info": [
+                        "gluten",
+                        "dairy"
+                    ],
+                    "vegetarian": true,
+                    "vegan": false,
+                    "category": "vegetarian"
+                }
+            ]
+        }
+    ]
+}
