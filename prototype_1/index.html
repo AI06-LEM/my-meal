@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Meal - Seefood Restaurant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍽️ My Meal - Seefood Restaurant</h1>
+            <p>Weekly meal planning system for school restaurant</p>
+        </header>
+
+        <nav class="tab-navigation">
+            <button class="tab-button active" data-tab="admin">System Admin</button>
+            <button class="tab-button" data-tab="restaurant">Restaurant</button>
+            <button class="tab-button" data-tab="guests">Guests</button>
+        </nav>
+
+        <!-- Admin Tab -->
+        <div id="admin" class="tab-content active">
+            <h2>System Administration</h2>
+            <div class="admin-section">
+                <h3>Upload Meal Database</h3>
+                <div class="upload-area">
+                    <input type="file" id="databaseFile" accept=".json" />
+                    <button id="uploadDatabase">Upload Database</button>
+                </div>
+                <div id="uploadStatus"></div>
+            </div>
+            
+            <div class="admin-section">
+                <h3>Current Status</h3>
+                <div id="systemStatus">
+                    <p>Database: <span id="dbStatus">Not loaded</span></p>
+                    <p>Weekly Options: <span id="optionsStatus">Not set</span></p>
+                    <p>Votes: <span id="votesStatus">No votes</span></p>
+                    <p>Meal Plan: <span id="planStatus">Not generated</span></p>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>Generate Final Meal Plan</h3>
+                <button id="generatePlan">Generate Weekly Meal Plan</button>
+                <div id="mealPlanResult"></div>
+            </div>
+        </div>
+
+        <!-- Restaurant Tab -->
+        <div id="restaurant" class="tab-content">
+            <h2>Restaurant - Weekly Options</h2>
+            <div class="restaurant-section">
+                <h3>Select Meals for This Week</h3>
+                <div id="mealSelection">
+                    <div class="category-section">
+                        <h4>Meat Options</h4>
+                        <div id="meatOptions" class="meal-grid"></div>
+                    </div>
+                    <div class="category-section">
+                        <h4>Fish Options</h4>
+                        <div id="fishOptions" class="meal-grid"></div>
+                    </div>
+                    <div class="category-section">
+                        <h4>Vegetarian Options</h4>
+                        <div id="vegetarianOptions" class="meal-grid"></div>
+                    </div>
+                </div>
+                <button id="saveWeeklyOptions">Save Weekly Options</button>
+                <div id="saveStatus"></div>
+            </div>
+        </div>
+
+        <!-- Guests Tab -->
+        <div id="guests" class="tab-content">
+            <h2>Guest Voting</h2>
+            <div class="guest-section">
+                <div class="voting-form">
+                    <div class="form-group">
+                        <label for="guestName">Your Name:</label>
+                        <input type="text" id="guestName" placeholder="Enter your name" required>
+                    </div>
+                    
+                    <div class="voting-options">
+                        <div class="vote-category">
+                            <h4>Select 1 Meat Option:</h4>
+                            <div id="meatVoting" class="voting-grid"></div>
+                        </div>
+                        
+                        <div class="vote-category">
+                            <h4>Select 1 Fish Option:</h4>
+                            <div id="fishVoting" class="voting-grid"></div>
+                        </div>
+                        
+                        <div class="vote-category">
+                            <h4>Select 2 Vegetarian Options:</h4>
+                            <div id="vegetarianVoting" class="voting-grid"></div>
+                        </div>
+                    </div>
+                    
+                    <button id="submitVote">Submit Vote</button>
+                    <div id="voteStatus"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
