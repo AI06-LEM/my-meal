@@ -1,73 +1,101 @@
-# My Meal - Seefood Restaurant Prototype
+# My-Meal Prototype
 
-A web application for managing weekly meal planning in a school restaurant system.
+A school restaurant meal planning application that allows guests to vote on meal preferences and generates weekly meal plans.
 
 ## Features
 
-- **System Admin Interface**: Upload meal database and generate final meal plans
-- **Restaurant Interface**: Select weekly meal options from the database
-- **Guest Voting Interface**: Students and teachers vote for their meal preferences
-- **Automated Meal Planning**: Vote aggregation to create weekly meal plans
+- **System Admin**: Upload meal database and generate final meal plans
+- **Restaurant Staff**: Select weekly meal options from the database
+- **Guests**: Vote on their preferred meals (1 meat, 1 fish, 2 vegetarian options)
+- **Real-time Persistence**: All data is saved to local JSON files via a Node.js server
 
-## How to Use
+## Setup and Installation
 
-### 1. System Admin Setup
-1. Open the application in a web browser
-2. Go to the "System Admin" tab
-3. Upload the `meals_database.json` file using the file upload
-4. Monitor the system status to ensure all components are ready
+### Prerequisites
+- Node.js (version 14 or higher)
+- npm (comes with Node.js)
 
-### 2. Restaurant Selection
-1. Switch to the "Restaurant" tab
-2. Select meal options for the week from each category:
-   - 1+ meat options
-   - 1+ fish options  
-   - 2+ vegetarian options
-3. Click "Save Weekly Options"
+### Installation
 
-### 3. Guest Voting
-1. Switch to the "Guests" tab
-2. Enter your name
-3. Select your preferences:
-   - 1 meat option
-   - 1 fish option
-   - 2 vegetarian options
-4. Click "Submit Vote"
+1. Navigate to the prototype directory:
+   ```bash
+   cd prototype_1
+   ```
 
-### 4. Generate Meal Plan
-1. Return to the "System Admin" tab
-2. Click "Generate Weekly Meal Plan" to create the final plan
-3. View the generated meal plan with vote counts
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Data Structure
+3. Start the server:
+   ```bash
+   npm start
+   ```
 
-The application uses the following JSON files:
+4. Open your browser and navigate to:
+   ```
+   http://localhost:3000
+   ```
 
-- `meals_database.json`: Contains all available meals and meal combinations
-- `weekly_options.json`: Restaurant's selected options for the current week
-- `guest_votes.json`: All guest voting data
-- `meal_plan.json`: Final weekly meal plan result
+### Development Mode
 
-## Technical Details
+For development with auto-restart on file changes:
+```bash
+npm run dev
+```
 
-- Built with HTML, CSS, and JavaScript
-- Data persistence using localStorage
-- Responsive design for mobile and desktop
-- Modern UI with tabbed interface
+## Usage
 
-## Testing
+### 1. System Admin Tab
+- Upload a meal database JSON file
+- Generate weekly meal plans based on votes
+- View the final meal plan results
 
-The application includes comprehensive validation for:
-- Duplicate guest names
-- Required meal selections
-- Vote aggregation logic
-- Edge cases and error handling
+### 2. Restaurant Tab
+- Select meal options for the week from the uploaded database
+- Choose from meat, fish, and vegetarian options
+- Save your selections
 
-## Future Enhancements
+### 3. Guests Tab
+- Enter your name to vote
+- Select 1 meat option, 1 fish option, and 2 vegetarian options
+- Submit your vote
 
-- Database integration
-- User authentication
-- Multi-language support
-- Meal history tracking
-- Advanced dietary filtering
+## Data Files
 
+The application automatically creates and manages these JSON files:
+- `meals_database.json` - All available meals
+- `weekly_options.json` - Restaurant's selected options for the week
+- `guest_votes.json` - All guest voting data
+- `meal_plan.json` - Final weekly meal plan result
+
+## API Endpoints
+
+The server provides REST API endpoints for data persistence:
+- `GET/POST /api/meals-database` - Manage meal database
+- `GET/POST /api/weekly-options` - Manage weekly options
+- `GET/POST /api/guest-votes` - Manage guest votes
+- `GET/POST /api/meal-plan` - Manage meal plan
+
+## Troubleshooting
+
+- Make sure Node.js is installed and the server is running
+- Check the browser console for any error messages
+- Ensure all JSON files are properly formatted
+- The server runs on port 3000 by default
+
+## File Structure
+
+```
+prototype_1/
+├── server.js              # Node.js Express server
+├── package.json           # Dependencies and scripts
+├── index.html             # Main HTML file
+├── script.js              # Frontend JavaScript
+├── styles.css             # CSS styling
+├── meals_database.json    # Meal data (auto-created)
+├── weekly_options.json    # Weekly options (auto-created)
+├── guest_votes.json       # Guest votes (auto-created)
+├── meal_plan.json         # Final meal plan (auto-created)
+└── images/                # Meal images directory
+```
