@@ -2,7 +2,6 @@
 prototype_1/guest_votes.json
 prototype_1/weekly_options.json
 prototype_1/meal_plan.json
-prototype_1/meals_database.json
 
 # Dependencies
 node_modules/
