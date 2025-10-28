@@ -62,7 +62,7 @@ function switchTab(tabName) {
 }
 
 // Admin Interface Functions
-function uploadDatabase() {
+async function uploadDatabase() {
     const fileInput = document.getElementById('databaseFile');
     const file = fileInput.files[0];
     
@@ -72,11 +72,11 @@ function uploadDatabase() {
     }
 
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         try {
             const data = JSON.parse(e.target.result);
             mealsDatabase = data;
-            saveDataToStorage();
+            await saveDataToStorage();
             showStatus('uploadStatus', 'Database uploaded successfully!', 'success');
             updateSystemStatus();
         } catch (error) {
@@ -86,7 +86,7 @@ function uploadDatabase() {
     reader.readAsText(file);
 }
 
-function generateMealPlan() {
+async function generateMealPlan() {
     if (!mealsDatabase) {
         showStatus('mealPlanResult', 'Please upload a meal database first.', 'error');
         return;
@@ -124,13 +124,13 @@ function generateMealPlan() {
         });
     });
 
-    // Find most popular options for each category
+    // Find most popular options for each category (by option.id)
     const selectedMeat = findMostPopular(weeklyOptions.meat_options, voteCounts);
     const selectedFish = findMostPopular(weeklyOptions.fish_options, voteCounts);
     const selectedVegetarian = findMostPopular(weeklyOptions.vegetarian_options, voteCounts, 2);
 
     // Ensure no duplicates
-    const allSelected = [selectedMeat, selectedFish, ...selectedVegetarian];
+    const allSelected = [selectedMeat.id, selectedFish.id, ...selectedVegetarian.map(o => o.id)];
     const uniqueSelected = [...new Set(allSelected)];
     
     if (uniqueSelected.length < 4) {
@@ -140,15 +140,15 @@ function generateMealPlan() {
 
     // Generate meal plan
     mealPlan = {
-        monday: selectedMeat,
-        tuesday: selectedFish,
-        wednesday: selectedVegetarian[0],
-        thursday: selectedVegetarian[1],
+        monday: selectedMeat.name,
+        tuesday: selectedFish.name,
+        wednesday: selectedVegetarian[0].name,
+        thursday: selectedVegetarian[1].name,
         friday: null, // Leftovers day
         generated_at: new Date().toISOString()
     };
 
-    saveDataToStorage();
+    await saveDataToStorage();
     displayMealPlan();
     updateSystemStatus();
     showStatus('mealPlanResult', 'Meal plan generated successfully!', 'success');
@@ -156,7 +156,7 @@ function generateMealPlan() {
 
 function findMostPopular(options, voteCounts, count = 1) {
     const sorted = options
-        .map(option => ({ option, votes: voteCounts[option] || 0 }))
+        .map(option => ({ option, votes: voteCounts[option.id] || 0 }))
         .sort((a, b) => b.votes - a.votes);
     
     if (count === 1) {
@@ -313,9 +313,9 @@ function removeFromWeeklyOptions(mealId, category) {
     }
 }
 
-function saveWeeklyOptions() {
+async function saveWeeklyOptions() {
     weeklyOptions.last_updated = new Date().toISOString();
-    saveDataToStorage();
+    await saveDataToStorage();
     showStatus('saveStatus', 'Weekly options saved successfully!', 'success');
     updateSystemStatus();
 }
@@ -392,7 +392,7 @@ function createVoteOption(option, inputType, category) {
     return div;
 }
 
-function submitVote() {
+async function submitVote() {
     const guestName = document.getElementById('guestName').value.trim();
     
     if (!guestName) {
@@ -439,7 +439,7 @@ function submitVote() {
     guestVotes.votes.push(vote);
     guestVotes.last_updated = new Date().toISOString();
     
-    saveDataToStorage();
+    await saveDataToStorage();
     showStatus('voteStatus', 'Vote submitted successfully!', 'success');
     updateSystemStatus();
     
@@ -470,35 +470,158 @@ function updateSystemStatus() {
 }
 
 // Data persistence functions
-function saveDataToStorage() {
-    localStorage.setItem('mealsDatabase', JSON.stringify(mealsDatabase));
-    localStorage.setItem('weeklyOptions', JSON.stringify(weeklyOptions));
-    localStorage.setItem('guestVotes', JSON.stringify(guestVotes));
-    localStorage.setItem('mealPlan', JSON.stringify(mealPlan));
+async function saveDataToStorage() {
+    try {
+        // Save all data to server
+        await Promise.all([
+            saveMealsDatabase(),
+            saveWeeklyOptions(),
+            saveGuestVotes(),
+            saveMealPlan()
+        ]);
+    } catch (error) {
+        console.error('Error saving data:', error);
+        showStatus('uploadStatus', 'Error saving data to server', 'error');
+    }
 }
 
-function loadDataFromStorage() {
-    const storedDatabase = localStorage.getItem('mealsDatabase');
-    const storedOptions = localStorage.getItem('weeklyOptions');
-    const storedVotes = localStorage.getItem('guestVotes');
-    const storedPlan = localStorage.getItem('mealPlan');
+async function loadDataFromStorage() {
+    try {
+        // Load all data from server
+        const [dbData, optionsData, votesData, planData] = await Promise.all([
+            loadMealsDatabase(),
+            loadWeeklyOptions(),
+            loadGuestVotes(),
+            loadMealPlan()
+        ]);
 
-    if (storedDatabase) {
-        mealsDatabase = JSON.parse(storedDatabase);
-    }
-    if (storedOptions) {
-        weeklyOptions = JSON.parse(storedOptions);
-    }
-    if (storedVotes) {
-        guestVotes = JSON.parse(storedVotes);
-    }
-    if (storedPlan) {
-        mealPlan = JSON.parse(storedPlan);
+        if (dbData) mealsDatabase = dbData;
+        if (optionsData) weeklyOptions = optionsData;
+        if (votesData) guestVotes = votesData;
+        if (planData) mealPlan = planData;
+
+        updateSystemStatus();
+    } catch (error) {
+        console.error('Error loading data:', error);
     }
 }
 
 function loadExistingData() {
-    // This function can be used to load data from files if needed
-    // For now, we're using localStorage for persistence
+    // Load data from server on page load
+    loadDataFromStorage();
+}
+
+// API functions
+async function loadMealsDatabase() {
+    try {
+        const response = await fetch('/api/meals-database');
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch (error) {
+        console.error('Error loading meals database:', error);
+    }
+    return null;
+}
+
+async function saveMealsDatabase() {
+    if (!mealsDatabase) return;
+    try {
+        const response = await fetch('/api/meals-database', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(mealsDatabase)
+        });
+        if (!response.ok) {
+            throw new Error('Failed to save meals database');
+        }
+    } catch (error) {
+        console.error('Error saving meals database:', error);
+        throw error;
+    }
+}
+
+async function loadWeeklyOptions() {
+    try {
+        const response = await fetch('/api/weekly-options');
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch (error) {
+        console.error('Error loading weekly options:', error);
+    }
+    return null;
+}
+
+async function saveWeeklyOptions() {
+    try {
+        const response = await fetch('/api/weekly-options', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(weeklyOptions)
+        });
+        if (!response.ok) {
+            throw new Error('Failed to save weekly options');
+        }
+    } catch (error) {
+        console.error('Error saving weekly options:', error);
+        throw error;
+    }
+}
+
+async function loadGuestVotes() {
+    try {
+        const response = await fetch('/api/guest-votes');
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch (error) {
+        console.error('Error loading guest votes:', error);
+    }
+    return null;
+}
+
+async function saveGuestVotes() {
+    try {
+        const response = await fetch('/api/guest-votes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(guestVotes)
+        });
+        if (!response.ok) {
+            throw new Error('Failed to save guest votes');
+        }
+    } catch (error) {
+        console.error('Error saving guest votes:', error);
+        throw error;
+    }
+}
+
+async function loadMealPlan() {
+    try {
+        const response = await fetch('/api/meal-plan');
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch (error) {
+        console.error('Error loading meal plan:', error);
+    }
+    return null;
+}
+
+async function saveMealPlan() {
+    try {
+        const response = await fetch('/api/meal-plan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(mealPlan)
+        });
+        if (!response.ok) {
+            throw new Error('Failed to save meal plan');
+        }
+    } catch (error) {
+        console.error('Error saving meal plan:', error);
+        throw error;
+    }
 }
 
