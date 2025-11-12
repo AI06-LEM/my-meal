@@ -104,6 +104,11 @@ async function generateMealPlan() {
         return;
     }
 
+    // Remove duplicates from weeklyOptions to ensure accurate vote counting
+    const uniqueMeatOptions = removeDuplicatesById(weeklyOptions.meat_options);
+    const uniqueFishOptions = removeDuplicatesById(weeklyOptions.fish_options);
+    const uniqueVegetarianOptions = removeDuplicatesById(weeklyOptions.vegetarian_options);
+
     // Count votes for each option
     const voteCounts = {};
     
@@ -118,35 +123,145 @@ async function generateMealPlan() {
             voteCounts[vote.fish_option] = (voteCounts[vote.fish_option] || 0) + 1;
         }
         
-        // Count vegetarian votes
-        vote.vegetarian_options.forEach(option => {
-            voteCounts[option] = (voteCounts[option] || 0) + 1;
-        });
+        // Count vegetarian votes (handle duplicates in vote data)
+        if (vote.vegetarian_options && Array.isArray(vote.vegetarian_options)) {
+            const uniqueVegOptions = [...new Set(vote.vegetarian_options)];
+            uniqueVegOptions.forEach(option => {
+                voteCounts[option] = (voteCounts[option] || 0) + 1;
+            });
+        }
     });
 
     // Find most popular options for each category (by option.id)
-    const selectedMeat = findMostPopular(weeklyOptions.meat_options, voteCounts);
-    const selectedFish = findMostPopular(weeklyOptions.fish_options, voteCounts);
-    const selectedVegetarian = findMostPopular(weeklyOptions.vegetarian_options, voteCounts, 2);
+    const selectedMeat = findMostPopular(uniqueMeatOptions, voteCounts);
+    const selectedFish = findMostPopular(uniqueFishOptions, voteCounts);
+    const selectedVegetarian = findMostPopular(uniqueVegetarianOptions, voteCounts, 2);
 
-    // Ensure no duplicates
-    const allSelected = [selectedMeat.id, selectedFish.id, ...selectedVegetarian.map(o => o.id)];
-    const uniqueSelected = [...new Set(allSelected)];
-    
-    if (uniqueSelected.length < 4) {
-        showStatus('mealPlanResult', 'Not enough unique options selected. Please ensure variety in weekly options.', 'error');
+    // Validate selections
+    if (!selectedMeat) {
+        showStatus('mealPlanResult', 'Error: No meat option received votes. Please ensure guests vote for available options.', 'error');
         return;
     }
 
-    // Generate meal plan
-    mealPlan = {
-        monday: selectedMeat.name,
-        tuesday: selectedFish.name,
-        wednesday: selectedVegetarian[0].name,
-        thursday: selectedVegetarian[1].name,
-        friday: null, // Leftovers day
-        generated_at: new Date().toISOString()
-    };
+    if (!selectedFish) {
+        showStatus('mealPlanResult', 'Error: No fish option received votes. Please ensure guests vote for available options.', 'error');
+        return;
+    }
+
+    if (!selectedVegetarian || selectedVegetarian.length < 2) {
+        showStatus('mealPlanResult', 'Error: Not enough vegetarian options received votes. Please ensure guests vote for at least 2 different vegetarian options.', 'error');
+        return;
+    }
+
+    // Ensure vegetarian options are unique (handle edge case where same option appears twice)
+    const uniqueVegetarianIds = [...new Set(selectedVegetarian.map(v => v.id))];
+    if (uniqueVegetarianIds.length < 2) {
+        // If we have duplicate vegetarian options, try to get alternatives
+        const allVegOptions = uniqueVegetarianOptions
+            .map(option => ({ option, votes: voteCounts[option.id] || 0 }))
+            .sort((a, b) => b.votes - a.votes);
+        
+        const uniqueVegOptions = [];
+        const seenVegIds = new Set();
+        for (const item of allVegOptions) {
+            if (!seenVegIds.has(item.option.id)) {
+                uniqueVegOptions.push(item.option);
+                seenVegIds.add(item.option.id);
+                if (uniqueVegOptions.length >= 2) break;
+            }
+        }
+        
+        if (uniqueVegOptions.length < 2) {
+            showStatus('mealPlanResult', 'Error: Not enough unique vegetarian options available. Please ensure the restaurant provides at least 2 different vegetarian options.', 'error');
+            return;
+        }
+        
+        selectedVegetarian.length = 0;
+        selectedVegetarian.push(...uniqueVegOptions);
+    }
+
+    // Check for conflicts: if a combo is selected, check if its vegetarian counterpart conflicts with selected vegetarian options
+    const conflictInfo = checkForConflicts(selectedMeat, selectedFish, selectedVegetarian);
+    
+    if (conflictInfo.hasConflict) {
+        // Try to resolve conflicts by selecting alternative vegetarian options
+        const resolvedVegetarian = resolveConflicts(uniqueVegetarianOptions, voteCounts, selectedMeat, selectedFish, selectedVegetarian);
+        
+        if (resolvedVegetarian && resolvedVegetarian.length === 2) {
+            // Use resolved options
+            const allSelected = [selectedMeat.id, selectedFish.id, ...resolvedVegetarian.map(o => o.id)];
+            const uniqueSelected = [...new Set(allSelected)];
+            
+            if (uniqueSelected.length === 4) {
+                mealPlan = {
+                    monday: selectedMeat.name,
+                    tuesday: selectedFish.name,
+                    wednesday: resolvedVegetarian[0].name,
+                    thursday: resolvedVegetarian[1].name,
+                    friday: null, // Leftovers day
+                    generated_at: new Date().toISOString()
+                };
+            } else {
+                // This should not happen, but if it does, try to use the original vegetarian options
+                // and accept that there might be a conflict (better than failing completely)
+                const allSelectedOriginal = [selectedMeat.id, selectedFish.id, ...selectedVegetarian.map(o => o.id)];
+                const uniqueSelectedOriginal = [...new Set(allSelectedOriginal)];
+                
+                if (uniqueSelectedOriginal.length >= 3) {
+                    // At least we have 3 unique options, use them
+                    mealPlan = {
+                        monday: selectedMeat.name,
+                        tuesday: selectedFish.name,
+                        wednesday: selectedVegetarian[0].name,
+                        thursday: selectedVegetarian[1].name,
+                        friday: null,
+                        generated_at: new Date().toISOString()
+                    };
+                } else {
+                    showStatus('mealPlanResult', `Error: Could not generate a unique meal plan. ${conflictInfo.message} Please ensure the restaurant provides sufficient variety in weekly options.`, 'error');
+                    return;
+                }
+            }
+        } else {
+            // If resolution failed, try to use original options anyway (better than failing)
+            const allSelected = [selectedMeat.id, selectedFish.id, ...selectedVegetarian.map(o => o.id)];
+            const uniqueSelected = [...new Set(allSelected)];
+            
+            if (uniqueSelected.length >= 3) {
+                mealPlan = {
+                    monday: selectedMeat.name,
+                    tuesday: selectedFish.name,
+                    wednesday: selectedVegetarian[0].name,
+                    thursday: selectedVegetarian[1].name,
+                    friday: null,
+                    generated_at: new Date().toISOString()
+                };
+            } else {
+                showStatus('mealPlanResult', `Error: ${conflictInfo.message} Please ensure the restaurant provides at least 2 different vegetarian options that are not part of the selected meat/fish combos.`, 'error');
+                return;
+            }
+        }
+    } else {
+        // No conflicts, proceed normally
+        const allSelected = [selectedMeat.id, selectedFish.id, ...selectedVegetarian.map(o => o.id)];
+        const uniqueSelected = [...new Set(allSelected)];
+        
+        if (uniqueSelected.length < 4) {
+            // This should not happen if there are no conflicts, but handle it anyway
+            showStatus('mealPlanResult', 'Error: Selected options are not unique. This may indicate duplicate options in weekly selections.', 'error');
+            return;
+        }
+
+        // Generate meal plan
+        mealPlan = {
+            monday: selectedMeat.name,
+            tuesday: selectedFish.name,
+            wednesday: selectedVegetarian[0].name,
+            thursday: selectedVegetarian[1].name,
+            friday: null, // Leftovers day
+            generated_at: new Date().toISOString()
+        };
+    }
 
     await saveDataToStorage();
     displayMealPlan();
@@ -154,16 +269,155 @@ async function generateMealPlan() {
     showStatus('mealPlanResult', 'Meal plan generated successfully!', 'success');
 }
 
+function removeDuplicatesById(options) {
+    const seen = new Set();
+    return options.filter(option => {
+        if (seen.has(option.id)) {
+            return false;
+        }
+        seen.add(option.id);
+        return true;
+    });
+}
+
 function findMostPopular(options, voteCounts, count = 1) {
+    if (!options || options.length === 0) {
+        return count === 1 ? null : [];
+    }
+    
     const sorted = options
         .map(option => ({ option, votes: voteCounts[option.id] || 0 }))
         .sort((a, b) => b.votes - a.votes);
     
     if (count === 1) {
-        return sorted[0].option;
+        return sorted[0] ? sorted[0].option : null;
     } else {
         return sorted.slice(0, count).map(item => item.option);
     }
+}
+
+// Helper function to get vegetarian counterpart ID from a combo
+function getVegetarianCounterpartId(optionId) {
+    if (!mealsDatabase || !mealsDatabase.meal_combinations) return null;
+    
+    const combo = mealsDatabase.meal_combinations.find(c => c.id === optionId);
+    if (combo && combo.meals) {
+        const vegMeal = combo.meals.find(m => m.category === 'vegetarian');
+        return vegMeal ? vegMeal.id : null;
+    }
+    return null;
+}
+
+// Check if selected options have conflicts (e.g., combo's vegetarian counterpart is also selected separately)
+function checkForConflicts(selectedMeat, selectedFish, selectedVegetarian) {
+    const conflictIds = new Set();
+    let message = '';
+    
+    // Check if meat combo's vegetarian counterpart conflicts
+    const meatVegCounterpart = getVegetarianCounterpartId(selectedMeat.id);
+    if (meatVegCounterpart) {
+        const isConflict = selectedVegetarian.some(veg => veg.id === meatVegCounterpart);
+        if (isConflict) {
+            conflictIds.add(meatVegCounterpart);
+            message += `The selected meat option "${selectedMeat.name}" includes a vegetarian option that was also selected separately. `;
+        }
+    }
+    
+    // Check if fish combo's vegetarian counterpart conflicts
+    const fishVegCounterpart = getVegetarianCounterpartId(selectedFish.id);
+    if (fishVegCounterpart) {
+        const isConflict = selectedVegetarian.some(veg => veg.id === fishVegCounterpart);
+        if (isConflict) {
+            conflictIds.add(fishVegCounterpart);
+            message += `The selected fish option "${selectedFish.name}" includes a vegetarian option that was also selected separately. `;
+        }
+    }
+    
+    return {
+        hasConflict: conflictIds.size > 0,
+        conflictIds: Array.from(conflictIds),
+        message: message || 'No conflicts detected.'
+    };
+}
+
+// Resolve conflicts by selecting alternative vegetarian options
+function resolveConflicts(uniqueVegetarianOptions, voteCounts, selectedMeat, selectedFish, originalVegetarian) {
+    const conflictInfo = checkForConflicts(selectedMeat, selectedFish, originalVegetarian);
+    
+    if (!conflictInfo.hasConflict) {
+        return originalVegetarian;
+    }
+    
+    // Get IDs to exclude (conflicting vegetarian counterparts)
+    const excludeIds = new Set(conflictInfo.conflictIds);
+    
+    // Also exclude the original vegetarian options that conflict
+    originalVegetarian.forEach(veg => {
+        if (excludeIds.has(veg.id)) {
+            excludeIds.add(veg.id);
+        }
+    });
+    
+    // Find alternative vegetarian options, excluding conflicts
+    let availableOptions = uniqueVegetarianOptions.filter(opt => !excludeIds.has(opt.id));
+    
+    // If we don't have enough alternatives, we need to be more lenient
+    // Try to use options that weren't in the original selection but are available
+    if (availableOptions.length < 2) {
+        // If still not enough, we might need to accept some conflicts or use any available options
+        // But first, let's see if we can use options from the original selection that don't conflict
+        const nonConflictingOriginal = originalVegetarian.filter(veg => !excludeIds.has(veg.id));
+        if (nonConflictingOriginal.length > 0) {
+            availableOptions = [...nonConflictingOriginal, ...availableOptions];
+        }
+        
+        // If still not enough, use all available vegetarian options (this should always be >= 2 based on requirements)
+        if (availableOptions.length < 2) {
+            availableOptions = uniqueVegetarianOptions;
+        }
+    }
+    
+    // Select top 2 vegetarian options from available alternatives, prioritizing vote counts
+    const sorted = availableOptions
+        .map(option => ({ option, votes: voteCounts[option.id] || 0 }))
+        .sort((a, b) => b.votes - a.votes);
+    
+    // Ensure we have exactly 2 unique options
+    const uniqueResolved = [];
+    const seenIds = new Set();
+    
+    // First, try to get options with votes
+    for (const item of sorted) {
+        if (!seenIds.has(item.option.id)) {
+            uniqueResolved.push(item.option);
+            seenIds.add(item.option.id);
+            if (uniqueResolved.length >= 2) break;
+        }
+    }
+    
+    // If we still don't have 2, fill with any remaining options (even with 0 votes)
+    if (uniqueResolved.length < 2) {
+        for (const opt of availableOptions) {
+            if (!seenIds.has(opt.id)) {
+                uniqueResolved.push(opt);
+                seenIds.add(opt.id);
+                if (uniqueResolved.length >= 2) break;
+            }
+        }
+    }
+    
+    // As a last resort, if we still don't have 2, use any vegetarian options
+    if (uniqueResolved.length < 2) {
+        for (const opt of uniqueVegetarianOptions) {
+            if (!seenIds.has(opt.id)) {
+                uniqueResolved.push(opt);
+                seenIds.add(opt.id);
+                if (uniqueResolved.length >= 2) break;
+            }
+        }
+    }
+    
+    return uniqueResolved.length === 2 ? uniqueResolved : null;
 }
 
 function displayMealPlan() {
@@ -541,12 +795,20 @@ async function submitVote() {
         return;
     }
 
+    // Check for duplicate vegetarian options
+    const vegetarianValues = vegetarianOptions.map(input => input.value);
+    const uniqueVegetarianValues = [...new Set(vegetarianValues)];
+    if (uniqueVegetarianValues.length !== 2) {
+        showStatus('voteStatus', 'Please select two different vegetarian options. You cannot select the same option twice.', 'error');
+        return;
+    }
+
     // Create vote object
     const vote = {
         guest_name: guestName,
         meat_option: meatOption.value,
         fish_option: fishOption.value,
-        vegetarian_options: vegetarianOptions.map(input => input.value),
+        vegetarian_options: uniqueVegetarianValues,
         timestamp: new Date().toISOString()
     };
 
