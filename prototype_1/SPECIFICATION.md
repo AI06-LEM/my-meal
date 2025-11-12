@@ -119,15 +119,15 @@ Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final resul
 ## [TODO] Bugs
 
  - Please carefully proofread the file `meals_database.json`, there are several issues including the following:
-   * [OPEN] *Every* meat and fish dish should be part of a `meal_combinations` complemented by a vegetarian or vegan counterpart dish. In other words, there can be no exclusively non-vegetarian meals. In the end, all votes for a meat and fish dish must also include a vote for a vegetarian or vegan counterpart dish, so that vegetarians are always served as well (by contrast, we do *not* always need a vegan dish).
-   * [OPEN] In a `meal_combinations` with meat of fish, the two options should be similar and only differ by one main ingredient (e.g., a meat burger and a vegetarian burger are correct, while combining Tuna Pasta and Pasta Primavera is not correct).
-   * [RESOLVED] Dietary options should be only `gluten`, `gluten-free` is redundant as a possible value. If `gluten` is not set as a flag, this implies `gluten-free`. 
-   * [RESOLVED]  `vegan` is redundant as a dietary option under `dietary_info`, as this option is already set as the separate `vegan` property.
-   * [RESOLVED] Add another 10 meals to the database
+   * [DONE?] *Every* meat and fish dish should be part of a `meal_combinations` complemented by a vegetarian or vegan counterpart dish. In other words, there can be no exclusively non-vegetarian meals. In the end, all votes for a meat and fish dish must also include a vote for a vegetarian or vegan counterpart dish, so that vegetarians are always served as well (by contrast, we do *not* always need a vegan dish).
+   * [DONE?] In a `meal_combinations` with meat of fish, the two options should be similar and only differ by one main ingredient (e.g., a meat burger and a vegetarian burger are correct, while combining Tuna Pasta and Pasta Primavera is not correct).
+   * [DONE] Dietary options should be only `gluten`, `gluten-free` is redundant as a possible value. If `gluten` is not set as a flag, this implies `gluten-free`. 
+   * [DONE]  `vegan` is redundant as a dietary option under `dietary_info`, as this option is already set as the separate `vegan` property.
+   * [DONE] Add another 10 meals to the database
 
- - [OPEN] When generating the final plan, we get the following error: `Not enough unique options selected. Please ensure variety in weekly options.` This happens also after 12 guest votes have been submitted (see value of current `guest_votes.json`). It is not clear for the user, why this error happens. If there is a problem with the guest votes themselves, then this should be reported immediately when a submits their vote and the guest should be asked to resubmit. Otherwise, if there is at least one guest vote, any combination of votes should result in a final meal plan consistent with the given votes. If this is not possible with the current voting mechanism, then feel free to come back to discuss that voting mechanism and how it can be revised.
+ - [DONE?] When generating the final plan, we get the following error: `Not enough unique options selected. Please ensure variety in weekly options.` This happens also after 12 guest votes have been submitted (see value of current `guest_votes.json`). It is not clear for the user, why this error happens. If there is a problem with the guest votes themselves, then this should be reported immediately when a submits their vote and the guest should be asked to resubmit. Otherwise, if there is at least one guest vote, any combination of votes should result in a final meal plan consistent with the given votes. If this is not possible with the current voting mechanism, then feel free to come back to discuss that voting mechanism and how it can be revised.
 
- - [RESOLVED] It appears that several files with persistent data are not updated when the program is running, e.g., 
+ - [DONE] It appears that several files with persistent data are not updated when the program is running, e.g., 
    * `meal_plan.json` is not containing the final result after the system admin clicked on the button [Generate Weekly Meal Plan]
    * `guest_votes.json` remains empty after votes are submitted
    * `weekly_options.json` remains empty after Seefood entered options
