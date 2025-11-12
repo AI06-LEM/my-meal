@@ -227,6 +227,100 @@
       "vegetarian": true,
       "vegan": true,
       "category": "vegetarian"
+    },
+    {
+      "id": "veg_013",
+      "name": "Grilled Tofu Steak",
+      "image": "images/grilled_tofu_steak.jpg",
+      "dietary_info": [],
+      "vegetarian": true,
+      "vegan": true,
+      "category": "vegetarian"
+    },
+    {
+      "id": "veg_014",
+      "name": "Vegetarian Schnitzel",
+      "image": "images/veg_schnitzel.jpg",
+      "dietary_info": [
+        "gluten",
+        "eggs"
+      ],
+      "vegetarian": true,
+      "vegan": false,
+      "category": "vegetarian"
+    },
+    {
+      "id": "veg_015",
+      "name": "Vegetarian Meatballs",
+      "image": "images/veg_meatballs.jpg",
+      "dietary_info": [
+        "gluten",
+        "eggs"
+      ],
+      "vegetarian": true,
+      "vegan": false,
+      "category": "vegetarian"
+    },
+    {
+      "id": "veg_016",
+      "name": "BBQ Jackfruit",
+      "image": "images/bbq_jackfruit.jpg",
+      "dietary_info": [],
+      "vegetarian": true,
+      "vegan": true,
+      "category": "vegetarian"
+    },
+    {
+      "id": "veg_017",
+      "name": "Grilled Tofu Fillet",
+      "image": "images/grilled_tofu_fillet.jpg",
+      "dietary_info": [],
+      "vegetarian": true,
+      "vegan": true,
+      "category": "vegetarian"
+    },
+    {
+      "id": "veg_018",
+      "name": "Vegetarian Fish and Chips",
+      "image": "images/veg_fish_chips.jpg",
+      "dietary_info": [
+        "gluten"
+      ],
+      "vegetarian": true,
+      "vegan": true,
+      "category": "vegetarian"
+    },
+    {
+      "id": "veg_019",
+      "name": "Tofu Pasta",
+      "image": "images/tofu_pasta.jpg",
+      "dietary_info": [
+        "gluten",
+        "dairy"
+      ],
+      "vegetarian": true,
+      "vegan": false,
+      "category": "vegetarian"
+    },
+    {
+      "id": "veg_020",
+      "name": "Baked Tofu",
+      "image": "images/baked_tofu.jpg",
+      "dietary_info": [],
+      "vegetarian": true,
+      "vegan": true,
+      "category": "vegetarian"
+    },
+    {
+      "id": "veg_021",
+      "name": "Tofu Fried Rice",
+      "image": "images/tofu_fried_rice.jpg",
+      "dietary_info": [
+        "eggs"
+      ],
+      "vegetarian": true,
+      "vegan": false,
+      "category": "vegetarian"
     }
   ],
   "meal_combinations": [
@@ -277,9 +371,9 @@
           "category": "fish"
         },
         {
-          "id": "veg_005",
-          "name": "Pasta Primavera",
-          "image": "images/pasta_primavera.jpg",
+          "id": "veg_019",
+          "name": "Tofu Pasta",
+          "image": "images/tofu_pasta.jpg",
           "dietary_info": [
             "gluten",
             "dairy"
@@ -292,7 +386,7 @@
     },
     {
       "id": "combo_003",
-      "name": "Chicken vs Veggie Stir Fry",
+      "name": "Grilled Protein Combo",
       "meals": [
         {
           "id": "meat_001",
@@ -304,9 +398,9 @@
           "category": "meat"
         },
         {
-          "id": "veg_003",
-          "name": "Vegetable Stir Fry",
-          "image": "images/veg_stirfry.jpg",
+          "id": "veg_013",
+          "name": "Grilled Tofu Steak",
+          "image": "images/grilled_tofu_steak.jpg",
           "dietary_info": [],
           "vegetarian": true,
           "vegan": true,
@@ -316,7 +410,7 @@
     },
     {
       "id": "combo_004",
-      "name": "Schnitzel vs Mushroom Risotto",
+      "name": "Schnitzel Combo",
       "meals": [
         {
           "id": "meat_003",
@@ -331,11 +425,12 @@
           "category": "meat"
         },
         {
-          "id": "veg_007",
-          "name": "Mushroom Risotto",
-          "image": "images/mushroom_risotto.jpg",
+          "id": "veg_014",
+          "name": "Vegetarian Schnitzel",
+          "image": "images/veg_schnitzel.jpg",
           "dietary_info": [
-            "dairy"
+            "gluten",
+            "eggs"
           ],
           "vegetarian": true,
           "vegan": false,
@@ -345,7 +440,7 @@
     },
     {
       "id": "combo_005",
-      "name": "Salmon vs Veggie Paella",
+      "name": "Grilled Fillet Combo",
       "meals": [
         {
           "id": "fish_001",
@@ -357,9 +452,9 @@
           "category": "fish"
         },
         {
-          "id": "veg_011",
-          "name": "Veggie Paella",
-          "image": "images/veggie_paella.jpg",
+          "id": "veg_017",
+          "name": "Grilled Tofu Fillet",
+          "image": "images/grilled_tofu_fillet.jpg",
           "dietary_info": [],
           "vegetarian": true,
           "vegan": true,
@@ -369,7 +464,7 @@
     },
     {
       "id": "combo_006",
-      "name": "Fish & Chips vs Chickpea Salad",
+      "name": "Fish and Chips Combo",
       "meals": [
         {
           "id": "fish_002",
@@ -383,10 +478,12 @@
           "category": "fish"
         },
         {
-          "id": "veg_009",
-          "name": "Chickpea Salad",
-          "image": "images/chickpea_salad.jpg",
-          "dietary_info": [],
+          "id": "veg_018",
+          "name": "Vegetarian Fish and Chips",
+          "image": "images/veg_fish_chips.jpg",
+          "dietary_info": [
+            "gluten"
+          ],
           "vegetarian": true,
           "vegan": true,
           "category": "vegetarian"
@@ -395,7 +492,7 @@
     },
     {
       "id": "combo_007",
-      "name": "Turkey Meatballs vs Tofu Teriyaki",
+      "name": "Meatballs Combo",
       "meals": [
         {
           "id": "meat_004",
@@ -410,19 +507,22 @@
           "category": "meat"
         },
         {
-          "id": "veg_008",
-          "name": "Tofu Teriyaki Bowl",
-          "image": "images/tofu_teriyaki.jpg",
-          "dietary_info": [],
+          "id": "veg_015",
+          "name": "Vegetarian Meatballs",
+          "image": "images/veg_meatballs.jpg",
+          "dietary_info": [
+            "gluten",
+            "eggs"
+          ],
           "vegetarian": true,
-          "vegan": true,
+          "vegan": false,
           "category": "vegetarian"
         }
       ]
     },
     {
       "id": "combo_008",
-      "name": "BBQ Ribs vs Stuffed Peppers",
+      "name": "BBQ Combo",
       "meals": [
         {
           "id": "meat_005",
@@ -434,9 +534,9 @@
           "category": "meat"
         },
         {
-          "id": "veg_012",
-          "name": "Stuffed Peppers",
-          "image": "images/stuffed_peppers.jpg",
+          "id": "veg_016",
+          "name": "BBQ Jackfruit",
+          "image": "images/bbq_jackfruit.jpg",
           "dietary_info": [],
           "vegetarian": true,
           "vegan": true,
@@ -446,7 +546,7 @@
     },
     {
       "id": "combo_009",
-      "name": "Baked Cod vs Spinach Lasagna",
+      "name": "Baked Protein Combo",
       "meals": [
         {
           "id": "fish_004",
@@ -458,22 +558,19 @@
           "category": "fish"
         },
         {
-          "id": "veg_010",
-          "name": "Spinach Lasagna",
-          "image": "images/spinach_lasagna.jpg",
-          "dietary_info": [
-            "gluten",
-            "dairy"
-          ],
+          "id": "veg_020",
+          "name": "Baked Tofu",
+          "image": "images/baked_tofu.jpg",
+          "dietary_info": [],
           "vegetarian": true,
-          "vegan": false,
+          "vegan": true,
           "category": "vegetarian"
         }
       ]
     },
     {
       "id": "combo_010",
-      "name": "Shrimp Fried Rice vs Quinoa Bowl",
+      "name": "Fried Rice Combo",
       "meals": [
         {
           "id": "fish_005",
@@ -487,12 +584,14 @@
           "category": "fish"
         },
         {
-          "id": "veg_002",
-          "name": "Quinoa Bowl",
-          "image": "images/quinoa_bowl.jpg",
-          "dietary_info": [],
+          "id": "veg_021",
+          "name": "Tofu Fried Rice",
+          "image": "images/tofu_fried_rice.jpg",
+          "dietary_info": [
+            "eggs"
+          ],
           "vegetarian": true,
-          "vegan": true,
+          "vegan": false,
           "category": "vegetarian"
         }
       ]
