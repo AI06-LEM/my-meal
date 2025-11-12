@@ -131,7 +131,25 @@ app.post('/api/meal-plan', async (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
   console.log('Open your browser and navigate to the URL above to use the application');
+  console.log('Press Ctrl+C (or Cmd+C on Mac) to stop the server');
+});
+
+// Graceful shutdown handling
+process.on('SIGINT', () => {
+  console.log('\nShutting down server gracefully...');
+  server.close(() => {
+    console.log('Server closed successfully');
+    process.exit(0);
+  });
+});
+
+process.on('SIGTERM', () => {
+  console.log('\nShutting down server gracefully...');
+  server.close(() => {
+    console.log('Server closed successfully');
+    process.exit(0);
+  });
 });

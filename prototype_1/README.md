@@ -44,6 +44,19 @@ For development with auto-restart on file changes:
 npm run dev
 ```
 
+### Stopping the Server
+
+To stop the server, press `Ctrl+C` (or `Cmd+C` on Mac) in the terminal where the server is running. The server will shut down gracefully.
+
+**Note:** If you're running the server in the background or need to stop it from another terminal, you can find the process ID and terminate it:
+```bash
+# Find the process running on port 3000
+lsof -ti:3000
+
+# Kill the process (replace PID with the actual process ID)
+kill PID
+```
+
 ## Usage
 
 ### 1. System Admin Tab
