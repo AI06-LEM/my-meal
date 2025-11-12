@@ -119,8 +119,8 @@ Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final resul
 ## [TODO] Bugs
 
  - Please carefully proofread the file `meals_database.json`, there are several issues including the following:
-   * [OPEN] *Every* meat and fish dish should be part of a `meal_combinations` together with a vegetarian or vegan counterpart dish. In other words, there can be no exclusively non-vegetarian meals.
-   * [OPEN] In a `meal_combinations` with meat of fish, the two options should be similar and only differ by one main ingredient (e.g., a meat burger and a vegetarian burger).
+   * [OPEN] *Every* meat and fish dish should be part of a `meal_combinations` complemented by a vegetarian or vegan counterpart dish. In other words, there can be no exclusively non-vegetarian meals. In the end, all votes for a meat and fish dish must also include a vote for a vegetarian or vegan counterpart dish, so that vegetarians are always served as well (by contrast, we do *not* always need a vegan dish).
+   * [OPEN] In a `meal_combinations` with meat of fish, the two options should be similar and only differ by one main ingredient (e.g., a meat burger and a vegetarian burger are correct, while combining Tuna Pasta and Pasta Primavera is not correct).
    * [RESOLVED] Dietary options should be only `gluten`, `gluten-free` is redundant as a possible value. If `gluten` is not set as a flag, this implies `gluten-free`. 
    * [RESOLVED]  `vegan` is redundant as a dietary option under `dietary_info`, as this option is already set as the separate `vegan` property.
    * [RESOLVED] Add another 10 meals to the database
