@@ -180,7 +180,7 @@ async function generateMealPlan() {
         selectedVegetarian.push(...uniqueVegOptions);
     }
 
-    // Check for conflicts: if a combo is selected, check if its vegetarian counterpart conflicts with selected vegetarian options
+    // Check for conflicts: meat/fish options are always combos, so check if their vegetarian counterparts conflict with selected vegetarian options
     const conflictInfo = checkForConflicts(selectedMeat, selectedFish, selectedVegetarian);
     
     if (conflictInfo.hasConflict) {
@@ -469,34 +469,28 @@ function loadMealOptions() {
     fishDiv.innerHTML = '';
     vegetarianDiv.innerHTML = '';
 
-    // Load individual meals
+    // Load vegetarian meals (individual meals only)
     mealsDatabase.meals.forEach(meal => {
-        const mealCard = createMealCard(meal);
-        if (meal.category === 'meat') {
-            meatDiv.appendChild(mealCard);
-        } else if (meal.category === 'fish') {
-            fishDiv.appendChild(mealCard);
-        } else if (meal.category === 'vegetarian') {
+        if (meal.category === 'vegetarian') {
+            const mealCard = createMealCard(meal);
             vegetarianDiv.appendChild(mealCard);
         }
     });
 
-    // Load meal combinations
+    // Load meal combinations - meat and fish only come from combinations
     if (mealsDatabase.meal_combinations) {
         mealsDatabase.meal_combinations.forEach(combo => {
             const comboCard = createMealCard(combo, true);
             // Determine category based on combo contents
             const hasMeat = combo.meals.some(meal => meal.category === 'meat');
             const hasFish = combo.meals.some(meal => meal.category === 'fish');
-            const hasVegetarian = combo.meals.some(meal => meal.category === 'vegetarian');
             
             if (hasMeat) {
                 meatDiv.appendChild(comboCard);
             } else if (hasFish) {
                 fishDiv.appendChild(comboCard);
-            } else if (hasVegetarian) {
-                vegetarianDiv.appendChild(comboCard);
             }
+            // Note: vegetarian-only combinations are not shown here as they're individual meals
         });
     }
 }
@@ -565,16 +559,6 @@ function toggleMealSelection(card) {
                     vegCard.classList.remove('selected');
                 }
             }
-        } else if ((category === 'meat' || category === 'fish')) {
-            // Check if this individual meal is part of a combo
-            const vegCounterpart = findVegetarianCounterpartForMeal(card.dataset.mealId);
-            if (vegCounterpart) {
-                removeFromWeeklyOptions(vegCounterpart.id, 'vegetarian');
-                const vegCard = document.querySelector(`[data-meal-id="${vegCounterpart.id}"]`);
-                if (vegCard) {
-                    vegCard.classList.remove('selected');
-                }
-            }
         }
     } else {
         card.classList.add('selected');
@@ -596,38 +580,10 @@ function toggleMealSelection(card) {
                     }
                 }
             }
-        } else if ((category === 'meat' || category === 'fish')) {
-            // Check if this individual meal is part of a combo
-            const vegCounterpart = findVegetarianCounterpartForMeal(card.dataset.mealId);
-            if (vegCounterpart) {
-                const alreadyAdded = weeklyOptions.vegetarian_options.some(opt => opt.id === vegCounterpart.id);
-                if (!alreadyAdded) {
-                    addToWeeklyOptions(vegCounterpart.id, vegCounterpart.name, 'vegetarian');
-                    const vegCard = document.querySelector(`[data-meal-id="${vegCounterpart.id}"]`);
-                    if (vegCard) {
-                        vegCard.classList.add('selected');
-                    }
-                }
-            }
         }
     }
 }
 
-// Helper function to find vegetarian counterpart for an individual meal that's part of a combo
-function findVegetarianCounterpartForMeal(mealId) {
-    if (!mealsDatabase || !mealsDatabase.meal_combinations) return null;
-    
-    // Find a combo that contains this meal
-    const combo = mealsDatabase.meal_combinations.find(c => 
-        c.meals && c.meals.some(m => m.id === mealId)
-    );
-    
-    if (combo && combo.meals) {
-        const vegMeal = combo.meals.find(m => m.category === 'vegetarian');
-        return vegMeal;
-    }
-    return null;
-}
 
 function getCategoryFromCard(card) {
     const parent = card.parentElement;
@@ -677,19 +633,19 @@ function loadVotingOptions() {
     fishDiv.innerHTML = '';
     vegetarianDiv.innerHTML = '';
 
-    // Load meat options
+    // Load meat options (these are now always combinations)
     weeklyOptions.meat_options.forEach(option => {
         const voteOption = createVoteOption(option, 'radio', 'meat');
         meatDiv.appendChild(voteOption);
     });
 
-    // Load fish options
+    // Load fish options (these are now always combinations)
     weeklyOptions.fish_options.forEach(option => {
         const voteOption = createVoteOption(option, 'radio', 'fish');
         fishDiv.appendChild(voteOption);
     });
 
-    // Load vegetarian options
+    // Load vegetarian options (these can be individual meals or from combinations)
     weeklyOptions.vegetarian_options.forEach(option => {
         const voteOption = createVoteOption(option, 'checkbox', 'vegetarian');
         vegetarianDiv.appendChild(voteOption);
@@ -730,7 +686,7 @@ function createVoteOption(option, inputType, category) {
     const label = document.createElement('label');
     label.appendChild(document.createTextNode(option.name));
     
-    // Check if this is a combo and find the counterpart to display
+    // For meat/fish options, they are always combos - show the vegetarian counterpart
     if ((category === 'meat' || category === 'fish') && isPartOfCombo(option.id)) {
         const vegCounterpart = findVegetarianCounterpart(option.id);
         if (vegCounterpart) {
