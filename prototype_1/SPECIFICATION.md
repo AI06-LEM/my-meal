@@ -118,19 +118,20 @@ Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final resul
 
 ## [TODO] Bugs
 
- - Add a reset button in the system admin tab, which would wipe the internal memory (i.e., delete relevant local files: `weekly_options.json`, `guest_votes.json` and `meal_plan.json`).
-
-  - In the user interface, showing whether a dish is vegetarian or not is redundant, as all dishes are or include a vegetarian option. However, only remove this information from the user interface, please still retain it internally.
-
- - In the user interface for both the restaurant as well as the guests, please rename the meal combinations: remove the term "Combo" (e.g., "Burger Combo" would become simply "Burger"). Nevertheless, only the name shown in the interface is changed, the app otherwise remains the same.
-
- - In the guest interface, vegetarian options that are part of a meal combo are already implicitly selected when a combo is selected. So, these should *not* be listed explicitly in the interface as an extra vegetarian choice. 
+ - [TODO] In the guest interface, vegetarian options that are part of a meal combo are already implicitly selected when a combo is selected. So, these should *not* be listed explicitly in the interface as an extra vegetarian choice. 
   TODO: Check also the internal representation and the database, whether there also exists such redundancy (e.g., in weekly options `weekly_options.json`, we better store combinations and not individual vegetarian meals).
 
   TODO: Think about representing all dishes as combinations with possibly only a single dish as an option for consistency.
 
-  - Update the database: for the fish dishes, don't include only tofu vegetarian options.
+ - [DONE] In the user interface for `meal_combinations`, the dietary info is not shown, even though that information is contained in the database. Please show this information also in the UI.
 
+ - [Done] Update the database: for the fish dishes, don't include only tofu vegetarian options.
+
+ - [DONE] Add a reset button in the system admin tab, which would wipe the internal memory (i.e., delete relevant local files: `weekly_options.json`, `guest_votes.json` and `meal_plan.json`).
+
+ - [DONE] In the user interface, showing whether a dish is vegetarian or not is redundant, as all dishes are or include a vegetarian option. However, only remove this information from the user interface, please still retain it internally.
+
+ - [DONE] In the user interface for both the restaurant as well as the guests, please rename the meal combinations: remove the term "Combo" (e.g., "Burger Combo" would become simply "Burger"). Nevertheless, only the name shown in the interface is changed, the app otherwise remains the same.
  - [DONE] Please carefully proofread the file `meals_database.json`, there are several issues including the following:
    * [DONE] *Every* meat and fish dish should be part of a `meal_combinations` complemented by a vegetarian or vegan counterpart dish. In other words, there can be no exclusively non-vegetarian meals. In the end, all votes for a meat and fish dish must also include a vote for a vegetarian or vegan counterpart dish, so that vegetarians are always served as well (by contrast, we do *not* always need a vegan dish).
    * [DONE] In a `meal_combinations` with meat of fish, the two options should be similar and only differ by one main ingredient (e.g., a meat burger and a vegetarian burger are correct, while combining Tuna Pasta and Pasta Primavera is not correct).
