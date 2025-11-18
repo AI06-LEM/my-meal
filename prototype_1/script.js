@@ -28,6 +28,7 @@ function setupEventListeners() {
     // Admin interface
     document.getElementById('uploadDatabase').addEventListener('click', uploadDatabase);
     document.getElementById('generatePlan').addEventListener('click', generateMealPlan);
+    document.getElementById('resetSystem').addEventListener('click', resetSystem);
 
     // Restaurant interface
     document.getElementById('saveWeeklyOptions').addEventListener('click', saveWeeklyOptions);
@@ -84,6 +85,38 @@ async function uploadDatabase() {
         }
     };
     reader.readAsText(file);
+}
+
+async function resetSystem() {
+    // Confirm with user
+    if (!confirm('Are you sure you want to reset the system? This will delete all weekly options, guest votes, and meal plans. This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/reset', {
+            method: 'POST'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to reset system');
+        }
+
+        // Reset in-memory state
+        weeklyOptions = { meat_options: [], fish_options: [], vegetarian_options: [], last_updated: null };
+        guestVotes = { votes: [], last_updated: null };
+        mealPlan = { monday: null, tuesday: null, wednesday: null, thursday: null, friday: null, generated_at: null };
+
+        // Update UI
+        updateSystemStatus();
+        showStatus('resetStatus', 'System reset successfully! All weekly options, votes, and meal plans have been deleted.', 'success');
+        
+        // Clear meal plan display if visible
+        document.getElementById('mealPlanResult').innerHTML = '';
+    } catch (error) {
+        console.error('Error resetting system:', error);
+        showStatus('resetStatus', 'Error resetting system: ' + error.message, 'error');
+    }
 }
 
 async function generateMealPlan() {
@@ -433,7 +466,7 @@ function displayMealPlan() {
             html += `
                 <div class="meal-plan-day">
                     <span class="day-name">${dayNames[index]}</span>
-                    <span class="meal-name">${meal}</span>
+                    <span class="meal-name">${formatMealNameForDisplay(meal)}</span>
                 </div>
             `;
         } else {
@@ -525,10 +558,9 @@ function createMealCard(meal, isCombo = false) {
 
     card.innerHTML = `
         <div class="checkbox"></div>
-        <h5>${meal.name}</h5>
+        <h5>${formatMealNameForDisplay(meal.name)}</h5>
         ${comboInfo}
         ${dietaryInfo}
-        <p>Vegetarian: ${meal.vegetarian ? 'Yes' : 'No'}</p>
         <p>Vegan: ${meal.vegan ? 'Yes' : 'No'}</p>
     `;
 
@@ -684,7 +716,7 @@ function createVoteOption(option, inputType, category) {
 
     div.appendChild(input);
     const label = document.createElement('label');
-    label.appendChild(document.createTextNode(option.name));
+    label.appendChild(document.createTextNode(formatMealNameForDisplay(option.name)));
     
     // For meat/fish options, they are always combos - show the vegetarian counterpart
     if ((category === 'meat' || category === 'fish') && isPartOfCombo(option.id)) {
@@ -785,6 +817,14 @@ async function submitVote() {
 }
 
 // Utility Functions
+function formatMealNameForDisplay(name) {
+    // Remove " Combo" from the end of meal combination names for display
+    if (name && name.endsWith(' Combo')) {
+        return name.slice(0, -6); // Remove " Combo" (6 characters)
+    }
+    return name;
+}
+
 function showStatus(elementId, message, type) {
     const element = document.getElementById(elementId);
     element.innerHTML = `<div class="${type}">${message}</div>`;

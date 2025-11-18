@@ -320,8 +320,17 @@ button:disabled {
     box-shadow: none;
 }
 
+.danger-button {
+    background: #dc3545;
+}
+
+.danger-button:hover {
+    background: #c82333;
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+}
+
 /* Status messages */
-#uploadStatus, #saveStatus, #voteStatus {
+#uploadStatus, #saveStatus, #voteStatus, #resetStatus {
     margin-top: 15px;
     padding: 10px;
     border-radius: 5px;

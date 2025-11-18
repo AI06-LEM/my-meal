@@ -130,6 +130,33 @@ app.post('/api/meal-plan', async (req, res) => {
   }
 });
 
+// Reset system - delete weekly options, guest votes, and meal plan
+app.post('/api/reset', async (req, res) => {
+  try {
+    const filesToDelete = [
+      FILES.weeklyOptions,
+      FILES.guestVotes,
+      FILES.mealPlan
+    ];
+
+    // Delete each file if it exists
+    for (const filePath of filesToDelete) {
+      try {
+        await fs.unlink(filePath);
+      } catch (error) {
+        // Ignore errors if file doesn't exist
+        if (error.code !== 'ENOENT') {
+          throw error;
+        }
+      }
+    }
+
+    res.json({ success: true, message: 'System reset successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to reset system' });
+  }
+});
+
 // Start server
 const server = app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
