@@ -125,9 +125,9 @@ Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final resul
 
  - [TODO] Update the database: for the fish and vegetarian combinations, don't include only tofu vegetarian options. Remember, however, that the vegetarian option should not simply be a completely different dish, but should instead mainly replace the fish. So, first find vegetarian alternatives that could substitute the fish in the dish, then update the database accordingly.
 
- - [DONE] In the user interface for `meal_combinations`, the dietary info is not shown, even though that information is contained in the database. Please show this information also in the UI.
-
  - [DONE] Add a reset button in the system admin tab, which would wipe the internal memory (i.e., delete relevant local files: `weekly_options.json`, `guest_votes.json` and `meal_plan.json`).
+ 
+ - [DONE] In the user interface for `meal_combinations`, the dietary info is not shown, even though that information is contained in the database. Please show this information also in the UI.
 
  - [DONE] In the user interface, showing whether a dish is vegetarian or not is redundant, as all dishes are or include a vegetarian option. However, only remove this information from the user interface, please still retain it internally.
 
