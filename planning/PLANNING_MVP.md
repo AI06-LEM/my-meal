@@ -16,9 +16,10 @@ This document outlines a **Minimum Viable Product (MVP)** approach for the my-me
 2. [Simplified Architecture](#simplified-architecture)
 3. [MVP Tech Stack](#mvp-tech-stack)
 4. [Implementation Plan](#implementation-plan)
-5. [Deployment Strategy](#deployment-strategy)
-6. [What We're Deferring](#what-were-deferring)
-7. [Migration Path to Full Version](#migration-path-to-full-version)
+5. [Local Development Setup](#local-development-setup)
+6. [Deployment Strategy](#deployment-strategy)
+7. [What We're Deferring](#what-were-deferring)
+8. [Migration Path to Full Version](#migration-path-to-full-version)
 
 ---
 
@@ -455,6 +456,271 @@ function getTopChoice(counts) {
 
 ---
 
+## Local Development Setup
+
+### Why Develop Locally First?
+
+**Good news**: You can (and should!) start building immediately without waiting for server access. The MVP architecture is **perfectly suited** for local development:
+
+✅ **SQLite is portable** - Single database file, no server needed, works on Mac/Windows/Linux  
+✅ **Node.js is cross-platform** - Express runs identically everywhere  
+✅ **No deployment dependencies** - Everything runs locally, no cloud services needed  
+✅ **Easy testing** - Full access to logs, debugger, and rapid iteration  
+
+### Local Development Architecture
+
+```
+Local Development Setup:
+┌─────────────────────────────────────────────────┐
+│       Your MacBook Pro / Windows Machine        │
+│                                                  │
+│  ┌────────────────┐      ┌────────────────┐   │
+│  │  Admin/Rest    │      │   Guest App    │   │
+│  │  App Server    │      │   Server       │   │
+│  │  Port 3000     │      │   Port 3001    │   │
+│  └────────┬───────┘      └────────┬───────┘   │
+│           │                       │             │
+│           └───────────┬───────────┘             │
+│                       │                          │
+│           ┌───────────▼──────────┐              │
+│           │  Shared SQLite DB    │              │
+│           │  database.sqlite     │              │
+│           └──────────────────────┘              │
+│                                                  │
+│  Access from browser: localhost:3000, :3001    │
+│  Access from phone: 192.168.x.x:3000, :3001   │
+└─────────────────────────────────────────────────┘
+```
+
+### Project Structure Options
+
+**Option 1: Single App with Different Routes (Recommended for MVP)**
+
+```
+my-meal-mvp/
+├── server.js                   # Single server, all routes
+├── package.json
+├── database.js
+├── schema.sql
+├── .env
+├── .gitignore
+│
+├── routes/                     # Separate route files
+│   ├── admin.js               # /admin/* routes
+│   ├── restaurant.js          # /restaurant/* routes
+│   └── guest.js               # /guest/* routes
+│
+├── views/
+│   ├── layout.ejs
+│   ├── admin/
+│   ├── restaurant/
+│   └── guest/
+│
+├── public/
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+└── data/
+    └── database.sqlite
+```
+
+**Option 2: Separate Apps (If you want true separation)**
+
+```
+my-meal-mvp/
+├── admin-app/                  # Admin/Restaurant app
+│   ├── server.js              # Port 3000
+│   ├── package.json
+│   ├── views/
+│   └── public/
+│
+├── guest-app/                  # Guest voting app
+│   ├── server.js              # Port 3001
+│   ├── package.json
+│   ├── views/
+│   └── public/
+│
+├── shared/                     # Shared code
+│   ├── database.js
+│   └── schema.sql
+│
+└── data/
+    └── database.sqlite        # Shared database
+```
+
+### Running Locally
+
+**Single App (Recommended):**
+
+```bash
+# Install dependencies
+npm install
+
+# Create .env file
+cat > .env << EOF
+PORT=3000
+ADMIN_PASSWORD=test123
+SESSION_SECRET=local-dev-secret-key
+NODE_ENV=development
+EOF
+
+# Initialize database
+node scripts/init-db.js
+
+# Start server
+npm start
+
+# Access at:
+# Admin: http://localhost:3000/admin
+# Restaurant: http://localhost:3000/restaurant
+# Guest: http://localhost:3000/guest
+```
+
+**Separate Apps:**
+
+```bash
+# Terminal 1 - Admin/Restaurant app
+cd admin-app
+npm install
+PORT=3000 npm start
+
+# Terminal 2 - Guest app
+cd guest-app
+npm install
+PORT=3001 npm start
+
+# Access at:
+# Admin/Restaurant: http://localhost:3000
+# Guest: http://localhost:3001
+```
+
+### Testing on Mobile Devices Locally
+
+You can test on your phone/tablet on the same WiFi network:
+
+```bash
+# 1. Find your Mac's local IP address
+ifconfig | grep "inet " | grep -v 127.0.0.1
+# Example output: inet 192.168.1.123
+
+# 2. Start your server
+npm start
+
+# 3. Access from phone/tablet browser on same WiFi
+http://192.168.1.123:3000/guest
+```
+
+**Tips:**
+- Make sure your firewall allows incoming connections
+- Keep both devices on same WiFi network
+- Use your computer's actual IP, not `localhost`
+
+### Development Workflow
+
+**Week 1 (Before Server Access):**
+
+```bash
+# Day 1-2: Setup
+git init
+npm init
+npm install express express-session better-sqlite3 ejs multer
+node scripts/init-db.js
+
+# Day 3-4: Build features
+# (Work on admin, restaurant, guest interfaces)
+
+# Day 5-6: Test locally
+# Access from browser, test on phone
+
+# Day 7: Polish
+# Fix bugs, improve UI
+```
+
+**Week 2 (After Getting Server Access):**
+
+```bash
+# Deploy takes ~10 minutes
+scp -r ./my-meal-mvp user@hetzner:/var/www/
+ssh user@hetzner
+cd /var/www/my-meal-mvp
+npm install --production
+node server.js
+```
+
+### Local Development vs Production
+
+**What's the Same:**
+- ✅ Same code
+- ✅ Same database structure (SQLite file)
+- ✅ Same dependencies
+- ✅ Same functionality
+
+**What Changes:**
+- 🔄 Environment variables (.env file)
+- 🔄 Port (3000 locally, 3000 behind nginx on server)
+- 🔄 File paths (relative paths work on both)
+- 🔄 NODE_ENV (development vs production)
+
+**No code changes needed for deployment!**
+
+### Database Management During Local Development
+
+```javascript
+// database.js - works locally and on server
+const Database = require('better-sqlite3');
+const path = require('path');
+
+// Works on both Mac and Linux
+const dbPath = path.join(__dirname, 'data', 'database.sqlite');
+const db = new Database(dbPath);
+
+module.exports = db;
+```
+
+### Git Workflow for Local Development
+
+```bash
+# Initialize git
+git init
+
+# Create .gitignore
+cat > .gitignore << EOF
+node_modules/
+.env
+data/*.sqlite
+data/*.sqlite-*
+uploads/*
+!uploads/.gitkeep
+logs/
+*.log
+.DS_Store
+EOF
+
+# Commit your work
+git add .
+git commit -m "Initial MVP implementation"
+
+# When ready to deploy
+git push origin main
+# Then pull on server, or just scp the files
+```
+
+### Benefits of Starting Locally
+
+| Benefit | Description |
+|---------|-------------|
+| **Start Immediately** | No need to wait for server access |
+| **Fast Iteration** | No deployment delays, instant feedback |
+| **Easy Debugging** | Full access to console, debugger, logs |
+| **Safe Experimentation** | Can't break production (there is none yet!) |
+| **Offline Work** | No internet connection required |
+| **Multi-Device Testing** | Test on phone/tablet via local WiFi |
+| **Version Control** | Git history from day one |
+| **Seamless Transition** | Same code deploys to production |
+
+---
+
 ## Deployment Strategy
 
 ### Manual Deployment to Hetzner
@@ -750,25 +1016,33 @@ Migrate to the full version (original PLANNING.md) when:
 
 ### Conservative Estimate (Single Developer)
 
-**Week 1:**
+**Week 1 (Local Development - Before Server Access):**
 - Days 1-3: Setup, database, basic server
 - Days 4-5: Admin interface (upload, view)
 
-**Week 2:**
+**Week 2 (Local Development):**
 - Days 1-2: Restaurant interface
 - Days 3-4: Guest interface
 - Day 5: Meal plan generation
 
-**Week 3:**
-- Days 1-2: Polish and testing
-- Days 3-4: Deployment and bug fixes
+**Week 3 (Testing Locally, Then Deployment):**
+- Days 1-2: Polish and testing locally
+- Days 3-4: Deploy to Hetzner (when access available) and bug fixes
 - Day 5: Documentation and handoff
 
-**Total**: 3 weeks for working MVP
+**Total**: 3 weeks for working MVP (can start immediately, deploy when server ready)
+
+### Key Insight: Start Before Server Access
+
+**You don't need to wait for the Hetzner server!** 
+
+- ✅ **Weeks 1-2**: Develop and test everything locally on your MacBook/Windows machine
+- ✅ **Week 3**: When server access arrives, deploy in ~10 minutes
+- ✅ **Benefit**: By the time you get server access, the app is already working and tested
 
 ### Aggressive Timeline (If Needed)
 
-With focused work, MVP could be completed in **1-2 weeks**.
+With focused work, MVP could be completed in **1-2 weeks** of local development, then deployed instantly when server becomes available.
 
 ---
 
@@ -930,12 +1204,14 @@ This MVP approach prioritizes **speed and simplicity** while maintaining core fu
 
 ### Next Steps:
 
-1. **Review and approve this simplified approach**
-2. **Start with Phase 1** (Core setup)
-3. **Build iteratively** (one phase at a time)
-4. **Deploy early** (even if incomplete)
-5. **Get user feedback**
-6. **Iterate based on real needs**
+1. **Start Local Development Immediately** (don't wait for server access!)
+2. **Set up project structure** on your MacBook/Windows machine
+3. **Build iteratively** (one phase at a time, test locally)
+4. **Test on multiple devices** via local WiFi
+5. **Deploy to Hetzner** (when access arrives, takes ~10 minutes)
+6. **Get user feedback** and iterate
 
-Remember: **A working simple solution beats a perfect complex solution that never ships.** Let's get the MVP in users' hands, then improve based on their actual needs rather than assumptions.
+**Key Point**: You can build the entire MVP locally this week, then deploy instantly when you get server access next week.
+
+Remember: **A working simple solution beats a perfect complex solution that never ships.** Start building locally today, deploy next week, then improve based on actual user needs rather than assumptions.
 
