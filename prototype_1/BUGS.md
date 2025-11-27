@@ -1,6 +1,8 @@
 
 # [TODO] Bugs
 
+ - [TODO] Remove the `dietary_info` from the `meals_database.json`, from the `script.json` as well as from the user interface.
+
  - [TODO] Check `meals_database.json` for vegetarian meal duplicates, for example one vegetarian meal in a meal combo and another as an independent meal that are effectively the same meal. These should not coexist, so remove the independent vegetarian meal in that case. Then change the independent vegetarian meals into meal combos with other vegetarian dishes, but ensure compatibility (i.e. mushroom risotto with vegetable risotto). 
 
  - [TODO] Update the database: for the fish and vegetarian combinations, don't include only tofu vegetarian options. Remember, however, that the vegetarian option should not simply be a completely different dish, but should instead mainly replace the fish. So, first find vegetarian alternatives that could substitute the fish in the dish (think vegetarian paella), then update the database accordingly.
