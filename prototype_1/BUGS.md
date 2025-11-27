@@ -1,6 +1,8 @@
 
 # [TODO] Bugs
 
+ - [TODO] Remove the `dietary_info` from the `meals_database.json`, from the `script.json` as well as from the user interface.
+
  - [TODO] In the guest interface, vegetarian options that are part of a meal combo are already implicitly selected when a combo is selected. So, these should *not* be listed explicitly in the interface as an extra vegetarian choice. 
   TODO: Check also the internal representation and the database, whether there also exists such redundancy (e.g., in weekly options `weekly_options.json`, we better store combinations and not individual vegetarian meals).
 
