@@ -59,8 +59,6 @@ The rest of this section sketches possible internal data structures. Again, thes
  - Name - string
  - Later: a unique ID - string
  - Image (path to a file) - string
- - Information on dietary ingredients (gluten, milk, nuts...) - JSON array of strings
-   - Prototype: This information is not further used for now
  - Vegetarian? - boolean 
  - Vegan? - boolean
 
