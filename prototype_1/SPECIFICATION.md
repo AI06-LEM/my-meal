@@ -8,11 +8,10 @@ Terminology: The restaurant is part of a school enterprise called Seefood.
 
 ## Features
 
- - The result of this software will be a meal plan for the week (one meal per day, 4 weekdays)
- - Four meals per week are chosen in the end: one meat meal per week, one fish meal per week, and two vegetarian meals (the fifth day uses leftovers)
- - Voting mechanics translate the student preferences into a proposed meal plan for the week
-   - The system counts votes for each meal option and selects the most popular choices
-   - The final plan must include exactly 1 meat meal, 1 fish meal, and 2 vegetarian meals
+ - The result of this software will be a chart of the voted meals that includes the number of votes
+ - Four meals per week are then manually chosen to make a final menu: one meat meal per week, one fish meal per week, and two vegetarian meals (the fifth day uses leftovers)
+ - Voting mechanics translate the student preferences into charts per category that show the votes 
+   - The system counts votes for each meal option and shows it on its respective chart
    - Later: The restaurant can further edit the resulting plan
 
 
