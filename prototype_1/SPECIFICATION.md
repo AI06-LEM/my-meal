@@ -41,17 +41,34 @@ The application follows this step-by-step process:
 
 ## Data structure
 
-Prototype: all persistent data is stored locally as text files. Additionally, there will be a folder with graphic files (with the corresponding ID and meal name as file name). Later, for the actual implementation, the data is stored in a database on a remote server.
+Prototype: all persistent data is stored in a local SQLite database (`data/my-meal.db`) using Node.js's native `node:sqlite` module (available in Node.js v22.5.0+). Additionally, there is a folder with graphic files (with the corresponding ID and meal name as file name). Later, for the actual implementation, the data is stored in a database on a remote server.
 
-These text files use some format that is easily readable by both machines and humans, e.g., YAML or JSON format. For example, the top-level hierarchic layer might use YAML (that way, comments are allowed), but the main internal nested data could be stored in JSON format within a YAML file. However, this is only a suggestion, you can make a sensible design decision yourself.
+The system admin can upload meal data via a JSON file (`meals_database.json` format), which will be imported into the database. When new meal data is uploaded, the system automatically resets by clearing weekly options, guest votes, and the meal plan.
 
-### File Structure
-The application should organize data files as follows:
-- `meals_database.json` - Contains all available meals
-- `weekly_options.json` - Restaurant's selected options for the current week
-- `guest_votes.json` - All guest voting data
-- `meal_plan.json` - Final weekly meal plan result
+### Database Structure
+The application organizes data in the following SQLite tables:
+- `meals` - Individual meals from the meals database
+- `meal_combinations` - Meal combinations (e.g., meat and vegetarian versions of same dish)
+- `combination_meals` - Links meals to their combinations
+- `weekly_options` - Restaurant's selected options for the current week
+- `guest_votes` - All guest voting data
+- `meal_plan` - Final weekly meal plan result
+- `metadata` - System metadata (timestamps, etc.)
+
+Additionally:
 - `images/` - Folder containing meal images (named with meal ID and name)
+- `data/` - Folder containing the SQLite database file
+
+### JSON Upload Format
+The system admin uploads meal data as JSON with this structure:
+```json
+{
+  "meals": [...],
+  "meal_combinations": [...]
+}
+```
+
+This data is then imported into the database, preserving the same logical structure.
 
 The rest of this section sketches possible internal data structures. Again, these data structures are only a suggestion to help you understand our intentions for this application, but you can make a sensible design decision yourself.
 
@@ -92,9 +109,10 @@ Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final resul
  - Ensure that the final result includes 1 meat (or a meal combination with a meat option), 1 fish (or a meal combination), and 2 vegetarian options
  - Handle cases where insufficient votes are cast for any category
  - Validate that selected meals exist in the restaurant's weekly options
- - Prevent duplicate guest names from voting multiple times
- - Handle invalid or corrupted data files gracefully
+ - Prevent duplicate guest names from voting multiple times (enforced by database UNIQUE constraint)
+ - Handle invalid or corrupted data gracefully
  - Ensure meal combinations are properly categorized (meat/fish/vegetarian)
+ - When uploading a new meals database, automatically reset the system (clear weekly options, votes, and meal plan)
 
 
 # Tech stack

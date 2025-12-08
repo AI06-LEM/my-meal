@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs').promises;
 const path = require('path');
+const db = require('./database');
 
 const app = express();
 const PORT = 3000;
@@ -11,58 +11,26 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('.'));
 
-// Data file paths
-const DATA_DIR = __dirname;
-const FILES = {
-  mealsDatabase: path.join(DATA_DIR, 'meals_database.json'),
-  weeklyOptions: path.join(DATA_DIR, 'weekly_options.json'),
-  guestVotes: path.join(DATA_DIR, 'guest_votes.json'),
-  mealPlan: path.join(DATA_DIR, 'meal_plan.json')
-};
-
-// Helper function to read JSON file
-async function readJsonFile(filePath) {
-  try {
-    const data = await fs.readFile(filePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      // File doesn't exist, return default structure
-      if (filePath === FILES.weeklyOptions) {
-        return { meat_options: [], fish_options: [], vegetarian_options: [], last_updated: null };
-      } else if (filePath === FILES.guestVotes) {
-        return { votes: [], last_updated: null };
-      } else if (filePath === FILES.mealPlan) {
-        return { monday: null, tuesday: null, wednesday: null, thursday: null, friday: null, generated_at: null };
-      }
-    }
-    throw error;
-  }
-}
-
-// Helper function to write JSON file
-async function writeJsonFile(filePath, data) {
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8');
-}
-
 // API Routes
 
 // Get meals database
 app.get('/api/meals-database', async (req, res) => {
   try {
-    const data = await readJsonFile(FILES.mealsDatabase);
+    const data = db.getMealsDatabase();
     res.json(data);
   } catch (error) {
+    console.error('Error reading meals database:', error);
     res.status(500).json({ error: 'Failed to read meals database' });
   }
 });
 
-// Save meals database
+// Save meals database (also resets weekly options, guest votes, and meal plan)
 app.post('/api/meals-database', async (req, res) => {
   try {
-    await writeJsonFile(FILES.mealsDatabase, req.body);
-    res.json({ success: true, message: 'Meals database saved successfully' });
+    db.saveMealsDatabase(req.body);
+    res.json({ success: true, message: 'Meals database saved successfully (system reset)' });
   } catch (error) {
+    console.error('Error saving meals database:', error);
     res.status(500).json({ error: 'Failed to save meals database' });
   }
 });
@@ -70,9 +38,10 @@ app.post('/api/meals-database', async (req, res) => {
 // Get weekly options
 app.get('/api/weekly-options', async (req, res) => {
   try {
-    const data = await readJsonFile(FILES.weeklyOptions);
+    const data = db.getWeeklyOptions();
     res.json(data);
   } catch (error) {
+    console.error('Error reading weekly options:', error);
     res.status(500).json({ error: 'Failed to read weekly options' });
   }
 });
@@ -80,10 +49,10 @@ app.get('/api/weekly-options', async (req, res) => {
 // Save weekly options
 app.post('/api/weekly-options', async (req, res) => {
   try {
-    const data = { ...req.body, last_updated: new Date().toISOString() };
-    await writeJsonFile(FILES.weeklyOptions, data);
+    db.saveWeeklyOptions(req.body);
     res.json({ success: true, message: 'Weekly options saved successfully' });
   } catch (error) {
+    console.error('Error saving weekly options:', error);
     res.status(500).json({ error: 'Failed to save weekly options' });
   }
 });
@@ -91,9 +60,10 @@ app.post('/api/weekly-options', async (req, res) => {
 // Get guest votes
 app.get('/api/guest-votes', async (req, res) => {
   try {
-    const data = await readJsonFile(FILES.guestVotes);
+    const data = db.getGuestVotes();
     res.json(data);
   } catch (error) {
+    console.error('Error reading guest votes:', error);
     res.status(500).json({ error: 'Failed to read guest votes' });
   }
 });
@@ -101,10 +71,10 @@ app.get('/api/guest-votes', async (req, res) => {
 // Save guest votes
 app.post('/api/guest-votes', async (req, res) => {
   try {
-    const data = { ...req.body, last_updated: new Date().toISOString() };
-    await writeJsonFile(FILES.guestVotes, data);
+    db.saveGuestVotes(req.body);
     res.json({ success: true, message: 'Guest votes saved successfully' });
   } catch (error) {
+    console.error('Error saving guest votes:', error);
     res.status(500).json({ error: 'Failed to save guest votes' });
   }
 });
@@ -112,9 +82,10 @@ app.post('/api/guest-votes', async (req, res) => {
 // Get meal plan
 app.get('/api/meal-plan', async (req, res) => {
   try {
-    const data = await readJsonFile(FILES.mealPlan);
+    const data = db.getMealPlan();
     res.json(data);
   } catch (error) {
+    console.error('Error reading meal plan:', error);
     res.status(500).json({ error: 'Failed to read meal plan' });
   }
 });
@@ -122,10 +93,10 @@ app.get('/api/meal-plan', async (req, res) => {
 // Save meal plan
 app.post('/api/meal-plan', async (req, res) => {
   try {
-    const data = { ...req.body, generated_at: new Date().toISOString() };
-    await writeJsonFile(FILES.mealPlan, data);
+    db.saveMealPlan(req.body);
     res.json({ success: true, message: 'Meal plan saved successfully' });
   } catch (error) {
+    console.error('Error saving meal plan:', error);
     res.status(500).json({ error: 'Failed to save meal plan' });
   }
 });
@@ -133,26 +104,10 @@ app.post('/api/meal-plan', async (req, res) => {
 // Reset system - delete weekly options, guest votes, and meal plan
 app.post('/api/reset', async (req, res) => {
   try {
-    const filesToDelete = [
-      FILES.weeklyOptions,
-      FILES.guestVotes,
-      FILES.mealPlan
-    ];
-
-    // Delete each file if it exists
-    for (const filePath of filesToDelete) {
-      try {
-        await fs.unlink(filePath);
-      } catch (error) {
-        // Ignore errors if file doesn't exist
-        if (error.code !== 'ENOENT') {
-          throw error;
-        }
-      }
-    }
-
+    db.resetSystem();
     res.json({ success: true, message: 'System reset successfully' });
   } catch (error) {
+    console.error('Error resetting system:', error);
     res.status(500).json({ error: 'Failed to reset system' });
   }
 });
