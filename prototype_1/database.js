@@ -340,22 +340,23 @@ function getWeeklyOptions() {
 // ==================== GUEST VOTES OPERATIONS ====================
 
 /**
- * Save guest votes (replaces all existing votes)
+ * Save guest votes (appends/updates individual votes, does not delete existing votes)
+ * Uses INSERT OR REPLACE to handle duplicate guest names via UNIQUE constraint
  */
 function saveGuestVotes(data) {
   runTransaction(() => {
-    // Clear existing votes
-    db.exec('DELETE FROM guest_votes');
-
-    // Prepare insert statement
+    // Prepare insert/replace statement
+    // INSERT OR REPLACE will update existing votes for the same guest_name (UNIQUE constraint)
+    // and insert new votes for new guest names
     const insert = db.prepare(`
-      INSERT INTO guest_votes (
+      INSERT OR REPLACE INTO guest_votes (
         guest_name, meat_option_id, meat_option_name,
         fish_option_id, fish_option_name,
         veg_option_1_id, veg_option_1_name,
-        veg_option_2_id, veg_option_2_name
+        veg_option_2_id, veg_option_2_name,
+        voted_at
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     `);
 
     if (data.votes && Array.isArray(data.votes)) {
