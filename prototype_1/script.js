@@ -522,8 +522,10 @@ function loadMealOptions() {
                 meatDiv.appendChild(comboCard);
             } else if (hasFish) {
                 fishDiv.appendChild(comboCard);
+            } else {
+                // Vegetarian-only combinations: all meals are vegetarian
+                vegetarianDiv.appendChild(comboCard);
             }
-            // Note: vegetarian-only combinations are not shown here as they're individual meals
         });
     }
 }
