@@ -46,10 +46,39 @@ MacOS/Linux:
 npm start
 ```
 
+The server will display connection information including:
+- Local access URL (localhost)
+- Network access URLs (for mobile/other devices on the same network)
+- Instructions for changing the port
+
 4. Open your browser and navigate to:
 ```
 http://localhost:3000
 ```
+
+### Configuring the Port
+
+If port 3000 is blocked or you need to use a different port, you can configure it in several ways:
+
+**Windows PowerShell:**
+```powershell
+$env:PORT=8080; npm.cmd start
+```
+
+**UNIX: Using environment variable:**
+```bash
+PORT=8080 npm start
+```
+
+**UNIX: Using command line argument:**
+```bash
+npm start 8080
+```
+
+**Common alternative ports to try:**
+- 8080, 8081, 8082 (commonly used for web development)
+- 5000, 5001 (often allowed in institutional networks)
+- 3001, 3002 (if 3000 is blocked)
 
 ### Development Mode
 
@@ -113,12 +142,136 @@ The server provides REST API endpoints for data persistence:
 - `GET/POST /api/guest-votes` - Manage guest votes
 - `GET/POST /api/meal-plan` - Manage meal plan
 
+## Accessing from Mobile Devices
+
+The server is configured to accept connections from other devices on the same network. When you start the server, it will display network access URLs like:
+
+```
+Network access (for mobile/other devices on same network):
+  http://192.168.1.100:3000  (en0)
+```
+
+**To access from your mobile device:**
+1. Make sure your laptop and mobile device are on the same WiFi network
+2. Note the IP address shown when starting the server (e.g., `192.168.1.100`)
+3. On your mobile device, open a browser and navigate to: `http://[IP_ADDRESS]:[PORT]`
+   - Example: `http://192.168.1.100:3000`
+
+**Important:** The IP address may change if you disconnect/reconnect to WiFi or move between networks. Check the server output for the current IP address.
+
+## Testing and Network Troubleshooting
+
+### Common Issues in Institutional Networks
+
+If the app works at home but not in an institution, the following issues are common:
+
+1. **Port Blocking**: The institution's firewall may block certain ports
+2. **Client Isolation**: WiFi networks may prevent devices from communicating with each other
+3. **Network Segmentation**: Devices may be on different network segments
+4. **Firewall Rules**: The laptop's firewall may block incoming connections
+
+### Diagnostic Steps
+
+**1. Verify Server is Accessible Locally**
+```bash
+# On your laptop, test if the server responds
+curl http://localhost:3000
+```
+If this fails, the server isn't running properly.
+
+**2. Check if Port is Accessible from Network**
+```bash
+# On your laptop, find your IP address
+# MacOS/Linux:
+ifconfig | grep "inet "
+
+# Windows:
+ipconfig
+```
+
+Then from your mobile device (on the same WiFi), try accessing the IP shown in the server startup message.
+
+**3. Test Port Connectivity**
+```bash
+# On your laptop, check if the port is listening on all interfaces
+# MacOS/Linux:
+lsof -i :3000
+
+# Windows:
+netstat -ano | findstr :3000
+```
+
+**4. Test with Different Ports**
+Try common ports that are often allowed:
+```bash
+PORT=8080 npm start
+PORT=5000 npm start
+PORT=8081 npm start
+```
+
+**5. Check Firewall Settings**
+
+**MacOS:**
+- System Settings → Network → Firewall
+- Ensure Node.js is allowed to accept incoming connections
+- You may need to temporarily disable the firewall for testing
+
+**Windows:**
+- Windows Security → Firewall & network protection
+- Allow an app through firewall → Node.js
+- Or temporarily disable firewall for testing
+
+**6. Verify Same Network**
+- Ensure both devices show the same WiFi network name (SSID)
+- Some networks have "Guest" networks that are isolated from the main network
+- Try connecting both devices to the same network type (e.g., both to "Main" or both to "Guest")
+
+**7. Test Client Isolation**
+If devices can't communicate even on the same network, the WiFi may have "Client Isolation" or "AP Isolation" enabled. This is common in:
+- Public WiFi networks
+- Hotel networks
+- Some institutional networks
+
+**Workaround for Client Isolation:**
+- Use a mobile hotspot from your phone instead of institutional WiFi
+- Connect both devices to the same mobile hotspot
+- Use a portable WiFi router/hotspot device
+
+**8. Network Diagnostic Commands**
+
+**Ping test from mobile:**
+- Use a network utility app on your mobile to ping your laptop's IP
+- If ping fails, devices can't communicate (likely client isolation)
+
+**Check network interface:**
+```bash
+# MacOS/Linux - see all network interfaces
+ifconfig -a
+
+# The server will show which interface it's using
+```
+
+### Quick Test Checklist
+
+- [ ] Server starts without errors
+- [ ] Can access `http://localhost:PORT` on laptop
+- [ ] Server shows network IP addresses on startup
+- [ ] Mobile device is on same WiFi network
+- [ ] Can ping laptop IP from mobile (if ping is allowed)
+- [ ] Tried different ports (8080, 5000, etc.)
+- [ ] Checked firewall settings
+- [ ] Tried mobile hotspot as alternative
+
 ## Troubleshooting
 
+- **Server won't start**: Check if port is already in use, try a different port
+- **Can't access from mobile**: Verify both devices on same network, check firewall, try different port
+- **Connection timeout**: Likely firewall or client isolation issue
+- **"Connection refused"**: Server may not be running or binding to wrong interface
+- **IP address changes**: Normal when switching networks; check server output for current IP
 - Make sure Node.js is installed and the server is running
 - Check the browser console for any error messages
 - Ensure all JSON files are properly formatted
-- The server runs on port 3000 by default
 
 ## File Structure
 
