@@ -1,3 +1,7 @@
+# SQLite database
+prototype_1/data/my-meal.db
+
+# TODO: Outdated, remove these files
 # Persistent storage data
 prototype_1/guest_votes.json
 prototype_1/weekly_options.json
