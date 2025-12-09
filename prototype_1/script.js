@@ -607,6 +607,39 @@ function loadMealOptions() {
             }
         });
     }
+
+    // Restore selected state from saved weeklyOptions
+    if (weeklyOptions) {
+        // Mark meat options as selected
+        if (weeklyOptions.meat_options) {
+            weeklyOptions.meat_options.forEach(option => {
+                const card = document.querySelector(`[data-meal-id="${option.id}"]`);
+                if (card && card.parentElement.id === 'meatOptions') {
+                    card.classList.add('selected');
+                }
+            });
+        }
+
+        // Mark fish options as selected
+        if (weeklyOptions.fish_options) {
+            weeklyOptions.fish_options.forEach(option => {
+                const card = document.querySelector(`[data-meal-id="${option.id}"]`);
+                if (card && card.parentElement.id === 'fishOptions') {
+                    card.classList.add('selected');
+                }
+            });
+        }
+
+        // Mark vegetarian options as selected
+        if (weeklyOptions.vegetarian_options) {
+            weeklyOptions.vegetarian_options.forEach(option => {
+                const card = document.querySelector(`[data-meal-id="${option.id}"]`);
+                if (card && card.parentElement.id === 'vegetarianOptions') {
+                    card.classList.add('selected');
+                }
+            });
+        }
+    }
 }
 
 function createMealCard(meal, isCombo = false) {
@@ -714,6 +747,24 @@ function removeFromWeeklyOptions(mealId, category) {
 }
 
 async function saveWeeklyOptions() {
+    // Rebuild weeklyOptions from currently selected UI elements
+    // This ensures previously saved options are removed when changed
+    weeklyOptions = { meat_options: [], fish_options: [], vegetarian_options: [], last_updated: null };
+    
+    // Get all selected cards
+    const selectedCards = document.querySelectorAll('.meal-card.selected');
+    
+    selectedCards.forEach(card => {
+        const mealId = card.dataset.mealId;
+        const mealName = card.dataset.mealName;
+        const category = getCategoryFromCard(card);
+        
+        if (category && mealId && mealName) {
+            const option = { id: mealId, name: mealName };
+            weeklyOptions[`${category}_options`].push(option);
+        }
+    });
+    
     weeklyOptions.last_updated = new Date().toISOString();
     await saveDataToStorage();
     showStatus('saveStatus', 'Weekly options saved successfully!', 'success');
