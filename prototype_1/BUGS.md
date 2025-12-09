@@ -3,7 +3,13 @@
 
  - [TODO] Remove the `dietary_info` from the `meals_database.json`, from the `script.json` as well as from the user interface.
 
- - [TODO] Check `meals_database.json` for vegetarian meal duplicates, for example one vegetarian meal in a meal combo and another as an independent meal that are effectively the same meal. These should not coexist, so remove the independent vegetarian meal in that case. Then change the independent vegetarian meals into meal combos with other vegetarian dishes, but ensure compatibility (i.e. mushroom risotto with vegetable risotto). 
+ - [TODO] When resetting system, in system admin UI under current status, 1 vote always remains shown, meal plan shows as generated, database as loaded and weekly options as set. This is not possible.
+
+ - [TODO] Weekly options saved by restaurant are saved and then not removed when changed. Remove previously saved weekly options when saving.
+
+ - [TODO] Vegetarian Combos are formated differently in the guest UI. Ensure same formatting as meat and fish combos (what it includes).
+
+ - [DONE] Check `meals_database.json` for vegetarian meal duplicates, for example one vegetarian meal in a meal combo and another as an independent meal that are effectively the same meal. These should not coexist, so remove the independent vegetarian meal in that case. Then change the independent vegetarian meals into meal combos with other vegetarian dishes, but ensure compatibility (i.e. mushroom risotto with vegetable risotto). 
 
  - [TODO] Update the database: for the fish and vegetarian combinations, don't include only tofu vegetarian options. Remember, however, that the vegetarian option should not simply be a completely different dish, but should instead mainly replace the fish. So, first find vegetarian alternatives that could substitute the fish in the dish (think vegetarian paella), then update the database accordingly.
 
