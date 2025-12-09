@@ -540,22 +540,6 @@ function createMealCard(meal, isCombo = false) {
         card.dataset.comboData = JSON.stringify(meal.meals);
     }
     
-    let dietaryInfo = '';
-    if (isCombo && meal.meals) {
-        // Aggregate dietary info from all meals in the combo
-        const allDietaryInfo = new Set();
-        meal.meals.forEach(m => {
-            if (m.dietary_info && Array.isArray(m.dietary_info)) {
-                m.dietary_info.forEach(info => allDietaryInfo.add(info));
-            }
-        });
-        if (allDietaryInfo.size > 0) {
-            dietaryInfo = `<p class="dietary-info">Contains: ${Array.from(allDietaryInfo).join(', ')}</p>`;
-        }
-    } else if (meal.dietary_info && meal.dietary_info.length > 0) {
-        dietaryInfo = `<p class="dietary-info">Contains: ${meal.dietary_info.join(', ')}</p>`;
-    }
-    
     let comboInfo = '';
     if (isCombo && meal.meals) {
         const meatFishMeal = meal.meals.find(m => m.category === 'meat' || m.category === 'fish');
@@ -571,7 +555,6 @@ function createMealCard(meal, isCombo = false) {
         <div class="checkbox"></div>
         <h5>${formatMealNameForDisplay(meal.name)}</h5>
         ${comboInfo}
-        ${dietaryInfo}
         <p>Vegan: ${meal.vegan ? 'Yes' : 'No'}</p>
     `;
 
@@ -741,35 +724,6 @@ function createVoteOption(option, inputType, category) {
     }
     
     div.appendChild(label);
-    
-    // Show dietary info for meal combinations
-    if (isPartOfCombo(option.id)) {
-        const combo = mealsDatabase.meal_combinations.find(c => c.id === option.id);
-        if (combo && combo.meals) {
-            // Aggregate dietary info from all meals in the combo
-            const allDietaryInfo = new Set();
-            combo.meals.forEach(m => {
-                if (m.dietary_info && Array.isArray(m.dietary_info)) {
-                    m.dietary_info.forEach(info => allDietaryInfo.add(info));
-                }
-            });
-            if (allDietaryInfo.size > 0) {
-                const dietarySpan = document.createElement('div');
-                dietarySpan.className = 'dietary-info';
-                dietarySpan.textContent = `Contains: ${Array.from(allDietaryInfo).join(', ')}`;
-                div.appendChild(dietarySpan);
-            }
-        }
-    } else {
-        // For individual meals, check if they have dietary info
-        const meal = mealsDatabase.meals.find(m => m.id === option.id);
-        if (meal && meal.dietary_info && meal.dietary_info.length > 0) {
-            const dietarySpan = document.createElement('div');
-            dietarySpan.className = 'dietary-info';
-            dietarySpan.textContent = `Contains: ${meal.dietary_info.join(', ')}`;
-            div.appendChild(dietarySpan);
-        }
-    }
 
     div.addEventListener('click', function() {
         if (inputType === 'radio') {
