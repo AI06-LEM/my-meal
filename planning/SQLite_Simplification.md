@@ -103,7 +103,6 @@ If you have an existing installation:
 
 2. **Clean install:**
    ```bash
-   cd prototype_1
    rm -rf node_modules package-lock.json
    npm install
    ```

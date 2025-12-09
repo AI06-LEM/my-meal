@@ -13,13 +13,13 @@ Here are some recommendations on how to approach regression testing for the curr
 - **Cursor-ready steps**:
   1. From the Cursor terminal run `cd /Users/torsten/texte/Bewerbungen/0_LEM/_LITe/Demos/my-meal && npm install`.
   2. Record or update a flow: `npx playwright codegen http://localhost:3000`.
-  3. Save generated spec under `prototype_1/tests/browser/`.
-  4. Re-run locally with `npx playwright test prototype_1/tests/browser/admin-upload.spec.ts`.
+  3. Save generated spec under `tests/browser/`.
+  4. Re-run locally with `npx playwright test tests/browser/admin-upload.spec.ts`.
 - **Usage example – Weekly flow sanity**:
-  - Scenario: Validate the workflow in `prototype_1/SPECIFICATION.md` (setup → restaurant selection → guest voting).
+  - Scenario: Validate the workflow in `SPECIFICATION.md` (setup → restaurant selection → guest voting).
   - Steps captured by Playwright: upload `meals_database.json`, pick weekly options, submit a guest vote, and assert that the results chart updates.
-  - AI loop: When UI markup changes in `prototype_1/script.js`, re-run `codegen`, paste the snippet in Cursor, and let the model patch selectors/assertions.
-- **Full test example** (`prototype_1/tests/browser/admin-upload.spec.ts`):
+  - AI loop: When UI markup changes in `script.js`, re-run `codegen`, paste the snippet in Cursor, and let the model patch selectors/assertions.
+- **Full test example** (`tests/browser/admin-upload.spec.ts`):
 
 ```ts
 import { test, expect } from '@playwright/test';
@@ -42,7 +42,7 @@ test('system admin uploads database and sees confirmation', async ({ page }) => 
 - **How to execute** (from repo root):
   1. `npm install`
   2. Start the MVP in another terminal: `npm run dev`
-  3. `npx playwright test prototype_1/tests/browser/admin-upload.spec.ts`
+  3. `npx playwright test tests/browser/admin-upload.spec.ts`
 
 ## Strategy 2 – Industry-Standard API + E2E Coverage
 
@@ -55,14 +55,14 @@ test('system admin uploads database and sees confirmation', async ({ page }) => 
 - **Trade-offs**: Requires more plumbing (test DB, fixtures, CI config) but mirrors common Node.js practice and gives fast feedback on API regressions plus confidence in the UI.
 - **Cursor-ready steps**:
   1. `npm install --save-dev jest supertest sqlite3`.
-  2. Create a helper like `prototype_1/tests/api/testServer.js` that imports the Express app from `prototype_1/script.js`.
-  3. Write Jest specs under `prototype_1/tests/api/*.test.js`. Use temporary SQLite files or in-memory JSON fixtures.
-  4. Execute via Cursor terminal: `npx jest prototype_1/tests/api`.
+  2. Create a helper like `tests/api/testServer.js` that imports the Express app from `script.js`.
+  3. Write Jest specs under `tests/api/*.test.js`. Use temporary SQLite files or in-memory JSON fixtures.
+  4. Execute via Cursor terminal: `npx jest tests/api`.
 - **Usage example – Duplicate vote guardrail**:
-  - Bug reference: `prototype_1/BUGS.md` asks to “Prevent duplicate guest names from voting multiple times.”
+  - Bug reference: `BUGS.md` asks to "Prevent duplicate guest names from voting multiple times."
   - Test outline: send two POST requests to `/guest-vote` with the same name and check the second response is `409` with an explanatory message.
-  - Extend suite with an Express route test ensuring `meal_plan.json` is written after `/generate-plan`, verifying the workflow in `prototype_1/SPECIFICATION.md`.
-- **Full test example** (`prototype_1/tests/api/guestVotes.test.js`):
+  - Extend suite with an Express route test ensuring `meal_plan.json` is written after `/generate-plan`, verifying the workflow in `SPECIFICATION.md`.
+- **Full test example** (`tests/api/guestVotes.test.js`):
 
 ```js
 const request = require('supertest');
@@ -74,7 +74,7 @@ describe('POST /guest-vote', () => {
   beforeAll(() => {
     app = buildApp({
       storageDir: '__test_output__',
-      weeklyOptionsPath: 'prototype_1/tests/fixtures/weekly_options.json',
+      weeklyOptionsPath: 'tests/fixtures/weekly_options.json',
     });
   });
 
@@ -96,8 +96,8 @@ describe('POST /guest-vote', () => {
 
 - **How to execute**:
   1. `npm install --save-dev jest supertest sqlite3`
-  2. Ensure `module.exports = { buildApp }` (or similar) is exported from `prototype_1/script.js`.
-  3. `npx jest prototype_1/tests/api/guestVotes.test.js`
+  2. Ensure `module.exports = { buildApp }` (or similar) is exported from `script.js`.
+  3. `npx jest tests/api/guestVotes.test.js`
 
 ## Strategy 3 – Property/Contract Regression Checks
 
@@ -108,14 +108,14 @@ describe('POST /guest-vote', () => {
 - **Trade-offs**: Highest upfront learning curve, but properties/contracts rarely change when code is regenerated, so they provide durable regression protection.
 - **Cursor-ready steps**:
   1. `npm install --save-dev fast-check`.
-  2. Create `prototype_1/tests/properties/mealPlan.property.test.ts`.
-  3. Import the plan generator from `prototype_1/script.js` and wrap it with `fc.assert`.
-  4. Run via `npx jest prototype_1/tests/properties`.
+  2. Create `tests/properties/mealPlan.property.test.ts`.
+  3. Import the plan generator from `script.js` and wrap it with `fc.assert`.
+  4. Run via `npx jest tests/properties`.
 - **Usage example – Meal plan invariants**:
-  - Property derived from `prototype_1/SPECIFICATION.md`: every generated plan must consist of four unique days with 1 meat, 1 fish, 2 vegetarian dishes.
+  - Property derived from `SPECIFICATION.md`: every generated plan must consist of four unique days with 1 meat, 1 fish, 2 vegetarian dishes.
   - Use `fast-check` to randomly generate guest vote arrays and assert the invariants hold. Failures point directly to constraint bugs before they surface in UI.
-  - Additional property from `prototype_1/BUGS.md`: removing `dietary_info` should not break serialization; assert that plan objects remain JSON-serializable after stripping the field.
-- **Full test example** (`prototype_1/tests/properties/mealPlan.property.test.ts`):
+  - Additional property from `BUGS.md`: removing `dietary_info` should not break serialization; assert that plan objects remain JSON-serializable after stripping the field.
+- **Full test example** (`tests/properties/mealPlan.property.test.ts`):
 
 ```ts
 import { test, expect } from '@jest/globals';
@@ -150,8 +150,8 @@ test('plan has 1 meat, 1 fish, 2 vegetarian meals', () => {
 
 - **How to execute**:
   1. `npm install --save-dev jest fast-check`
-  2. Ensure `buildMealPlan` (pure function that returns the weekly plan object) is exported from `prototype_1/script.js`.
-  3. `npx jest prototype_1/tests/properties/mealPlan.property.test.ts`
+  2. Ensure `buildMealPlan` (pure function that returns the weekly plan object) is exported from `script.js`.
+  3. `npx jest tests/properties/mealPlan.property.test.ts`
 
 ## On Integration vs Unit Tests in an AI-Heavy Workflow
 

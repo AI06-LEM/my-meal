@@ -3,7 +3,6 @@
 ## Quick Start
 
 ```bash
-cd prototype_1
 npm install
 npm start
 ```
@@ -121,8 +120,8 @@ node -v
 ### Uploading Your Application
 
 ```bash
-# Upload your files
-scp -r prototype_1/ your-username@your-server.hetzner.com:/var/www/html/my-meal/
+# Upload your files (from the parent directory of my-meal)
+scp -r my-meal/ your-username@your-server.hetzner.com:/var/www/html/
 
 # Or use SFTP/FTP via your preferred client
 ```

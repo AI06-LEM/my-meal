@@ -537,7 +537,7 @@ cd /var/www/meals
 git clone <your-repo-url> .
 
 # Option B: SFTP upload
-# Use FileZilla or similar to upload prototype_1 contents
+# Use FileZilla or similar to upload my-meal contents
 ```
 
 **Afternoon: Configure and Start**
@@ -979,7 +979,7 @@ if ($path === '/api/meals-database' && $method === 'GET') {
 ### Related Planning Documents
 - `PLANNING.md` - Full application architecture
 - `PLANNING_MVP.md` - Simplified MVP approach
-- `prototype_1/README.md` - Current prototype documentation
+- `README.md` - Current application documentation
 
 ### Configuration Examples
 - Apache VirtualHost configurations (Section 8.1)

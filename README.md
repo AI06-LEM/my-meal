@@ -1,4 +1,4 @@
-# My-Meal Prototype
+# My-Meal
 
 A school restaurant meal planning application that allows guests to vote on meal preferences and generates weekly meal plans.
 
@@ -23,16 +23,11 @@ A school restaurant meal planning application that allows guests to vote on meal
 
 **📖 Documentation:**
 - **Installation & Troubleshooting:** [INSTALL.md](INSTALL.md)
-- **Deployment Guide:** [NODE_VERSION_GUIDE.md](NODE_VERSION_GUIDE.md)
+- **Deployment Guide:** [planning/NODE_VERSION_GUIDE.md](planning/NODE_VERSION_GUIDE.md)
 
 ### Installation
 
-1. Navigate to the prototype directory:
-```bash
-cd prototype_1
-```
-
-2. Install dependencies:
+1. Install dependencies:
 
 Windows:
 ```powershell
@@ -386,7 +381,7 @@ cp data/my-meal-backup-YYYYMMDD.db data/my-meal.db
 ## File Structure
 
 ```
-prototype_1/
+my-meal/
 ├── server.js                          # Node.js Express server
 ├── database.js                        # Native SQLite database operations (node:sqlite)
 ├── package.json                       # Dependencies and scripts
@@ -397,15 +392,15 @@ prototype_1/
 ├── scripts/
 │   └── preinstall.js                  # Manual Node.js version check (npm run check:env)
 ├── data/
-│   ├── .gitkeep                       # Keeps data directory in git
 │   └── my-meal.db                     # SQLite database (auto-created, gitignored)
 ├── images/                            # Meal images directory
+├── planning/                          # Planning and migration documentation
+│   ├── NODE_VERSION_GUIDE.md          # Node.js version & deployment guide
+│   └── ...                            # Other planning documents
 └── Documentation:
     ├── README.md                      # This file - Quick start guide
     ├── INSTALL.md                     # Detailed installation instructions
-    ├── NODE_VERSION_GUIDE.md          # Node.js version & deployment guide
-    ├── SPECIFICATION.md               # Application specifications
-    └── MIGRATION_SUMMARY.md           # Migration details
+    └── SPECIFICATION.md               # Application specifications
 ```
 
 ## Technical Details

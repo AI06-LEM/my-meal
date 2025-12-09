@@ -143,7 +143,6 @@ brew install node  # macOS
 nvm install 24     # using nvm
 
 # Install and run
-cd prototype_1
 npm install
 npm start
 ```

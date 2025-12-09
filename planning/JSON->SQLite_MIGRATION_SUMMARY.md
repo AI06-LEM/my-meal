@@ -166,7 +166,7 @@ The `node:sqlite` module is experimental in Node.js v22.5+. This means:
 
 The database is stored at:
 ```
-prototype_1/data/my-meal.db
+data/my-meal.db
 ```
 
 ## Next Steps

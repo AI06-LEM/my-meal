@@ -130,7 +130,7 @@ Installation Requirements Summary
 
 ### Script Location
 ```
-prototype_1/scripts/preinstall.js
+scripts/preinstall.js
 ```
 
 ### When It Runs

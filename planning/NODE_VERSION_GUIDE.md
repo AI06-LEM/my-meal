@@ -99,7 +99,7 @@ node -v
 
 1. **Upload files** via SFTP/SCP:
 ```bash
-scp -r prototype_1/ user@your-server:/var/www/html/my-meal/
+scp -r my-meal/ user@your-server:/var/www/html/
 ```
 
 2. **Install dependencies** on the server:

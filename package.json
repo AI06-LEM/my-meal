@@ -1,7 +1,7 @@
 {
-    "name": "my-meal-prototype",
+    "name": "my-meal",
     "version": "1.0.0",
-    "description": "School restaurant meal planning prototype using native Node.js SQLite",
+    "description": "School restaurant meal planning application using native Node.js SQLite",
     "main": "server.js",
     "scripts": {
         "check:env": "node scripts/preinstall.js",
