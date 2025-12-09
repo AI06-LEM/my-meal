@@ -1,94 +1,5 @@
 {
-  "meals": [
-    {
-      "id": "veg_002",
-      "name": "Quinoa Bowl",
-      "image": "images/quinoa_bowl.jpg",
-      "vegetarian": true,
-      "vegan": true,
-      "category": "vegetarian"
-    },
-    {
-      "id": "veg_003",
-      "name": "Vegetable Stir Fry",
-      "image": "images/veg_stirfry.jpg",
-      "vegetarian": true,
-      "vegan": true,
-      "category": "vegetarian"
-    },
-    {
-      "id": "veg_004",
-      "name": "Caesar Salad",
-      "image": "images/caesar_salad.jpg",
-      "vegetarian": true,
-      "vegan": false,
-      "category": "vegetarian"
-    },
-    {
-      "id": "veg_005",
-      "name": "Pasta Primavera",
-      "image": "images/pasta_primavera.jpg",
-      "vegetarian": true,
-      "vegan": false,
-      "category": "vegetarian"
-    },
-    {
-      "id": "veg_006",
-      "name": "Lentil Curry",
-      "image": "images/lentil_curry.jpg",
-      "vegetarian": true,
-      "vegan": true,
-      "category": "vegetarian"
-    },
-    {
-      "id": "veg_007",
-      "name": "Mushroom Risotto",
-      "image": "images/mushroom_risotto.jpg",
-      "vegetarian": true,
-      "vegan": false,
-      "category": "vegetarian"
-    },
-    {
-      "id": "veg_008",
-      "name": "Tofu Teriyaki Bowl",
-      "image": "images/tofu_teriyaki.jpg",
-      "vegetarian": true,
-      "vegan": true,
-      "category": "vegetarian"
-    },
-    {
-      "id": "veg_009",
-      "name": "Chickpea Salad",
-      "image": "images/chickpea_salad.jpg",
-      "vegetarian": true,
-      "vegan": true,
-      "category": "vegetarian"
-    },
-    {
-      "id": "veg_010",
-      "name": "Spinach Lasagna",
-      "image": "images/spinach_lasagna.jpg",
-      "vegetarian": true,
-      "vegan": false,
-      "category": "vegetarian"
-    },
-    {
-      "id": "veg_011",
-      "name": "Veggie Paella",
-      "image": "images/veggie_paella.jpg",
-      "vegetarian": true,
-      "vegan": true,
-      "category": "vegetarian"
-    },
-    {
-      "id": "veg_012",
-      "name": "Stuffed Peppers",
-      "image": "images/stuffed_peppers.jpg",
-      "vegetarian": true,
-      "vegan": true,
-      "category": "vegetarian"
-    }
-  ],
+  "meals": [],
   "meal_combinations": [
     {
       "id": "combo_001",
@@ -125,9 +36,13 @@
           "category": "fish"
         },
         {
-          "id": "veg_019",
-          "name": "Tofu Pasta",
-          "image": "images/tofu_pasta.jpg",
+          "id": "veg_005",
+          "name": "Pasta Primavera",
+          "image": "images/pasta_primavera.jpg",
+          "dietary_info": [
+            "gluten",
+            "dairy"
+          ],
           "vegetarian": true,
           "vegan": false,
           "category": "vegetarian"
@@ -191,9 +106,10 @@
           "category": "fish"
         },
         {
-          "id": "veg_017",
-          "name": "Grilled Tofu Fillet",
-          "image": "images/grilled_tofu_fillet.jpg",
+          "id": "veg_022",
+          "name": "Grilled Vegetable Fillet",
+          "image": "images/grilled_vegetable_fillet.jpg",
+          "dietary_info": [],
           "vegetarian": true,
           "vegan": true,
           "category": "vegetarian"
@@ -279,9 +195,10 @@
           "category": "fish"
         },
         {
-          "id": "veg_020",
-          "name": "Baked Tofu",
-          "image": "images/baked_tofu.jpg",
+          "id": "veg_023",
+          "name": "Baked Vegetable Medley",
+          "image": "images/baked_vegetable_medley.jpg",
+          "dietary_info": [],
           "vegetarian": true,
           "vegan": true,
           "category": "vegetarian"
@@ -301,11 +218,219 @@
           "category": "fish"
         },
         {
-          "id": "veg_021",
-          "name": "Tofu Fried Rice",
-          "image": "images/tofu_fried_rice.jpg",
+          "id": "veg_024",
+          "name": "Vegetable Fried Rice",
+          "image": "images/vegetable_fried_rice.jpg",
+          "dietary_info": [
+            "eggs"
+          ],
           "vegetarian": true,
           "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "id": "combo_011",
+      "name": "Risotto Combo",
+      "meals": [
+        {
+          "id": "veg_007",
+          "name": "Mushroom Risotto",
+          "image": "images/mushroom_risotto.jpg",
+          "dietary_info": [
+            "dairy"
+          ],
+          "vegetarian": true,
+          "vegan": false,
+          "category": "vegetarian"
+        },
+        {
+          "id": "veg_025",
+          "name": "Vegetable Risotto",
+          "image": "images/vegetable_risotto.jpg",
+          "dietary_info": [
+            "dairy"
+          ],
+          "vegetarian": true,
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "id": "combo_012",
+      "name": "Bowl Combo",
+      "meals": [
+        {
+          "id": "veg_002",
+          "name": "Quinoa Bowl",
+          "image": "images/quinoa_bowl.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
+          "category": "vegetarian"
+        },
+        {
+          "id": "veg_008",
+          "name": "Tofu Teriyaki Bowl",
+          "image": "images/tofu_teriyaki.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "id": "combo_013",
+      "name": "Stir Fry Combo",
+      "meals": [
+        {
+          "id": "veg_003",
+          "name": "Vegetable Stir Fry",
+          "image": "images/veg_stirfry.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
+          "category": "vegetarian"
+        },
+        {
+          "id": "veg_026",
+          "name": "Tofu Stir Fry",
+          "image": "images/tofu_stirfry.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "id": "combo_014",
+      "name": "Salad Combo",
+      "meals": [
+        {
+          "id": "veg_004",
+          "name": "Caesar Salad",
+          "image": "images/caesar_salad.jpg",
+          "dietary_info": [
+            "gluten",
+            "dairy"
+          ],
+          "vegetarian": true,
+          "vegan": false,
+          "category": "vegetarian"
+        },
+        {
+          "id": "veg_009",
+          "name": "Chickpea Salad",
+          "image": "images/chickpea_salad.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "id": "combo_015",
+      "name": "Curry Combo",
+      "meals": [
+        {
+          "id": "veg_006",
+          "name": "Lentil Curry",
+          "image": "images/lentil_curry.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
+          "category": "vegetarian"
+        },
+        {
+          "id": "veg_027",
+          "name": "Vegetable Curry",
+          "image": "images/vegetable_curry.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "id": "combo_016",
+      "name": "Lasagna Combo",
+      "meals": [
+        {
+          "id": "veg_010",
+          "name": "Spinach Lasagna",
+          "image": "images/spinach_lasagna.jpg",
+          "dietary_info": [
+            "gluten",
+            "dairy"
+          ],
+          "vegetarian": true,
+          "vegan": false,
+          "category": "vegetarian"
+        },
+        {
+          "id": "veg_028",
+          "name": "Vegetable Lasagna",
+          "image": "images/vegetable_lasagna.jpg",
+          "dietary_info": [
+            "gluten",
+            "dairy"
+          ],
+          "vegetarian": true,
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "id": "combo_017",
+      "name": "Paella Combo",
+      "meals": [
+        {
+          "id": "veg_011",
+          "name": "Veggie Paella",
+          "image": "images/veggie_paella.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
+          "category": "vegetarian"
+        },
+        {
+          "id": "veg_029",
+          "name": "Mushroom Paella",
+          "image": "images/mushroom_paella.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "id": "combo_018",
+      "name": "Stuffed Vegetables Combo",
+      "meals": [
+        {
+          "id": "veg_012",
+          "name": "Stuffed Peppers",
+          "image": "images/stuffed_peppers.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
+          "category": "vegetarian"
+        },
+        {
+          "id": "veg_030",
+          "name": "Stuffed Zucchini",
+          "image": "images/stuffed_zucchini.jpg",
+          "dietary_info": [],
+          "vegetarian": true,
+          "vegan": true,
           "category": "vegetarian"
         }
       ]

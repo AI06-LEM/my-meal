@@ -1,11 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const os = require('os');
 const db = require('./database');
 
 const app = express();
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-const HOST = process.env.HOST || '127.0.0.1';
+// Allow port to be configured via environment variable or command line argument
+// Default to 3000 if not specified
+const PORT = process.env.PORT || process.argv[2] || 3000;
 
 // Middleware
 app.use(cors());
@@ -113,11 +115,48 @@ app.post('/api/reset', async (req, res) => {
   }
 });
 
-// Start server
-const server = app.listen(PORT, HOST, () => {
-  console.log(`Server running at http://${HOST}:${PORT}`);
-  console.log('Open your browser and navigate to the URL above to use the application');
-  console.log('Press Ctrl+C (or Cmd+C on Mac) to stop the server');
+// Helper function to get network IP addresses
+function getNetworkIPs() {
+  const interfaces = os.networkInterfaces();
+  const addresses = [];
+  
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      // Skip internal (loopback) and non-IPv4 addresses
+      if (iface.family === 'IPv4' && !iface.internal) {
+        addresses.push({
+          interface: name,
+          address: iface.address
+        });
+      }
+    }
+  }
+  
+  return addresses;
+}
+
+// Start server - bind to all network interfaces (0.0.0.0) to allow external access
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log('\n' + '='.repeat(60));
+  console.log(`Server running on port ${PORT}`);
+  console.log('='.repeat(60));
+  console.log(`\nLocal access:`);
+  console.log(`  http://localhost:${PORT}`);
+  
+  const networkIPs = getNetworkIPs();
+  if (networkIPs.length > 0) {
+    console.log(`\nNetwork access (for mobile/other devices on same network):`);
+    networkIPs.forEach(({ interface: name, address }) => {
+      console.log(`  http://${address}:${PORT}  (${name})`);
+    });
+  } else {
+    console.log(`\n⚠️  No network interfaces found. Server may only be accessible via localhost.`);
+  }
+  
+  console.log(`\nTo change the port, use:`);
+  console.log(`  PORT=8080 npm start  (or npm start 8080)`);
+  console.log(`\nPress Ctrl+C (or Cmd+C on Mac) to stop the server`);
+  console.log('='.repeat(60) + '\n');
 });
 
 // Graceful shutdown handling
