@@ -77,7 +77,7 @@ async function uploadDatabase() {
         try {
             const data = JSON.parse(e.target.result);
             mealsDatabase = data;
-            await saveDataToStorage();
+            await saveDataToStorage({ meals: true, weekly: true, votes: true, plan: true });
             showStatus('uploadStatus', 'Database uploaded successfully!', 'success');
             updateSystemStatus();
         } catch (error) {
@@ -145,20 +145,29 @@ async function generateMealPlan() {
     // Count votes for each option
     const voteCounts = {};
     
+    const getOptionId = (option) => {
+        if (!option) return null;
+        if (typeof option === 'object') return option.id;
+        return option;
+    };
+
     guestVotes.votes.forEach(vote => {
         // Count meat votes
-        if (vote.meat_option) {
-            voteCounts[vote.meat_option] = (voteCounts[vote.meat_option] || 0) + 1;
+        const meatId = getOptionId(vote.meat_option);
+        if (meatId) {
+            voteCounts[meatId] = (voteCounts[meatId] || 0) + 1;
         }
         
         // Count fish votes
-        if (vote.fish_option) {
-            voteCounts[vote.fish_option] = (voteCounts[vote.fish_option] || 0) + 1;
+        const fishId = getOptionId(vote.fish_option);
+        if (fishId) {
+            voteCounts[fishId] = (voteCounts[fishId] || 0) + 1;
         }
         
         // Count vegetarian votes (handle duplicates in vote data)
         if (vote.vegetarian_options && Array.isArray(vote.vegetarian_options)) {
-            const uniqueVegOptions = [...new Set(vote.vegetarian_options)];
+            const vegIds = vote.vegetarian_options.map(getOptionId).filter(Boolean);
+            const uniqueVegOptions = [...new Set(vegIds)];
             uniqueVegOptions.forEach(option => {
                 voteCounts[option] = (voteCounts[option] || 0) + 1;
             });
@@ -296,7 +305,7 @@ async function generateMealPlan() {
         };
     }
 
-    await saveDataToStorage();
+    await saveDataToStorage({ meals: false, weekly: false, votes: true, plan: true });
     displayMealPlan();
     updateSystemStatus();
     showStatus('mealPlanResult', 'Meal plan generated successfully!', 'success');
@@ -634,7 +643,7 @@ function removeFromWeeklyOptions(mealId, category) {
 
 async function saveWeeklyOptions() {
     weeklyOptions.last_updated = new Date().toISOString();
-    await saveDataToStorage();
+    await saveDataToStorage({ meals: false, weekly: true, votes: false, plan: false });
     showStatus('saveStatus', 'Weekly options saved successfully!', 'success');
     updateSystemStatus();
 }
@@ -758,39 +767,49 @@ async function submitVote() {
     }
 
     // Collect selected options
-    const meatOption = document.querySelector('input[name="meat"]:checked');
-    const fishOption = document.querySelector('input[name="fish"]:checked');
-    const vegetarianOptions = Array.from(document.querySelectorAll('input[name="vegetarian"]:checked'));
+    const meatOptionInput = document.querySelector('input[name="meat"]:checked');
+    const fishOptionInput = document.querySelector('input[name="fish"]:checked');
+    const vegetarianOptionsInputs = Array.from(document.querySelectorAll('input[name="vegetarian"]:checked'));
 
-    if (!meatOption) {
+    if (!meatOptionInput) {
         showStatus('voteStatus', 'Please select one meat option.', 'error');
         return;
     }
 
-    if (!fishOption) {
+    if (!fishOptionInput) {
         showStatus('voteStatus', 'Please select one fish option.', 'error');
         return;
     }
 
-    if (vegetarianOptions.length !== 2) {
+    if (vegetarianOptionsInputs.length !== 2) {
         showStatus('voteStatus', 'Please select exactly two vegetarian options.', 'error');
         return;
     }
 
     // Check for duplicate vegetarian options
-    const vegetarianValues = vegetarianOptions.map(input => input.value);
+    const vegetarianValues = vegetarianOptionsInputs.map(input => input.value);
     const uniqueVegetarianValues = [...new Set(vegetarianValues)];
     if (uniqueVegetarianValues.length !== 2) {
         showStatus('voteStatus', 'Please select two different vegetarian options. You cannot select the same option twice.', 'error');
         return;
     }
 
+    const optionFromInput = (input) => {
+        if (!input) return null;
+        const optionDiv = input.closest('.vote-option');
+        if (!optionDiv) return null;
+        return {
+            id: optionDiv.dataset.optionId,
+            name: optionDiv.dataset.optionName
+        };
+    };
+
     // Create vote object
     const vote = {
         guest_name: guestName,
-        meat_option: meatOption.value,
-        fish_option: fishOption.value,
-        vegetarian_options: uniqueVegetarianValues,
+        meat_option: optionFromInput(meatOptionInput),
+        fish_option: optionFromInput(fishOptionInput),
+        vegetarian_options: vegetarianOptionsInputs.map(optionFromInput),
         timestamp: new Date().toISOString()
     };
 
@@ -798,7 +817,7 @@ async function submitVote() {
     guestVotes.votes.push(vote);
     guestVotes.last_updated = new Date().toISOString();
     
-    await saveDataToStorage();
+    await saveDataToStorage({ meals: false, weekly: false, votes: true, plan: false });
     showStatus('voteStatus', 'Vote submitted successfully!', 'success');
     updateSystemStatus();
     
@@ -837,15 +856,28 @@ function updateSystemStatus() {
 }
 
 // Data persistence functions
-async function saveDataToStorage() {
+async function saveDataToStorage(options = {}) {
+    const {
+        meals = true,
+        weekly = true,
+        votes = true,
+        plan = true
+    } = options;
+
     try {
-        // Save all data to server
-        await Promise.all([
-            saveMealsDatabase(),
-            saveWeeklyOptions(),
-            saveGuestVotes(),
-            saveMealPlan()
-        ]);
+        // Save data sequentially to avoid SQLite locking when multiple writes happen.
+        if (meals && mealsDatabase) {
+            await saveMealsDatabase();
+        }
+        if (weekly) {
+            await saveWeeklyOptions();
+        }
+        if (votes) {
+            await saveGuestVotes();
+        }
+        if (plan) {
+            await saveMealPlan();
+        }
     } catch (error) {
         console.error('Error saving data:', error);
         showStatus('uploadStatus', 'Error saving data to server', 'error');

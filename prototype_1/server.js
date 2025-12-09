@@ -4,7 +4,8 @@ const path = require('path');
 const db = require('./database');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+const HOST = process.env.HOST || '127.0.0.1';
 
 // Middleware
 app.use(cors());
@@ -113,8 +114,8 @@ app.post('/api/reset', async (req, res) => {
 });
 
 // Start server
-const server = app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+const server = app.listen(PORT, HOST, () => {
+  console.log(`Server running at http://${HOST}:${PORT}`);
   console.log('Open your browser and navigate to the URL above to use the application');
   console.log('Press Ctrl+C (or Cmd+C on Mac) to stop the server');
 });

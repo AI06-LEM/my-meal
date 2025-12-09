@@ -101,6 +101,16 @@ initializeDatabase();
 // ==================== HELPER FUNCTIONS ====================
 
 /**
+ * Reset AUTOINCREMENT sequences for the given tables
+ */
+function resetSequences(tableNames = []) {
+  if (!tableNames.length) return;
+  const placeholders = tableNames.map(() => '?').join(', ');
+  const stmt = db.prepare(`DELETE FROM sqlite_sequence WHERE name IN (${placeholders})`);
+  stmt.run(...tableNames);
+}
+
+/**
  * Run operations in a transaction
  * node:sqlite doesn't have built-in transaction() wrapper, so we implement it manually
  */
@@ -130,6 +140,7 @@ function saveMealsDatabase(data) {
     db.exec('DELETE FROM weekly_options');
     db.exec('DELETE FROM guest_votes');
     db.exec('DELETE FROM meal_plan WHERE id = 1');
+    resetSequences(['weekly_options', 'guest_votes']);
 
     // Prepare insert statements
     const insertMeal = db.prepare(`
@@ -262,6 +273,7 @@ function saveWeeklyOptions(data) {
   runTransaction(() => {
     // Clear existing weekly options
     db.exec('DELETE FROM weekly_options');
+    resetSequences(['weekly_options']);
 
     // Prepare insert statement
     const insert = db.prepare(`
@@ -345,6 +357,29 @@ function getWeeklyOptions() {
  */
 function saveGuestVotes(data) {
   runTransaction(() => {
+    // Build a lookup of weekly options to backfill names when only IDs are provided
+    const weeklyOptionsLookup = {};
+    const optionsRows = db.prepare(`
+      SELECT item_id, item_name FROM weekly_options
+    `).all();
+    for (const row of optionsRows) {
+      weeklyOptionsLookup[row.item_id] = row.item_name;
+    }
+
+    // Normalize option payloads (accepts string IDs or {id,name})
+    const normalizeOption = (option) => {
+      if (!option) return { id: null, name: null };
+      if (typeof option === 'string') {
+        return { id: option, name: weeklyOptionsLookup[option] || null };
+      }
+      if (typeof option === 'object') {
+        const id = option.id || null;
+        const name = option.name || (id ? weeklyOptionsLookup[id] : null) || null;
+        return { id, name };
+      }
+      return { id: null, name: null };
+    };
+
     // Prepare insert/replace statement
     // INSERT OR REPLACE will update existing votes for the same guest_name (UNIQUE constraint)
     // and insert new votes for new guest names
@@ -361,16 +396,21 @@ function saveGuestVotes(data) {
 
     if (data.votes && Array.isArray(data.votes)) {
       for (const vote of data.votes) {
+        const meat = normalizeOption(vote.meat_option);
+        const fish = normalizeOption(vote.fish_option);
+        const veg1 = normalizeOption(vote.vegetarian_options?.[0]);
+        const veg2 = normalizeOption(vote.vegetarian_options?.[1]);
+
         insert.run(
           vote.guest_name,
-          vote.meat_option?.id || null,
-          vote.meat_option?.name || null,
-          vote.fish_option?.id || null,
-          vote.fish_option?.name || null,
-          vote.vegetarian_options?.[0]?.id || null,
-          vote.vegetarian_options?.[0]?.name || null,
-          vote.vegetarian_options?.[1]?.id || null,
-          vote.vegetarian_options?.[1]?.name || null
+          meat.id,
+          meat.name,
+          fish.id,
+          fish.name,
+          veg1.id,
+          veg1.name,
+          veg2.id,
+          veg2.name
         );
       }
     }
@@ -492,6 +532,7 @@ function resetSystem() {
     db.exec('DELETE FROM weekly_options');
     db.exec('DELETE FROM guest_votes');
     db.exec('DELETE FROM meal_plan WHERE id = 1');
+    resetSequences(['weekly_options', 'guest_votes']);
   });
 }
 
