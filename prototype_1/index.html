@@ -42,8 +42,61 @@
             </div>
 
             <div class="admin-section">
-                <h3>Generate Final Meal Plan</h3>
-                <button id="generatePlan">Generate Weekly Meal Plan</button>
+                <h3>Vote Results (Charts)</h3>
+                <p>See how guests voted for each category. These charts are only visible to the restaurant / system admin.</p>
+                <button id="showVoteResults">Show Vote Charts</button>
+                <div id="voteResultsStatus"></div>
+                <div id="voteCharts" class="charts-container">
+                    <div class="chart-category">
+                        <h4>Meat Options</h4>
+                        <div id="meatChart" class="chart"></div>
+                    </div>
+                    <div class="chart-category">
+                        <h4>Fish Options</h4>
+                        <div id="fishChart" class="chart"></div>
+                    </div>
+                    <div class="chart-category">
+                        <h4>Vegetarian Options</h4>
+                        <div id="vegetarianChart" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>Final Weekly Meal Plan (Manual)</h3>
+                <p>Based on the vote charts, choose 4 meals for this week: 1 meat, 1 fish, and 2 vegetarian meals. The fifth day uses leftovers.</p>
+                <div id="finalPlanForm" class="final-plan-form">
+                    <div class="final-plan-row">
+                        <label for="mondaySelect">Monday (Meat):</label>
+                        <select id="mondaySelect">
+                            <option value="">Select a meat option</option>
+                        </select>
+                    </div>
+                    <div class="final-plan-row">
+                        <label for="tuesdaySelect">Tuesday (Fish):</label>
+                        <select id="tuesdaySelect">
+                            <option value="">Select a fish option</option>
+                        </select>
+                    </div>
+                    <div class="final-plan-row">
+                        <label for="wednesdaySelect">Wednesday (Vegetarian):</label>
+                        <select id="wednesdaySelect">
+                            <option value="">Select a vegetarian option</option>
+                        </select>
+                    </div>
+                    <div class="final-plan-row">
+                        <label for="thursdaySelect">Thursday (Vegetarian):</label>
+                        <select id="thursdaySelect">
+                            <option value="">Select a vegetarian option</option>
+                        </select>
+                    </div>
+                    <div class="final-plan-row">
+                        <label>Friday:</label>
+                        <span>Leftovers</span>
+                    </div>
+                </div>
+                <button id="saveFinalPlan">Save Final Meal Plan</button>
+                <div id="finalPlanStatus"></div>
                 <div id="mealPlanResult"></div>
             </div>
 

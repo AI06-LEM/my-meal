@@ -27,7 +27,14 @@ function setupEventListeners() {
 
     // Admin interface
     document.getElementById('uploadDatabase').addEventListener('click', uploadDatabase);
-    document.getElementById('generatePlan').addEventListener('click', generateMealPlan);
+    const showVoteResultsBtn = document.getElementById('showVoteResults');
+    if (showVoteResultsBtn) {
+        showVoteResultsBtn.addEventListener('click', showVoteResults);
+    }
+    const saveFinalPlanBtn = document.getElementById('saveFinalPlan');
+    if (saveFinalPlanBtn) {
+        saveFinalPlanBtn.addEventListener('click', saveFinalMealPlan);
+    }
     document.getElementById('resetSystem').addEventListener('click', resetSystem);
 
     // Restaurant interface
@@ -119,187 +126,258 @@ async function resetSystem() {
     }
 }
 
-async function generateMealPlan() {
-    if (!mealsDatabase) {
-        showStatus('mealPlanResult', 'Please upload a meal database first.', 'error');
-        return;
+// Admin: compute vote counts and display charts instead of auto-generating a plan
+function calculateVoteCounts() {
+    const meatCounts = {};
+    const fishCounts = {};
+    const vegetarianCounts = {};
+
+    if (!guestVotes || !Array.isArray(guestVotes.votes)) {
+        return { meatCounts, fishCounts, vegetarianCounts };
     }
 
-    if (weeklyOptions.meat_options.length === 0 || 
-        weeklyOptions.fish_options.length === 0 || 
-        weeklyOptions.vegetarian_options.length === 0) {
-        showStatus('mealPlanResult', 'Please set weekly options first.', 'error');
-        return;
-    }
-
-    if (guestVotes.votes.length === 0) {
-        showStatus('mealPlanResult', 'No votes have been cast yet.', 'error');
-        return;
-    }
-
-    // Remove duplicates from weeklyOptions to ensure accurate vote counting
-    const uniqueMeatOptions = removeDuplicatesById(weeklyOptions.meat_options);
-    const uniqueFishOptions = removeDuplicatesById(weeklyOptions.fish_options);
-    const uniqueVegetarianOptions = removeDuplicatesById(weeklyOptions.vegetarian_options);
-
-    // Count votes for each option
-    const voteCounts = {};
-    
     guestVotes.votes.forEach(vote => {
-        // Count meat votes
         if (vote.meat_option) {
-            voteCounts[vote.meat_option] = (voteCounts[vote.meat_option] || 0) + 1;
+            meatCounts[vote.meat_option] = (meatCounts[vote.meat_option] || 0) + 1;
         }
-        
-        // Count fish votes
         if (vote.fish_option) {
-            voteCounts[vote.fish_option] = (voteCounts[vote.fish_option] || 0) + 1;
+            fishCounts[vote.fish_option] = (fishCounts[vote.fish_option] || 0) + 1;
         }
-        
-        // Count vegetarian votes (handle duplicates in vote data)
-        if (vote.vegetarian_options && Array.isArray(vote.vegetarian_options)) {
-            const uniqueVegOptions = [...new Set(vote.vegetarian_options)];
-            uniqueVegOptions.forEach(option => {
-                voteCounts[option] = (voteCounts[option] || 0) + 1;
+        if (Array.isArray(vote.vegetarian_options)) {
+            const uniqueVeg = [...new Set(vote.vegetarian_options)];
+            uniqueVeg.forEach(id => {
+                vegetarianCounts[id] = (vegetarianCounts[id] || 0) + 1;
             });
         }
     });
 
-    // Find most popular options for each category (by option.id)
-    const selectedMeat = findMostPopular(uniqueMeatOptions, voteCounts);
-    const selectedFish = findMostPopular(uniqueFishOptions, voteCounts);
-    const selectedVegetarian = findMostPopular(uniqueVegetarianOptions, voteCounts, 2);
+    return { meatCounts, fishCounts, vegetarianCounts };
+}
 
-    // Validate selections
-    if (!selectedMeat) {
-        showStatus('mealPlanResult', 'Error: No meat option received votes. Please ensure guests vote for available options.', 'error');
+function getOptionNameById(id, category) {
+    const list = weeklyOptions && weeklyOptions[`${category}_options`];
+    if (Array.isArray(list)) {
+        const found = list.find(opt => opt.id === id);
+        if (found) {
+            return formatMealNameForDisplay(found.name);
+        }
+    }
+
+    // Fallback to meals database
+    if (mealsDatabase) {
+        if (category === 'vegetarian' && Array.isArray(mealsDatabase.meals)) {
+            const meal = mealsDatabase.meals.find(m => m.id === id);
+            if (meal) return formatMealNameForDisplay(meal.name);
+        }
+        if (Array.isArray(mealsDatabase.meal_combinations)) {
+            const combo = mealsDatabase.meal_combinations.find(c => c.id === id);
+            if (combo) return formatMealNameForDisplay(combo.name);
+        }
+    }
+
+    return id;
+}
+
+function renderChart(chartElementId, counts, category) {
+    const container = document.getElementById(chartElementId);
+    if (!container) return;
+
+    container.innerHTML = '';
+    const entries = Object.entries(counts);
+
+    if (entries.length === 0) {
+        container.innerHTML = '<p class="info">No votes yet for this category.</p>';
         return;
     }
 
-    if (!selectedFish) {
-        showStatus('mealPlanResult', 'Error: No fish option received votes. Please ensure guests vote for available options.', 'error');
+    const maxValue = Math.max(...entries.map(([_, value]) => value));
+
+    entries
+        .sort((a, b) => b[1] - a[1])
+        .forEach(([id, value]) => {
+            const bar = document.createElement('div');
+            bar.className = 'chart-bar';
+
+            const label = document.createElement('div');
+            label.className = 'chart-bar-label';
+            label.textContent = getOptionNameById(id, category);
+
+            const barFill = document.createElement('div');
+            barFill.className = 'chart-bar-fill';
+
+            const inner = document.createElement('div');
+            inner.className = 'chart-bar-fill-inner';
+            const widthPercent = maxValue > 0 ? (value / maxValue) * 100 : 0;
+            inner.style.width = `${widthPercent}%`;
+            barFill.appendChild(inner);
+
+            const valueSpan = document.createElement('div');
+            valueSpan.className = 'chart-bar-value';
+            valueSpan.textContent = value;
+
+            bar.appendChild(label);
+            bar.appendChild(barFill);
+            bar.appendChild(valueSpan);
+
+            container.appendChild(bar);
+        });
+}
+
+function showVoteResults() {
+    if (!mealsDatabase) {
+        showStatus('voteResultsStatus', 'Please upload a meal database first.', 'error');
         return;
     }
 
-    if (!selectedVegetarian || selectedVegetarian.length < 2) {
-        showStatus('mealPlanResult', 'Error: Not enough vegetarian options received votes. Please ensure guests vote for at least 2 different vegetarian options.', 'error');
+    if (!weeklyOptions || weeklyOptions.meat_options.length === 0 ||
+        weeklyOptions.fish_options.length === 0 ||
+        weeklyOptions.vegetarian_options.length === 0) {
+        showStatus('voteResultsStatus', 'Please set weekly options first.', 'error');
         return;
     }
 
-    // Ensure vegetarian options are unique (handle edge case where same option appears twice)
-    const uniqueVegetarianIds = [...new Set(selectedVegetarian.map(v => v.id))];
-    if (uniqueVegetarianIds.length < 2) {
-        // If we have duplicate vegetarian options, try to get alternatives
-        const allVegOptions = uniqueVegetarianOptions
-            .map(option => ({ option, votes: voteCounts[option.id] || 0 }))
-            .sort((a, b) => b.votes - a.votes);
-        
-        const uniqueVegOptions = [];
-        const seenVegIds = new Set();
-        for (const item of allVegOptions) {
-            if (!seenVegIds.has(item.option.id)) {
-                uniqueVegOptions.push(item.option);
-                seenVegIds.add(item.option.id);
-                if (uniqueVegOptions.length >= 2) break;
-            }
-        }
-        
-        if (uniqueVegOptions.length < 2) {
-            showStatus('mealPlanResult', 'Error: Not enough unique vegetarian options available. Please ensure the restaurant provides at least 2 different vegetarian options.', 'error');
-            return;
-        }
-        
-        selectedVegetarian.length = 0;
-        selectedVegetarian.push(...uniqueVegOptions);
+    if (!guestVotes || guestVotes.votes.length === 0) {
+        showStatus('voteResultsStatus', 'No votes have been cast yet.', 'info');
+        // Clear charts
+        renderChart('meatChart', {}, 'meat');
+        renderChart('fishChart', {}, 'fish');
+        renderChart('vegetarianChart', {}, 'vegetarian');
+        return;
     }
 
-    // Check for conflicts: meat/fish options are always combos, so check if their vegetarian counterparts conflict with selected vegetarian options
-    const conflictInfo = checkForConflicts(selectedMeat, selectedFish, selectedVegetarian);
-    
-    if (conflictInfo.hasConflict) {
-        // Try to resolve conflicts by selecting alternative vegetarian options
-        const resolvedVegetarian = resolveConflicts(uniqueVegetarianOptions, voteCounts, selectedMeat, selectedFish, selectedVegetarian);
-        
-        if (resolvedVegetarian && resolvedVegetarian.length === 2) {
-            // Use resolved options
-            const allSelected = [selectedMeat.id, selectedFish.id, ...resolvedVegetarian.map(o => o.id)];
-            const uniqueSelected = [...new Set(allSelected)];
-            
-            if (uniqueSelected.length === 4) {
-                mealPlan = {
-                    monday: selectedMeat.name,
-                    tuesday: selectedFish.name,
-                    wednesday: resolvedVegetarian[0].name,
-                    thursday: resolvedVegetarian[1].name,
-                    friday: null, // Leftovers day
-                    generated_at: new Date().toISOString()
-                };
-            } else {
-                // This should not happen, but if it does, try to use the original vegetarian options
-                // and accept that there might be a conflict (better than failing completely)
-                const allSelectedOriginal = [selectedMeat.id, selectedFish.id, ...selectedVegetarian.map(o => o.id)];
-                const uniqueSelectedOriginal = [...new Set(allSelectedOriginal)];
-                
-                if (uniqueSelectedOriginal.length >= 3) {
-                    // At least we have 3 unique options, use them
-                    mealPlan = {
-                        monday: selectedMeat.name,
-                        tuesday: selectedFish.name,
-                        wednesday: selectedVegetarian[0].name,
-                        thursday: selectedVegetarian[1].name,
-                        friday: null,
-                        generated_at: new Date().toISOString()
-                    };
-                } else {
-                    showStatus('mealPlanResult', `Error: Could not generate a unique meal plan. ${conflictInfo.message} Please ensure the restaurant provides sufficient variety in weekly options.`, 'error');
-                    return;
-                }
-            }
-        } else {
-            // If resolution failed, try to use original options anyway (better than failing)
-            const allSelected = [selectedMeat.id, selectedFish.id, ...selectedVegetarian.map(o => o.id)];
-            const uniqueSelected = [...new Set(allSelected)];
-            
-            if (uniqueSelected.length >= 3) {
-                mealPlan = {
-                    monday: selectedMeat.name,
-                    tuesday: selectedFish.name,
-                    wednesday: selectedVegetarian[0].name,
-                    thursday: selectedVegetarian[1].name,
-                    friday: null,
-                    generated_at: new Date().toISOString()
-                };
-            } else {
-                showStatus('mealPlanResult', `Error: ${conflictInfo.message} Please ensure the restaurant provides at least 2 different vegetarian options that are not part of the selected meat/fish combos.`, 'error');
-                return;
-            }
-        }
-    } else {
-        // No conflicts, proceed normally
-        const allSelected = [selectedMeat.id, selectedFish.id, ...selectedVegetarian.map(o => o.id)];
-        const uniqueSelected = [...new Set(allSelected)];
-        
-        if (uniqueSelected.length < 4) {
-            // This should not happen if there are no conflicts, but handle it anyway
-            showStatus('mealPlanResult', 'Error: Selected options are not unique. This may indicate duplicate options in weekly selections.', 'error');
-            return;
-        }
+    const { meatCounts, fishCounts, vegetarianCounts } = calculateVoteCounts();
+    renderChart('meatChart', meatCounts, 'meat');
+    renderChart('fishChart', fishCounts, 'fish');
+    renderChart('vegetarianChart', vegetarianCounts, 'vegetarian');
 
-        // Generate meal plan
-        mealPlan = {
-            monday: selectedMeat.name,
-            tuesday: selectedFish.name,
-            wednesday: selectedVegetarian[0].name,
-            thursday: selectedVegetarian[1].name,
-            friday: null, // Leftovers day
-            generated_at: new Date().toISOString()
-        };
+    showStatus('voteResultsStatus', 'Vote charts updated based on current votes.', 'success');
+}
+
+function populateFinalPlanForm() {
+    const mondaySelect = document.getElementById('mondaySelect');
+    const tuesdaySelect = document.getElementById('tuesdaySelect');
+    const wednesdaySelect = document.getElementById('wednesdaySelect');
+    const thursdaySelect = document.getElementById('thursdaySelect');
+
+    if (!mondaySelect || !tuesdaySelect || !wednesdaySelect || !thursdaySelect) {
+        return;
     }
 
-    await saveDataToStorage();
-    displayMealPlan();
-    updateSystemStatus();
-    showStatus('mealPlanResult', 'Meal plan generated successfully!', 'success');
+    // Helper to reset and populate a select
+    const populate = (select, options, placeholder) => {
+        const currentValue = select.value;
+        select.innerHTML = '';
+        const placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.textContent = placeholder;
+        select.appendChild(placeholderOption);
+
+        if (Array.isArray(options)) {
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.id;
+                option.textContent = formatMealNameForDisplay(opt.name);
+                select.appendChild(option);
+            });
+        }
+
+        // Try to preserve current selection if still valid
+        if (currentValue) {
+            const match = Array.from(select.options).find(o => o.value === currentValue);
+            if (match) {
+                select.value = currentValue;
+            }
+        }
+    };
+
+    populate(mondaySelect, weeklyOptions.meat_options, 'Select a meat option');
+    populate(tuesdaySelect, weeklyOptions.fish_options, 'Select a fish option');
+    populate(wednesdaySelect, weeklyOptions.vegetarian_options, 'Select a vegetarian option');
+    populate(thursdaySelect, weeklyOptions.vegetarian_options, 'Select a vegetarian option');
+
+    // If a meal plan already exists, pre-fill selections from it using option names
+    if (mealPlan && mealPlan.monday) {
+        setSelectValueByMealName(mondaySelect, mealPlan.monday);
+    }
+    if (mealPlan && mealPlan.tuesday) {
+        setSelectValueByMealName(tuesdaySelect, mealPlan.tuesday);
+    }
+    if (mealPlan && mealPlan.wednesday) {
+        setSelectValueByMealName(wednesdaySelect, mealPlan.wednesday);
+    }
+    if (mealPlan && mealPlan.thursday) {
+        setSelectValueByMealName(thursdaySelect, mealPlan.thursday);
+    }
+}
+
+function setSelectValueByMealName(selectElement, mealName) {
+    if (!selectElement || !mealName) return;
+    const formattedName = formatMealNameForDisplay(mealName);
+    const option = Array.from(selectElement.options).find(
+        o => formatMealNameForDisplay(o.textContent) === formattedName
+    );
+    if (option) {
+        selectElement.value = option.value;
+    }
+}
+
+async function saveFinalMealPlan() {
+    const mondaySelect = document.getElementById('mondaySelect');
+    const tuesdaySelect = document.getElementById('tuesdaySelect');
+    const wednesdaySelect = document.getElementById('wednesdaySelect');
+    const thursdaySelect = document.getElementById('thursdaySelect');
+
+    if (!mondaySelect || !tuesdaySelect || !wednesdaySelect || !thursdaySelect) {
+        showStatus('finalPlanStatus', 'Final plan form is not available.', 'error');
+        return;
+    }
+
+    const mondayId = mondaySelect.value;
+    const tuesdayId = tuesdaySelect.value;
+    const wednesdayId = wednesdaySelect.value;
+    const thursdayId = thursdaySelect.value;
+
+    if (!mondayId || !tuesdayId || !wednesdayId || !thursdayId) {
+        showStatus('finalPlanStatus', 'Please select 1 meat, 1 fish, and 2 vegetarian options.', 'error');
+        return;
+    }
+
+    const mondayOption = weeklyOptions.meat_options.find(o => o.id === mondayId);
+    const tuesdayOption = weeklyOptions.fish_options.find(o => o.id === tuesdayId);
+    const wedOption = weeklyOptions.vegetarian_options.find(o => o.id === wednesdayId);
+    const thuOption = weeklyOptions.vegetarian_options.find(o => o.id === thursdayId);
+
+    if (!mondayOption || !tuesdayOption || !wedOption || !thuOption) {
+        showStatus('finalPlanStatus', 'Selected meals must be part of this week\'s options.', 'error');
+        return;
+    }
+
+    // Ensure all four selected meals are different
+    const selectedIds = [mondayId, tuesdayId, wednesdayId, thursdayId];
+    const uniqueIds = new Set(selectedIds);
+    if (uniqueIds.size !== 4) {
+        showStatus('finalPlanStatus', 'Each selected meal must be different. Please choose 4 distinct meals.', 'error');
+        return;
+    }
+
+    mealPlan = {
+        monday: mondayOption.name,
+        tuesday: tuesdayOption.name,
+        wednesday: wedOption.name,
+        thursday: thuOption.name,
+        friday: null,
+        generated_at: new Date().toISOString()
+    };
+
+    try {
+        await saveMealPlan();
+        displayMealPlan();
+        updateSystemStatus();
+        showStatus('finalPlanStatus', 'Final meal plan saved successfully.', 'success');
+    } catch (error) {
+        console.error('Error saving final meal plan:', error);
+        showStatus('finalPlanStatus', 'Failed to save final meal plan.', 'error');
+    }
 }
 
 function removeDuplicatesById(options) {
@@ -490,6 +568,7 @@ function loadRestaurantInterface() {
     }
 
     loadMealOptions();
+    populateFinalPlanForm();
 }
 
 function loadMealOptions() {
@@ -527,6 +606,39 @@ function loadMealOptions() {
                 vegetarianDiv.appendChild(comboCard);
             }
         });
+    }
+
+    // Restore selected state from saved weeklyOptions
+    if (weeklyOptions) {
+        // Mark meat options as selected
+        if (weeklyOptions.meat_options) {
+            weeklyOptions.meat_options.forEach(option => {
+                const card = document.querySelector(`[data-meal-id="${option.id}"]`);
+                if (card && card.parentElement.id === 'meatOptions') {
+                    card.classList.add('selected');
+                }
+            });
+        }
+
+        // Mark fish options as selected
+        if (weeklyOptions.fish_options) {
+            weeklyOptions.fish_options.forEach(option => {
+                const card = document.querySelector(`[data-meal-id="${option.id}"]`);
+                if (card && card.parentElement.id === 'fishOptions') {
+                    card.classList.add('selected');
+                }
+            });
+        }
+
+        // Mark vegetarian options as selected
+        if (weeklyOptions.vegetarian_options) {
+            weeklyOptions.vegetarian_options.forEach(option => {
+                const card = document.querySelector(`[data-meal-id="${option.id}"]`);
+                if (card && card.parentElement.id === 'vegetarianOptions') {
+                    card.classList.add('selected');
+                }
+            });
+        }
     }
 }
 
@@ -635,6 +747,24 @@ function removeFromWeeklyOptions(mealId, category) {
 }
 
 async function saveWeeklyOptions() {
+    // Rebuild weeklyOptions from currently selected UI elements
+    // This ensures previously saved options are removed when changed
+    weeklyOptions = { meat_options: [], fish_options: [], vegetarian_options: [], last_updated: null };
+    
+    // Get all selected cards
+    const selectedCards = document.querySelectorAll('.meal-card.selected');
+    
+    selectedCards.forEach(card => {
+        const mealId = card.dataset.mealId;
+        const mealName = card.dataset.mealName;
+        const category = getCategoryFromCard(card);
+        
+        if (category && mealId && mealName) {
+            const option = { id: mealId, name: mealName };
+            weeklyOptions[`${category}_options`].push(option);
+        }
+    });
+    
     weeklyOptions.last_updated = new Date().toISOString();
     await saveDataToStorage();
     showStatus('saveStatus', 'Weekly options saved successfully!', 'success');
@@ -835,7 +965,7 @@ function updateSystemStatus() {
     document.getElementById('votesStatus').textContent = 
         guestVotes.votes.length > 0 ? `${guestVotes.votes.length} votes` : 'No votes';
     document.getElementById('planStatus').textContent = 
-        mealPlan.generated_at ? 'Generated' : 'Not generated';
+        mealPlan.generated_at ? 'Set (manual)' : 'Not set';
 }
 
 // Data persistence functions
@@ -844,7 +974,7 @@ async function saveDataToStorage() {
         // Save all data to server
         await Promise.all([
             saveMealsDatabase(),
-            saveWeeklyOptions(),
+            saveWeeklyOptions(), // weekly options
             saveGuestVotes(),
             saveMealPlan()
         ]);
