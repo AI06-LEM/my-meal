@@ -833,6 +833,17 @@ function isPartOfCombo(optionId) {
     return mealsDatabase.meal_combinations.some(c => c.id === optionId);
 }
 
+// Helper function to get all meals in a combo
+function getComboMeals(optionId) {
+    if (!mealsDatabase || !mealsDatabase.meal_combinations) return null;
+    
+    const combo = mealsDatabase.meal_combinations.find(c => c.id === optionId);
+    if (combo && combo.meals) {
+        return combo.meals;
+    }
+    return null;
+}
+
 function createVoteOption(option, inputType, category) {
     const div = document.createElement('div');
     div.className = 'vote-option';
@@ -857,6 +868,18 @@ function createVoteOption(option, inputType, category) {
             counterpartSpan.className = 'counterpart-info';
             counterpartSpan.innerHTML = ` (includes vegetarian option: <strong>${vegCounterpart.name}</strong>)`;
             label.appendChild(counterpartSpan);
+        }
+    }
+    
+    // For vegetarian options that are combos, show what they include (same format as meat/fish combos)
+    if (category === 'vegetarian' && isPartOfCombo(option.id)) {
+        const comboMeals = getComboMeals(option.id);
+        if (comboMeals && comboMeals.length > 0) {
+            const includesSpan = document.createElement('span');
+            includesSpan.className = 'counterpart-info';
+            const mealNames = comboMeals.map(m => formatMealNameForDisplay(m.name)).join(' + ');
+            includesSpan.innerHTML = ` (includes: <strong>${mealNames}</strong>)`;
+            label.appendChild(includesSpan);
         }
     }
     
