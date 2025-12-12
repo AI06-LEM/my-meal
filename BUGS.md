@@ -2,12 +2,16 @@
 # [TODO] Bugs
 
  - [TODO] Remove the `dietary_info` from the `meals_database.json`, from the `script.json` as well as from the user interface.
+   Question for us: Is this still unfinished?
 
- - [TODO] When resetting system, in system admin UI under current status, 1 vote always remains shown, meal plan shows as generated, database as loaded and weekly options as set. This is not possible.
+ - [TODO] When resetting system, in system admin UI under current status, 1 vote always remains shown, meal plan shows as generated, database as loaded and weekly options as set. Instead, the whole database should be wiped by resetting the system, and this should be reflected also by what is shown under such status information at the system admin UI.
 
  - [TODO] Weekly options saved by restaurant are saved and then not removed when changed. Remove previously saved weekly options when saving.
+   Question for us: How about if the restaurant tab is visited again, after weekly options have been selected already, then these selected options are shown as selected, and then the current selection can be transparently changed (selections added or removed).
+   Question for us: Whenever the weekly options are changed, then the previous guest votes might become inconsistent with that selection. So, should we perhaps wipe all guest votes when the selection changed?
 
- - [TODO] Vegetarian Combos are formated differently in the guest UI. Ensure same formatting as meat and fish combos (what it includes).
+ - [TODO] Vegetarian Combos are formatted differently in the guest UI. Ensure same formatting as meat and fish combos (what it includes).
+   Question for us: Does this mean that a combo of two vegetarian meals is shown as two separate meals instead of as a single choice (that includes two meal options)?
 
  - [DONE] Check `meals_database.json` for vegetarian meal duplicates, for example one vegetarian meal in a meal combo and another as an independent meal that are effectively the same meal. These should not coexist, so remove the independent vegetarian meal in that case. Then change the independent vegetarian meals into meal combos with other vegetarian dishes, but ensure compatibility (i.e. mushroom risotto with vegetable risotto). 
 
