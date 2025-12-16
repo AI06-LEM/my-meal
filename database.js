@@ -128,6 +128,20 @@ function runTransaction(fn) {
 // ==================== MEALS DATABASE OPERATIONS ====================
 
 /**
+ * Generate a unique ID from a name if ID is missing
+ * Converts name to lowercase, replaces spaces/special chars with underscores
+ */
+function generateIdFromName(name) {
+  if (!name) return 'unknown';
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '_')  // Replace non-alphanumeric with underscore
+    .replace(/^_+|_+$/g, '')       // Remove leading/trailing underscores
+    .replace(/_+/g, '_');          // Replace multiple underscores with single
+}
+
+/**
  * Save meals database (replaces all existing meals and combinations)
  * Also resets weekly options, guest votes, and meal plan
  */
@@ -158,9 +172,18 @@ function saveMealsDatabase(data) {
       VALUES (?, ?)
     `);
 
+    // Track meal IDs by name to ensure consistency across combinations
+    const mealIdMap = new Map();
+
     // Insert individual meals
     if (data.meals && Array.isArray(data.meals)) {
       for (const meal of data.meals) {
+        // Generate ID if missing
+        if (!meal.id) {
+          meal.id = generateIdFromName(meal.name);
+        }
+        mealIdMap.set(meal.name, meal.id);
+
         insertMeal.run(
           meal.id,
           meal.name,
@@ -175,11 +198,28 @@ function saveMealsDatabase(data) {
     // Insert meal combinations and their constituent meals
     if (data.meal_combinations && Array.isArray(data.meal_combinations)) {
       for (const combo of data.meal_combinations) {
+        // Generate ID for combination if missing
+        if (!combo.id) {
+          combo.id = generateIdFromName(combo.name);
+        }
+
         insertCombination.run(combo.id, combo.name);
 
         // Insert the constituent meals if they don't exist, then link them
         if (combo.meals && Array.isArray(combo.meals)) {
           for (const meal of combo.meals) {
+            // Generate ID for meal if missing, or reuse existing ID for same meal name
+            if (!meal.id) {
+              if (mealIdMap.has(meal.name)) {
+                meal.id = mealIdMap.get(meal.name);
+              } else {
+                meal.id = generateIdFromName(meal.name);
+                mealIdMap.set(meal.name, meal.id);
+              }
+            } else {
+              mealIdMap.set(meal.name, meal.id);
+            }
+
             // Insert the meal (OR IGNORE handles duplicates)
             insertMeal.run(
               meal.id,
