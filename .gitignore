@@ -7,10 +7,10 @@ data/*.db-shm
 data/*.db-wal
 
 # Old JSON data files (now using database)
-meals_database.json
-weekly_options.json
-guest_votes.json
-meal_plan.json
+# meals_database.json
+# weekly_options.json
+# guest_votes.json
+# meal_plan.json
 
 # Mac system files
 .DS_Store
