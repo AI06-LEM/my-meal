@@ -1,6 +1,6 @@
 # Archive des menus 
-## Lasagne 
 
+## Lasagne
 ### Lasagne
 Bio-Pasta von Byodo, Rindfleisch von Gallolux
 Käse vom Schank-Haff
@@ -9,7 +9,8 @@ Käse vom Schank-Haff
 Bio-Pasta von Byodo, Champignons vom Knapphaff
 Käse vom Schank-Haf
 
-## Reis 
+
+## Curry oder Linsenfrikadelle
 ### Curry mit Kürbis und Reis
 Bio-Vollkornreis aus der Camargue,
 Bio-Gemüse von Geméiswierk
@@ -17,6 +18,7 @@ Bio-Gemüse von Geméiswierk
 ### Linsenfrikadelle mit Reis
 Bio-Linsen vom Haff Miller,
 Bio-Vollkornreis aus der Camargue
+
 
 ## Pizza
 ### Pizza Baguette mit Salami
@@ -31,6 +33,7 @@ Brot von Pain et Tradition, Gemüse von Geméisw
 ### Vegetarische Poke Bowl
 Reis aus der Camargue, Gemüse von Geméiswierk
 
+
 ## Pasta
 ### Pasta Carbonara
 Bio-Pasta von Byodo, Sahne von Luxlait,
@@ -39,14 +42,15 @@ Speck vom Hof Miller
 ### Pasta mit Pesto
 Bio-Pasta von Byodo, Basilikum vom LTA
 
-##
+
+## Käsespätzle
 ### Käsespätzle
 Bio-Spätzle von BIOG,
 Bio-Sahne aus Luxemburg
 Bio-Käse vom Schank-Haf
 
 
-##
+## Grillhähnchen oder Kohlroularden
 ### Grillhähnchen mit Süßkartoffeln und Gemüse
 Bio-Hähnchen vom Karelshaff,
 Süsskartoffeln und Gemüse von Geméiswierk
@@ -54,7 +58,7 @@ Süsskartoffeln und Gemüse von Geméiswierk
 ### Kohlroularden mit Süßkartoffeln
 Bio-Gemüse von Geméiswierk, Linsen vom Hof Miller
 
-## Fisch 
+## Fisch oder Spinat mit Ei
 ### Fisch der Saison paniert mit Reis und Gemüse
 Fisch der Saison aus dem Atlantik, Bio-Vollkornreis aus der Camargue,
 Gemüse von Geméiswierk
@@ -85,10 +89,10 @@ Bio-Carnerolireis aus Italien, Bio-Gemüse von Geméiswierk
 Bio-Kartoffeln von Eschette Nico, Eier vom Hof Miller,
 Äpfel vom Pretemer Haf
 
-## Kartofeln
+## Rinderbraten oder Spiegelei
 ### Rinderbraten, Kartoffeln und Sauerkraut
 Bio-Rindfleisch von Gallolux, Bio-Kartoffeln von Geméiswierk, Sauerkraut vom LTA
-MENU 2
+
 ### Salzkartoffeln, Spiegelei und Gemüse
 Bio-Kartoffeln von Geméiswierk, Bio-Gemüse von Geméiswierk
 Bio-Eier vom Hof Miller
