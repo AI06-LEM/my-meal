@@ -1,6 +1,8 @@
 
 # [TODO] Bugs
 
+ - [TODO] In the guest UI, an error appears even when selecting everything correctly: "Please select two different vegetarian options. You cannot select the same option twice."
+
  - [TODO] Remove the `dietary_info` from the `meals_database.json`, from the `script.json` as well as from the user interface.
    Question for us: Is this still unfinished?
 
