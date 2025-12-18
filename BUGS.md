@@ -1,6 +1,8 @@
 
 # [TODO] Bugs
 
+- [TODO] If you upload the database, then select a meat option at the restaurant interface, the first meat option is automatically selected.
+
  - [TODO] Remove the `dietary_info` from the `meals_database.json`, from the `script.json` as well as from the user interface.
    Question for us: Is this still unfinished?
 
