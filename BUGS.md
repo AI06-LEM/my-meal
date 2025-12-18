@@ -1,7 +1,9 @@
 
 # [TODO] Bugs
 
-- [TODO] If you upload the database, then select a meat option at the restaurant interface, the first meat option is automatically selected.
+- [DONE] If you upload the database, then select a meat option at the restaurant interface, the first meat option is automatically selected.
+  **Root cause:** After uploading the JSON database, the frontend's `mealsDatabase` contained raw data without IDs. IDs were only generated on the server. Since all meal cards had `data-meal-id="undefined"`, `querySelector` always returned the first card (Burger Combo).
+  **Fix:** Reload `mealsDatabase` from the server after saving to get data with server-generated IDs.
 
  - [TODO] Remove the `dietary_info` from the `meals_database.json`, from the `script.json` as well as from the user interface.
    Question for us: Is this still unfinished?

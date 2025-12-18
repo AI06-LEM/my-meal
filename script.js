@@ -85,6 +85,8 @@ async function uploadDatabase() {
             const data = JSON.parse(e.target.result);
             mealsDatabase = data;
             await saveDataToStorage({ meals: true, weekly: true, votes: true, plan: true });
+            // Reload mealsDatabase from server to get data with server-generated IDs
+            mealsDatabase = await loadMealsDatabase();
             showStatus('uploadStatus', 'Database uploaded successfully!', 'success');
             updateSystemStatus();
         } catch (error) {
