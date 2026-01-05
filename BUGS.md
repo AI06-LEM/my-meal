@@ -1,7 +1,13 @@
 
 # [TODO] Bugs
 
+<<<<<<< HEAD
+- [DONE] If you upload the database, then select a meat option at the restaurant interface, the first meat option is automatically selected.
+  **Root cause:** After uploading the JSON database, the frontend's `mealsDatabase` contained raw data without IDs. IDs were only generated on the server. Since all meal cards had `data-meal-id="undefined"`, `querySelector` always returned the first card (Burger Combo).
+  **Fix:** Reload `mealsDatabase` from the server after saving to get data with server-generated IDs.
+=======
  - [TODO] In the guest UI, an error appears even when selecting everything correctly: "Please select two different vegetarian options. You cannot select the same option twice."
+>>>>>>> e8a3e9280a78483db3cb48e4f5bd34a7287a7183
 
  - [TODO] Remove the `dietary_info` from the `meals_database.json`, from the `script.json` as well as from the user interface.
    Question for us: Is this still unfinished?
