@@ -1,6 +1,8 @@
 
 # [TODO] Bugs
 
+- [TODO] Remove all references to images of meals in SQLite database format, JSON meals database format, within the program logic and remove the images folder.
+
 <<<<<<< HEAD
 - [DONE] If you upload the database, then select a meat option at the restaurant interface, the first meat option is automatically selected.
   **Root cause:** After uploading the JSON database, the frontend's `mealsDatabase` contained raw data without IDs. IDs were only generated on the server. Since all meal cards had `data-meal-id="undefined"`, `querySelector` always returned the first card (Burger Combo).

@@ -6,13 +6,11 @@
       "meals": [
         {
           "name": "Beef Burger",
-          "image": "images/beef_burger.jpg",
           "vegan": false,
           "category": "meat"
         },
         {
           "name": "Vegetarian Burger",
-          "image": "images/veg_burger.jpg",
           "vegan": false,
           "category": "vegetarian"
         }
@@ -23,13 +21,11 @@
       "meals": [
         {
           "name": "Tuna Pasta",
-          "image": "images/tuna_pasta.jpg",
           "vegan": false,
           "category": "fish"
         },
         {
           "name": "Pasta Primavera",
-          "image": "images/pasta_primavera.jpg",
           "dietary_info": [
             "gluten",
             "dairy"
@@ -44,13 +40,11 @@
       "meals": [
         {
           "name": "Grilled Chicken Breast",
-          "image": "images/grilled_chicken.jpg",
           "vegan": false,
           "category": "meat"
         },
         {
           "name": "Grilled Tofu Steak",
-          "image": "images/grilled_tofu_steak.jpg",
           "vegan": true,
           "category": "vegetarian"
         }
@@ -61,13 +55,11 @@
       "meals": [
         {
           "name": "Pork Schnitzel",
-          "image": "images/pork_schnitzel.jpg",
           "vegan": false,
           "category": "meat"
         },
         {
           "name": "Vegetarian Schnitzel",
-          "image": "images/veg_schnitzel.jpg",
           "vegan": false,
           "category": "vegetarian"
         }
@@ -78,13 +70,11 @@
       "meals": [
         {
           "name": "Salmon Fillet",
-          "image": "images/salmon.jpg",
           "vegan": false,
           "category": "fish"
         },
         {
           "name": "Grilled Vegetable Fillet",
-          "image": "images/grilled_vegetable_fillet.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
@@ -96,13 +86,11 @@
       "meals": [
         {
           "name": "Fish and Chips",
-          "image": "images/fish_chips.jpg",
           "vegan": false,
           "category": "fish"
         },
         {
           "name": "Vegetarian Fish and Chips",
-          "image": "images/veg_fish_chips.jpg",
           "vegan": true,
           "category": "vegetarian"
         }
@@ -113,13 +101,11 @@
       "meals": [
         {
           "name": "Turkey Meatballs",
-          "image": "images/turkey_meatballs.jpg",
           "vegan": false,
           "category": "meat"
         },
         {
           "name": "Vegetarian Meatballs",
-          "image": "images/veg_meatballs.jpg",
           "vegan": false,
           "category": "vegetarian"
         }
@@ -130,13 +116,11 @@
       "meals": [
         {
           "name": "BBQ Ribs",
-          "image": "images/bbq_ribs.jpg",
           "vegan": false,
           "category": "meat"
         },
         {
           "name": "BBQ Jackfruit",
-          "image": "images/bbq_jackfruit.jpg",
           "vegan": true,
           "category": "vegetarian"
         }
@@ -147,13 +131,11 @@
       "meals": [
         {
           "name": "Baked Cod",
-          "image": "images/baked_cod.jpg",
           "vegan": false,
           "category": "fish"
         },
         {
           "name": "Baked Vegetable Medley",
-          "image": "images/baked_vegetable_medley.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
@@ -165,13 +147,11 @@
       "meals": [
         {
           "name": "Shrimp Fried Rice",
-          "image": "images/shrimp_fried_rice.jpg",
           "vegan": false,
           "category": "fish"
         },
         {
           "name": "Vegetable Fried Rice",
-          "image": "images/vegetable_fried_rice.jpg",
           "dietary_info": [
             "eggs"
           ],
@@ -185,7 +165,6 @@
       "meals": [
         {
           "name": "Mushroom Risotto",
-          "image": "images/mushroom_risotto.jpg",
           "dietary_info": [
             "dairy"
           ],
@@ -194,7 +173,6 @@
         },
         {
           "name": "Vegetable Risotto",
-          "image": "images/vegetable_risotto.jpg",
           "dietary_info": [
             "dairy"
           ],
@@ -208,14 +186,12 @@
       "meals": [
         {
           "name": "Quinoa Bowl",
-          "image": "images/quinoa_bowl.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
         },
         {
           "name": "Tofu Teriyaki Bowl",
-          "image": "images/tofu_teriyaki.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
@@ -227,14 +203,12 @@
       "meals": [
         {
           "name": "Vegetable Stir Fry",
-          "image": "images/veg_stirfry.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
         },
         {
           "name": "Tofu Stir Fry",
-          "image": "images/tofu_stirfry.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
@@ -246,7 +220,6 @@
       "meals": [
         {
           "name": "Caesar Salad",
-          "image": "images/caesar_salad.jpg",
           "dietary_info": [
             "gluten",
             "dairy"
@@ -256,7 +229,6 @@
         },
         {
           "name": "Chickpea Salad",
-          "image": "images/chickpea_salad.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
@@ -268,14 +240,12 @@
       "meals": [
         {
           "name": "Lentil Curry",
-          "image": "images/lentil_curry.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
         },
         {
           "name": "Vegetable Curry",
-          "image": "images/vegetable_curry.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
@@ -287,7 +257,6 @@
       "meals": [
         {
           "name": "Spinach Lasagna",
-          "image": "images/spinach_lasagna.jpg",
           "dietary_info": [
             "gluten",
             "dairy"
@@ -297,7 +266,6 @@
         },
         {
           "name": "Vegetable Lasagna",
-          "image": "images/vegetable_lasagna.jpg",
           "dietary_info": [
             "gluten",
             "dairy"
@@ -312,14 +280,12 @@
       "meals": [
         {
           "name": "Veggie Paella",
-          "image": "images/veggie_paella.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
         },
         {
           "name": "Mushroom Paella",
-          "image": "images/mushroom_paella.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
@@ -331,14 +297,12 @@
       "meals": [
         {
           "name": "Stuffed Peppers",
-          "image": "images/stuffed_peppers.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
         },
         {
           "name": "Stuffed Zucchini",
-          "image": "images/stuffed_zucchini.jpg",
           "dietary_info": [],
           "vegan": true,
           "category": "vegetarian"
