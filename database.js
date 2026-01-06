@@ -30,7 +30,6 @@ function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS meals (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      image TEXT,
       vegetarian INTEGER NOT NULL,
       vegan INTEGER NOT NULL,
       category TEXT NOT NULL
@@ -158,8 +157,8 @@ function saveMealsDatabase(data) {
 
     // Prepare insert statements
     const insertMeal = db.prepare(`
-      INSERT OR IGNORE INTO meals (id, name, image, vegetarian, vegan, category)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT OR IGNORE INTO meals (id, name, vegetarian, vegan, category)
+      VALUES (?, ?, ?, ?, ?)
     `);
 
     const insertCombination = db.prepare(`
@@ -187,7 +186,6 @@ function saveMealsDatabase(data) {
         insertMeal.run(
           meal.id,
           meal.name,
-          meal.image || '',
           meal.vegetarian ? 1 : 0,
           meal.vegan ? 1 : 0,
           meal.category || 'vegetarian'
@@ -224,7 +222,6 @@ function saveMealsDatabase(data) {
             insertMeal.run(
               meal.id,
               meal.name,
-              meal.image || '',
               meal.vegetarian ? 1 : 0,
               meal.vegan ? 1 : 0,
               meal.category || 'vegetarian'
@@ -252,7 +249,7 @@ function saveMealsDatabase(data) {
 function getMealsDatabase() {
   // Get all individual meals (not part of combinations)
   const mealsStmt = db.prepare(`
-    SELECT id, name, image, vegetarian, vegan, category
+    SELECT id, name, vegetarian, vegan, category
     FROM meals
     WHERE id NOT IN (SELECT meal_id FROM combination_meals)
     ORDER BY name
@@ -269,7 +266,7 @@ function getMealsDatabase() {
 
   // Get meals for each combination
   const comboMealsStmt = db.prepare(`
-    SELECT m.id, m.name, m.image, m.vegetarian, m.vegan, m.category
+    SELECT m.id, m.name, m.vegetarian, m.vegan, m.category
     FROM meals m
     INNER JOIN combination_meals cm ON m.id = cm.meal_id
     WHERE cm.combination_id = ?
@@ -283,7 +280,6 @@ function getMealsDatabase() {
       meals: comboMeals.map(m => ({
         id: m.id,
         name: m.name,
-        image: m.image,
         vegetarian: m.vegetarian === 1,
         vegan: m.vegan === 1,
         category: m.category
@@ -295,7 +291,6 @@ function getMealsDatabase() {
     meals: meals.map(m => ({
       id: m.id,
       name: m.name,
-      image: m.image,
       vegetarian: m.vegetarian === 1,
       vegan: m.vegan === 1,
       category: m.category
