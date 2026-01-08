@@ -1,35 +1,42 @@
 
 # Project my-meal
 
-For a school restaurant serving lunch, restaurant guests (students, teachers, ...) can indicate meal preferences from a set of options offered by the restaurant. The final result is a weekly meal plan proposal with a meal (or a meal combination) per day. 
+For a school restaurant serving lunch, restaurant guests (students, teachers, ...) can indicate meal preferences (votes) from a set of options offered by the restaurant. The final results are the guest voting results (the kitchen will use these to create the actual meal plan manually).
 
 Terminology: The restaurant is part of a school enterprise called Seefood.
 
 
 ## Features
 
+ - All meals are arranged in collections of 1 or more meals, called meal combinations. A meal combination specifies options offered by the restaurant for a day, out of which restaurant guests can choose exactly one. Every meal combination contains at least one vegetarian meal. All meals in a meal combination are usually similar (e.g., a burger or a vegetarian burger).
+ - The voting results of this app will be used to create a meal plan for one week. Restaurant guests can vote on exactly four meals per week (the fifths and last day the school kitchen serves leftovers).
  - The results of this software will be:
-    -  a chart of the voted meals that includes the number of votes visible only to the restaurant
-    - after manual input from the restaurant: a meal plan visible to both the restaurant and guests
- - Voting mechanics translate the student preferences into comparison charts (e.g. pie charts, column charts) that show the votes, one per category 
+    - A chart of the voted meals that includes the number of votes visible only to the restaurant
+    - After manual input from the restaurant: a meal plan visible to both the restaurant and guests
+ - Voting mechanics translate the student preferences into comparison charts (column charts) that show the votes, one per category 
    - The system counts votes for each meal option and shows it on its respective chart
    - Later: The restaurant can further edit the resulting plan
  - Manually: the restaurant chooses four meals for the week to make a final menu: one meat meal per week, one fish meal per week, and two vegetarian meals (the fifth day uses leftovers, it's called "SEEMPHONIE")
  - The vote results and meal choice interface are to be shown on the restaurant page as well as on the admin page
  - Once the meal plan is selected by the restaurant, the guest page is to be cleared (except last two weeks' meal plans) for the next round of voting, open on the following week
- - Always show the last two weeks' meal plans decided by the restaurant on the guest page separate from the voting interface (above, below, or on either side)
+ - Later: Always show the last two weeks' meal plans decided by the restaurant on the guest page separate from the voting interface (above, below, or on either side)
 
-## User interactions
+## User interactions: prototype
  
-Prototype: There are three UI areas in the app (e.g., three tabs), for different types of users to interact with the app: a system admin, the Seefood restaurant, and restaurant guests (students etc.). In later versions, these areas might be separated into separate apps (e.g., a separate app for the restaurant guests).
+Prototype: This project defines a single app. There are three UI areas in the app (three tabs), for different types of users to interact with the app: a system admin, the Seefood restaurant, and restaurant guests (students etc.). In later versions, these areas will be separated into separate apps.
 
- - Prototype: A system admin (together with Seefood) uploads a database of all possible meals
-   - Later: We will add support for updating an existing database
- - The restaurant provides a set of meat, fish and vegetarian meal or meal_combination options for the week (out of the total from the database)
- - A guest selects one meat option, one fish option, and two vegetarian options out of the meal and meal_combination options provided by the kitchen
- - The system admin obtains the final weekly meal plan at the end after the voting is finished
+ - A system admin can upload a JSON file detailing all the available meals. This action resets the system (all persistent data in the internal SQLite database is overwritten) and overwrites the list of all possible meal combinations.
+ - Out of these possible meal combinations, the restaurant pre-selects weekly exactly four meal combinations that specify the options out of which restaurant guests can choose their preferences. These four meal combinations contain exactly one meal combination with at least one meal containing meat and exactly one other meal combination with a meal containing fish. The two remaining meal combinations contain only vegetarian meals.
+ - Each guest is then shown the meal combinations selected by the restaurant for the current week, again one meal combinations with meat, one with fish and two purely vegetarian meal combinations. Out of each meal combination, the guest can select exactly one meal of their choice.
+ - The system admin can obtain final voting results 
 
-Prototype: The system admin and the restaurant users do not need to authenticate themselves. Each guest should identify themselves with a unique name, but there is no actual login process and these names are not double-checked. This is refined later.
+The system admin and the restaurant users do not need to authenticate themselves. Each guest should identify themselves with a unique name, but there is no actual login process and these names are not double-checked. 
+
+## User interactions: later version
+
+This project defines multiple apps, one for the system admin and the Seefood restaurant, and another independent app for the restaurant guests.
+
+The system admin and the restaurant users need to log into their app. Also, each guest must log into the app. 
 
 
 ## Workflow
