@@ -1,3 +1,15 @@
+
+
+
+
+This malfunctions report was created during a time when Bugs.md and Specification.md were inconsistent with each other and maybe also outdated !!! 
+
+Prompt to redo report:
+Start the app in terminal. Next, run the app in browser and check for issues that might prevent proper functioning or usage by the users. Then, read over the @BUGS.md,  @SPECIFICATION.md and @README.md to verify that the app functions as described. After that, give us a report of the malfunctions.
+
+
+
+
 # Malfunction Report - My-Meal Application
 
 **Date:** Generated after comprehensive testing  
