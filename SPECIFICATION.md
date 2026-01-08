@@ -66,7 +66,6 @@ The application organizes data in the following SQLite tables:
 - `metadata` - System metadata (timestamps, etc.)
 
 Additionally:
-- `images/` - Folder containing meal images (named with meal ID and name)
 - `data/` - Folder containing the SQLite database file
 
 ### JSON Upload Format
@@ -86,7 +85,6 @@ The rest of this section sketches possible internal data structures. Again, thes
 ### *meal* 
  - Name - string
  - Later: a unique ID - string
- - Image (path to a file) - string
  - Vegetarian? - boolean 
  - Vegan? - boolean
 

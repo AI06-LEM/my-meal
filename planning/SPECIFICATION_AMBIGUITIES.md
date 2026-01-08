@@ -145,7 +145,7 @@ The workflow is unclear:
 
 ---
 
-### 8. **Missing: Image File Requirements**
+### 8. [DONE]**Missing: Image File Requirements**
 
 **What's ambiguous:**
 - Line 89: "Image (path to a file) - string"
