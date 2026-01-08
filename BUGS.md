@@ -1,13 +1,9 @@
 
-# [TODO] Bugs
+# Bugs
 
-<<<<<<< HEAD
-- [DONE] If you upload the database, then select a meat option at the restaurant interface, the first meat option is automatically selected.
-  **Root cause:** After uploading the JSON database, the frontend's `mealsDatabase` contained raw data without IDs. IDs were only generated on the server. Since all meal cards had `data-meal-id="undefined"`, `querySelector` always returned the first card (Burger Combo).
-  **Fix:** Reload `mealsDatabase` from the server after saving to get data with server-generated IDs.
-=======
+- [TODO] Remove all references to images of meals in SQLite database format, JSON meals database format, within the program logic and remove the images folder.
+
  - [TODO] In the guest UI, an error appears even when selecting everything correctly: "Please select two different vegetarian options. You cannot select the same option twice."
->>>>>>> e8a3e9280a78483db3cb48e4f5bd34a7287a7183
 
  - [TODO] Remove the `dietary_info` from the `meals_database.json`, from the `script.json` as well as from the user interface.
    Question for us: Is this still unfinished?
@@ -15,6 +11,10 @@
  - [TODO] Weekly options saved by restaurant are saved and then not removed when changed. Remove previously saved weekly options when saving.
    Question for us: How about if the restaurant tab is visited again, after weekly options have been selected already, then these selected options are shown as selected, and then the current selection can be transparently changed (selections added or removed).
    Question for us: Whenever the weekly options are changed, then the previous guest votes might become inconsistent with that selection. So, should we perhaps wipe all guest votes when the selection changed?
+
+- [DONE] If you upload the database, then select a meat option at the restaurant interface, the first meat option is automatically selected.
+  **Root cause:** After uploading the JSON database, the frontend's `mealsDatabase` contained raw data without IDs. IDs were only generated on the server. Since all meal cards had `data-meal-id="undefined"`, `querySelector` always returned the first card (Burger Combo).
+  **Fix:** Reload `mealsDatabase` from the server after saving to get data with server-generated IDs.
 
   - [DONE] When resetting system, in system admin UI under current status, 1 vote always remains shown, meal plan shows as generated, database as loaded and weekly options as set. Instead, the whole database should be wiped by resetting the system, and this should be reflected also by what is shown under such status information at the system admin UI.
 
