@@ -28,6 +28,7 @@ Feature: Restaurant Weekly Options Selection
     Then meal options should be displayed
     And I should see meal options from the database
 
+  # ! BUG: More options should be chosen: 2 meat options, 2 fish options, 4 vegetarian options.
   @happy-path
   Scenario: Restaurant selects a complete set of weekly options
     When I select "Burger" as a meat option

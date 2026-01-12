@@ -31,7 +31,8 @@ Feature: Admin Database Upload
   @happy-path
   Scenario: System status updates after database upload
     Given I am on the admin tab
-    When I upload the test meal database
+    When I reset the system
+    And I upload the test meal database
     Then the system status should show database as "Loaded"
     And the system status should show options as "Not set"
     And the system status should show votes as "No votes"
@@ -43,6 +44,7 @@ Feature: Admin Database Upload
   @state
   Scenario: Initial system state before any uploads
     When I go to the "System Admin" tab
+    # BUG: If there is a my-meal.db file in the database folder, it will show as loaded instead of not loaded.
     Then the system status should show database as "Not loaded"
     And the system status should show options as "Not set"
     And the system status should show votes as "No votes"
