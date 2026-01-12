@@ -13,6 +13,11 @@ data/*.db-wal
 *.log
 npm-debug.log*
 
+# Test outputs (keep .gitkeep files)
+tests/reports/*.html
+tests/reports/*.json
+tests/screenshots/*.png
+
 # Environment variables
 .env
 .env.local
