@@ -117,6 +117,36 @@ npx cucumber-js tests/features/guest-voting.feature
 npx cucumber-js tests/features/guest-voting.feature:25
 ```
 
+**Important:** To run a single scenario, you **must** use `npx cucumber-js` directly with the file path. Using `npm test -- file:line` will not work as expected because the `cucumber.js` configuration's `paths` setting will cause all tests to run.
+
+**Alternative (Recommended):** Use tags for running individual scenarios (see "Using Multiple Tags" below).
+
+
+### Using Multiple Tags
+
+You can add multiple tags to a single scenario for better organization and filtering:
+
+```gherkin
+# Option 1: On the same line (space-separated)
+@happy-path @focus
+Scenario: Restaurant can deselect a meal option
+  ...
+
+# Option 2: On separate lines (recommended for readability)
+@selection
+@focus
+Scenario: Restaurant can deselect a meal option
+  ...
+```
+
+**Workflow tip:** Add temporary tags like `@focus` or `@wip` to scenarios you're actively working on, then run just those:
+
+```bash
+npm run test:tag -- "@focus"
+```
+
+Remember to remove temporary tags before committing!
+
 ### Environment Variables
 
 | Variable | Default | Description |
