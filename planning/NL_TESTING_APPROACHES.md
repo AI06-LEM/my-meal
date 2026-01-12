@@ -12,6 +12,13 @@ This document explores testing strategies that leverage natural language specifi
 4. [Detecting Ambiguities in Specifications](#detecting-ambiguities-in-specifications)
 5. [Recommended Approach for my-meal](#recommended-approach-for-my-meal)
 6. [Helping Students with Step Definitions](#helping-students-with-step-definitions)
+   - [6.1 Using Playwright Codegen](#61-using-playwright-codegen-to-generate-step-definitions)
+   - [6.2 Verifying Step Definitions](#62-verifying-individual-step-definitions)
+   - [6.3 Building Resilient Selectors](#63-building-resilient-selectors-handling-ui-changes)
+   - [6.4 Page Object Model (POM)](#64-the-page-object-model-pom-pattern)
+   - [6.5 Combining Reusable Steps with POM](#65-combining-reusable-steps-with-page-object-model)
+   - [6.6 Maintenance Strategies](#66-step-definition-maintenance-strategies)
+   - [6.7 Summary](#67-summary-making-step-definitions-accessible)
 7. [Practical Next Steps](#practical-next-steps)
 
 ---
@@ -590,77 +597,107 @@ When('I select {int} meat option(s)', async function(count) {
 
 One of Playwright's strengths is its flexible selector system. Designing selectors well means tests survive UI changes.
 
-**Selector Hierarchy (Best to Worst):**
+**Selector Strategy (Recommended Priority):**
 
-| Priority | Selector Type | Example | Resilience |
-|----------|--------------|---------|------------|
-| 1 | `data-testid` | `getByTestId('submit-vote')` | ⭐⭐⭐⭐⭐ Excellent |
-| 2 | Role + Name | `getByRole('button', { name: 'Submit' })` | ⭐⭐⭐⭐⭐ Excellent |
-| 3 | Label | `getByLabel('Your Name')` | ⭐⭐⭐⭐ Very Good |
-| 4 | Text content | `getByText('Submit Vote')` | ⭐⭐⭐ Good |
-| 5 | CSS class | `locator('.btn-primary')` | ⭐⭐ Poor |
-| 6 | Position | `locator('button').nth(2)` | ⭐ Very Poor |
+| Priority | Selector Type | Example | Resilience | Accessibility Benefit |
+|----------|--------------|---------|------------|----------------------|
+| 1 | Role + Name | `getByRole('button', { name: 'Submit' })` | ⭐⭐⭐⭐⭐ Excellent | ✅ Verifies a11y |
+| 2 | Label | `getByLabel('Your Name')` | ⭐⭐⭐⭐⭐ Excellent | ✅ Verifies a11y |
+| 3 | `data-testid` | `getByTestId('submit-vote')` | ⭐⭐⭐⭐⭐ Excellent | ❌ None |
+| 4 | Text content | `getByText('Submit Vote')` | ⭐⭐⭐ Good | ❌ None |
+| 5 | CSS class | `locator('.btn-primary')` | ⭐⭐ Poor | ❌ None |
+| 6 | Position | `locator('button').nth(2)` | ⭐ Very Poor | ❌ None |
 
-**Recommended: Add `data-testid` Attributes to the App**
+**Primary Approach: Semantic Selectors (Role + Name, Label)**
 
-This is the industry standard for testable UIs. Add attributes to key elements:
+We recommend **semantic selectors as the primary approach** for several reasons:
+
+1. **No HTML changes required** if the app already uses semantic HTML
+2. **Accessibility verification for free** — tests confirm the app works with assistive technologies
+3. **Aligns with Playwright's recommendations** — this is what Codegen generates by default
+4. **User-centric** — tests interact with the app the way real users (and screen readers) do
+
+```javascript
+// Primary approach: Semantic selectors
+await page.getByRole('button', { name: 'Submit Vote' }).click();
+await page.getByRole('button', { name: 'Guests' }).click();  // Tab navigation
+await page.getByLabel('Your Name').fill('Alice');
+await page.getByRole('checkbox', { name: 'Grilled Salmon' }).check();
+
+// Also semantic: Using headings as context
+await page.getByRole('heading', { name: 'Select 1 Meat Option:' })
+  .locator('..')
+  .getByRole('checkbox')
+  .first()
+  .check();
+```
+
+**Fallback: `data-testid` for Complex Cases**
+
+Use `data-testid` when semantic selectors don't work well:
+- Multiple identical buttons without distinguishing text
+- Complex custom widgets without proper ARIA roles
+- Elements that need to be found independently of their text (for i18n)
 
 ```html
-<!-- index.html - Before -->
-<button class="btn btn-primary" onclick="submitVote()">
-  Submit Vote
-</button>
-
-<!-- index.html - After (test-friendly) -->
-<button class="btn btn-primary" onclick="submitVote()" 
-        data-testid="submit-vote-button">
-  Submit Vote
-</button>
+<!-- Only add data-testid when semantic selectors are insufficient -->
+<div class="chart-bar" data-testid="meat-vote-chart">...</div>
 ```
 
-Then in step definitions:
 ```javascript
-When('I submit my vote', async function() {
-  await this.page.getByTestId('submit-vote-button').click();
-});
+// Fallback for non-semantic elements
+await page.getByTestId('meat-vote-chart').click();
 ```
 
-**Why `data-testid` is resilient:**
-- Doesn't change when CSS classes change (styling updates)
-- Doesn't change when text is translated (internationalization)
-- Doesn't change when layout changes (responsive redesign)
-- Clear purpose: it exists FOR testing
+**Why `data-testid` is a fallback, not the default:**
 
-**Recommended: Use Semantic Selectors**
+| Aspect | Semantic Selectors | `data-testid` |
+|--------|-------------------|---------------|
+| Requires HTML changes | Often no | Yes, always |
+| Tests accessibility | ✅ Yes | ❌ No |
+| Works across translations | ⚠️ Text may change | ✅ Always works |
+| Maintains test intent | Uses visible UI | Uses hidden attribute |
 
-Playwright's `getByRole()` uses ARIA roles, matching how assistive technologies see the page:
+**Does my-meal Need HTML Changes for Semantic Selectors?**
+
+Based on the current `index.html`, the app is already well-structured:
+
+| Element | Current State | Playwright Selector |
+|---------|--------------|---------------------|
+| Tab buttons | `<button>` elements ✅ | `getByRole('button', { name: 'Guests' })` |
+| Name input | Has `<label for="guestName">` ✅ | `getByLabel('Your Name')` |
+| Submit button | `<button>` with text ✅ | `getByRole('button', { name: 'Submit Vote' })` |
+| Select dropdowns | Have `<label>` associations ✅ | `getByLabel('Monday (Meat):')` |
+| Headings | Proper hierarchy ✅ | `getByRole('heading', { name: '...' })` |
+
+Minor improvements that could help:
+- Add `role="alert"` to status message divs (`#voteStatus`) for assertion clarity
+- Consider `role="tablist"` and `role="tab"` for the tab navigation (optional refinement)
+
+**Codegen Already Uses Semantic Selectors**
+
+Playwright Codegen automatically prefers `getByRole()` and `getByLabel()`. When you record interactions:
+- Clicking "Guests" button → generates `page.getByRole('button', { name: 'Guests' }).click()`
+- Typing in name field → generates `page.getByLabel('Your Name').fill('Alice')`
+- Checking a checkbox → generates `page.getByRole('checkbox', { name: 'Grilled Salmon' }).check()`
+
+No configuration needed — this is the default behavior.
+
+**Avoid: Fragile Selectors**
 
 ```javascript
-// Good: Uses semantic role + accessible name
+// ❌ Avoid: Breaks if styling changes
+await page.locator('.btn-primary').click();
+
+// ❌ Avoid: Breaks if order changes
+await page.locator('.tab-button').nth(2).click();
+
+// ❌ Avoid: Breaks if DOM structure changes
+await page.locator('#guests .voting-form button').click();
+
+// ✅ Prefer: Resilient to all the above
 await page.getByRole('button', { name: 'Submit Vote' }).click();
-await page.getByRole('tab', { name: 'Guests' }).click();
-await page.getByRole('checkbox', { name: 'Grilled Salmon' }).check();
-await page.getByRole('textbox', { name: 'Your Name' }).fill('Alice');
-
-// Also good: Uses label associations
-await page.getByLabel('Your Name').fill('Alice');
-await page.getByLabel('Grilled Salmon').check();
-
-// Avoid: Fragile positional/styling selectors
-await page.locator('.tab:nth-child(2)').click();  // Breaks if tabs reorder
-await page.locator('.form-input').first().fill('Alice');  // Breaks if form changes
 ```
-
-**Preparing the App for Robust Testing:**
-
-| HTML Element | Make It Testable | Playwright Selector |
-|--------------|-----------------|---------------------|
-| `<button>` | Add clear text or `data-testid` | `getByRole('button', { name: '...' })` |
-| `<input>` | Add `<label>` or `aria-label` | `getByLabel('...')` |
-| `<a>` | Use descriptive link text | `getByRole('link', { name: '...' })` |
-| Tab/Panel | Use `role="tab"` + name | `getByRole('tab', { name: '...' })` |
-| Checkbox | Associate with `<label>` | `getByLabel('...')` or `getByRole('checkbox')` |
-| Key containers | Add `data-testid` | `getByTestId('...')` |
 
 ### 6.4 The Page Object Model (POM) Pattern
 
@@ -680,54 +717,109 @@ tests/
     └── BasePage.js             # Shared navigation
 ```
 
-**Example Page Object:**
+**Example Page Object (Using Consistent Semantic Selectors):**
+
+The Page Object should use the same selector strategy throughout — preferring semantic selectors:
 
 ```javascript
 // tests/pages/GuestPage.js
 class GuestPage {
   constructor(page) {
     this.page = page;
-    
-    // All selectors in one place
-    this.nameInput = page.getByLabel('Your Name');
-    this.submitButton = page.getByTestId('submit-vote-button');
-    this.successMessage = page.getByRole('alert');
-    this.meatSection = page.getByTestId('meat-options');
-    this.fishSection = page.getByTestId('fish-options');
-    this.vegSection = page.getByTestId('vegetarian-options');
   }
 
-  async enterName(name) {
-    await this.nameInput.fill(name);
+  // Navigation - uses role + name
+  async navigateToTab() {
+    await this.page.getByRole('button', { name: 'Guests' }).click();
   }
 
+  // Form elements - uses label associations
+  get nameInput() {
+    return this.page.getByLabel('Your Name');
+  }
+
+  get submitButton() {
+    return this.page.getByRole('button', { name: 'Submit Vote' });
+  }
+
+  // Category sections - uses headings as semantic anchors
+  getMeatOptions() {
+    return this.page
+      .getByRole('heading', { name: /Select 1 Meat Option/i })
+      .locator('..')  // Navigate to parent container
+      .getByRole('checkbox');
+  }
+
+  getFishOptions() {
+    return this.page
+      .getByRole('heading', { name: /Select 1 Fish Option/i })
+      .locator('..')
+      .getByRole('checkbox');
+  }
+
+  getVegetarianOptions() {
+    return this.page
+      .getByRole('heading', { name: /Select 2 Vegetarian Options/i })
+      .locator('..')
+      .getByRole('checkbox');
+  }
+
+  // Select specific option by name
+  async selectMeatOption(optionName) {
+    await this.getMeatOptions()
+      .filter({ hasText: optionName })
+      .check();
+  }
+
+  async selectFishOption(optionName) {
+    await this.getFishOptions()
+      .filter({ hasText: optionName })
+      .check();
+  }
+
+  async selectVegetarianOption(optionName) {
+    await this.getVegetarianOptions()
+      .filter({ hasText: optionName })
+      .check();
+  }
+
+  // Select by count (first N options)
   async selectMeatOptions(count) {
-    const checkboxes = this.meatSection.getByRole('checkbox');
+    const checkboxes = this.getMeatOptions();
     for (let i = 0; i < count; i++) {
       await checkboxes.nth(i).check();
     }
   }
 
   async selectFishOptions(count) {
-    const checkboxes = this.fishSection.getByRole('checkbox');
+    const checkboxes = this.getFishOptions();
     for (let i = 0; i < count; i++) {
       await checkboxes.nth(i).check();
     }
   }
 
   async selectVegetarianOptions(count) {
-    const checkboxes = this.vegSection.getByRole('checkbox');
+    const checkboxes = this.getVegetarianOptions();
     for (let i = 0; i < count; i++) {
       await checkboxes.nth(i).check();
     }
+  }
+
+  async enterName(name) {
+    await this.nameInput.fill(name);
   }
 
   async submitVote() {
     await this.submitButton.click();
   }
 
-  async getSuccessMessage() {
-    return await this.successMessage.textContent();
+  // Status message - semantic if we add role="status" to HTML, fallback otherwise
+  get statusMessage() {
+    return this.page.locator('#voteStatus');  // Fallback: ID selector for status div
+  }
+
+  async getStatusText() {
+    return await this.statusMessage.textContent();
   }
 }
 
@@ -751,6 +843,11 @@ When('I select {int} meat option(s)', async function(count) {
   await guestPage.selectMeatOptions(count);
 });
 
+When('I select meat option {string}', async function(optionName) {
+  const guestPage = new GuestPage(this.page);
+  await guestPage.selectMeatOption(optionName);
+});
+
 When('I submit my vote', async function() {
   const guestPage = new GuestPage(this.page);
   await guestPage.submitVote();
@@ -758,7 +855,7 @@ When('I submit my vote', async function() {
 
 Then('I should see {string}', async function(expectedMessage) {
   const guestPage = new GuestPage(this.page);
-  const message = await guestPage.getSuccessMessage();
+  const message = await guestPage.getStatusText();
   expect(message).toContain(expectedMessage);
 });
 ```
@@ -768,44 +865,184 @@ Then('I should see {string}', async function(expectedMessage) {
 - UI knowledge is centralized in page objects
 - When UI changes, fix ONE page object file
 - Page objects can be generated/updated by AI
+- Consistent semantic selector strategy is enforced in one place
 
-### 4.5 Step Definition Maintenance Strategies
+### 6.5 Combining Reusable Steps with Page Object Model
 
-**Strategy 1: Reusable Step Library**
+Reusable steps and Page Objects are **not contradictory** — they serve different purposes and can be combined effectively:
 
-Create generic, reusable steps that work across features:
+| Pattern | What It Centralizes | Purpose |
+|---------|-------------------|---------|
+| **Page Object Model** | WHERE elements are (selectors) | Isolate UI structure |
+| **Reusable Steps** | WHAT actions to perform | Reduce step duplication |
+
+**Recommended Layered Architecture:**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Layer 1: GENERIC REUSABLE STEPS (common.steps.js)              │
+│  • "I click {string}"                                            │
+│  • "I type {string} into {string}"                              │
+│  • "I should see {string}"                                      │
+│  → Uses semantic selectors directly (no Page Objects)           │
+│  → Works across ALL features                                    │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Layer 2: PAGE OBJECTS (pages/*.js)                             │
+│  • GuestPage, RestaurantPage, AdminPage                         │
+│  • Encapsulate complex/repeated selector logic                  │
+│  • Use consistent semantic selector approach                    │
+│  → Centralizes UI knowledge for complex pages                   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Layer 3: DOMAIN-SPECIFIC STEPS (guest.steps.js, etc.)          │
+│  • "I select {int} meat options"                                 │
+│  • "I complete the voting form"                                 │
+│  → Uses Page Objects for complex domain logic                   │
+│  → Feature-specific, not reusable                               │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Layer 1: Generic Reusable Steps**
+
+These use semantic selectors directly and work everywhere:
 
 ```javascript
 // tests/step-definitions/common.steps.js
+const { When, Then } = require('@cucumber/cucumber');
+const { expect } = require('@playwright/test');
 
-When('I click {string}', async function(text) {
-  await this.page.getByRole('button', { name: text }).click();
+// Navigation
+When('I click the {string} button', async function(buttonName) {
+  await this.page.getByRole('button', { name: buttonName }).click();
 });
 
-When('I click the {string} link', async function(text) {
-  await this.page.getByRole('link', { name: text }).click();
+When('I click the {string} link', async function(linkText) {
+  await this.page.getByRole('link', { name: linkText }).click();
 });
 
-When('I click the {string} tab', async function(tabName) {
-  await this.page.getByRole('tab', { name: tabName }).click();
+When('I go to the {string} tab', async function(tabName) {
+  await this.page.getByRole('button', { name: tabName }).click();
 });
 
+// Form input
 When('I type {string} into the {string} field', async function(value, label) {
   await this.page.getByLabel(label).fill(value);
 });
 
-Then('I should see the text {string}', async function(text) {
+When('I select {string} from the {string} dropdown', async function(option, label) {
+  await this.page.getByLabel(label).selectOption(option);
+});
+
+When('I check the {string} checkbox', async function(label) {
+  await this.page.getByLabel(label).check();
+});
+
+// Assertions
+Then('I should see {string}', async function(text) {
   await expect(this.page.getByText(text)).toBeVisible();
 });
 
-Then('I should not see the text {string}', async function(text) {
+Then('I should not see {string}', async function(text) {
   await expect(this.page.getByText(text)).not.toBeVisible();
+});
+
+Then('the {string} button should be disabled', async function(buttonName) {
+  await expect(this.page.getByRole('button', { name: buttonName }))
+    .toBeDisabled();
 });
 ```
 
-These work for MANY scenarios without modification.
+**These work for MANY scenarios** across different features:
 
-**Strategy 2: AI-Assisted Step Generation**
+```gherkin
+# Works in Guest voting
+When I go to the "Guests" tab
+And I type "Alice" into the "Your Name" field
+And I click the "Submit Vote" button
+Then I should see "Vote submitted successfully"
+
+# Works in Admin panel
+When I go to the "System Admin" tab
+And I click the "Upload Database" button
+Then I should see "Database loaded"
+
+# Works in Restaurant
+When I go to the "Restaurant" tab
+And I click the "Save Weekly Options" button
+```
+
+**Layer 3: Domain-Specific Steps (Using Page Objects)**
+
+For complex interactions that need encapsulation:
+
+```javascript
+// tests/step-definitions/guest.steps.js
+const { When, Given } = require('@cucumber/cucumber');
+const { GuestPage } = require('../pages/GuestPage');
+
+// Complex step that uses Page Object
+When('I select {int} meat option(s)', async function(count) {
+  const guestPage = new GuestPage(this.page);
+  await guestPage.selectMeatOptions(count);
+});
+
+When('I select meat option {string}', async function(optionName) {
+  const guestPage = new GuestPage(this.page);
+  await guestPage.selectMeatOption(optionName);
+});
+
+// Very complex step: uses Page Object for multi-field form
+When('I complete a full vote with:', async function(dataTable) {
+  const guestPage = new GuestPage(this.page);
+  const data = dataTable.rowsHash();
+  
+  await guestPage.enterName(data['name']);
+  await guestPage.selectMeatOptions(parseInt(data['meat options']));
+  await guestPage.selectFishOptions(parseInt(data['fish options']));
+  await guestPage.selectVegetarianOptions(parseInt(data['vegetarian options']));
+  await guestPage.submitVote();
+});
+```
+
+**When to Use Each Layer:**
+
+| Scenario | Recommended Approach |
+|----------|---------------------|
+| Click a button with visible text | Layer 1: Generic step `I click the {string} button` |
+| Fill a labeled input field | Layer 1: Generic step `I type {string} into the {string} field` |
+| Select checkboxes by category (meat/fish/veg) | Layer 3: Domain step + Page Object |
+| Complete an entire form with multiple fields | Layer 3: Domain step + Page Object |
+| Assert visible text | Layer 1: Generic step `I should see {string}` |
+| Assert complex page state | Layer 3: Domain step + Page Object |
+
+**Example Feature File Using Both Layers:**
+
+```gherkin
+Feature: Guest Voting
+
+  Scenario: Guest submits a valid vote
+    # Layer 1: Generic steps (no Page Object needed)
+    When I go to the "Guests" tab
+    And I type "Alice" into the "Your Name" field
+    
+    # Layer 3: Domain-specific steps (use Page Object internally)
+    And I select 1 meat option
+    And I select 1 fish option
+    And I select 2 vegetarian options
+    
+    # Layer 1: Generic steps
+    And I click the "Submit Vote" button
+    Then I should see "Vote submitted successfully"
+```
+
+### 6.6 Step Definition Maintenance Strategies
+
+**Strategy 1: AI-Assisted Step Generation**
 
 When writing new step definitions, use AI to help:
 
@@ -814,20 +1051,18 @@ Prompt: "Based on this Gherkin step and our GuestPage class,
 write the Playwright step definition:
 
 Step: When I select vegetarian option {string}
-Page Object: GuestPage with vegSection = page.getByTestId('vegetarian-options')"
+Page Object: GuestPage with getVegetarianOptions() method"
 ```
 
 AI generates:
 ```javascript
 When('I select vegetarian option {string}', async function(optionName) {
   const guestPage = new GuestPage(this.page);
-  await guestPage.vegSection
-    .getByRole('checkbox', { name: optionName })
-    .check();
+  await guestPage.selectVegetarianOption(optionName);
 });
 ```
 
-**Strategy 3: Documentation Within Step Definitions**
+**Strategy 2: Documentation Within Step Definitions**
 
 Add comments explaining what each step does:
 
@@ -847,25 +1082,35 @@ When('I enter my name as {string}', async function(name) {
 });
 ```
 
-### 4.6 Summary: Making Step Definitions Accessible
+**Strategy 3: Start Simple, Add Page Objects When Needed**
+
+1. Begin with generic reusable steps only
+2. When a selector is repeated OR logic becomes complex, create a Page Object
+3. Update the step to use the Page Object
+4. The Gherkin feature files don't change — only the implementation does
+
+### 6.7 Summary: Making Step Definitions Accessible
 
 | Challenge | Solution |
 |-----------|----------|
-| "I don't know what Playwright code to write" | Use **Codegen** to record actions |
+| "I don't know what Playwright code to write" | Use **Codegen** to record actions (uses semantic selectors by default) |
 | "How do I know my step works?" | Use **debug mode**, **traces**, or **@wip tags** |
-| "What if the UI changes?" | Use **semantic selectors** and **data-testid** |
-| "The same selector is in many steps" | Use the **Page Object Model** pattern |
-| "There are too many step definitions" | Create **reusable generic steps** |
-| "I need help writing a new step" | Use **AI-assisted generation** |
+| "What if the UI changes?" | Use **semantic selectors** (`getByRole`, `getByLabel`) as primary; `data-testid` as fallback |
+| "The same selector is in many steps" | Use the **Page Object Model** pattern with consistent selectors |
+| "There are too many step definitions" | Create **reusable generic steps** (Layer 1) for common actions |
+| "When do I need Page Objects?" | Use them for **complex domain logic** or when selectors are repeated |
+| "I need help writing a new step" | Use **AI-assisted generation** based on existing patterns |
 
 **Workflow for students adding a new step:**
 
 1. **Write the Gherkin first** (natural language)
-2. **Use Codegen** to find the right Playwright actions
-3. **Wrap in a step definition** following the patterns
-4. **Test in isolation** with `@wip` tag
-5. **Review with trace viewer** if something's wrong
-6. **Refactor into Page Object** if selector is reused
+2. **Check if a generic step already exists** (`I click {string}`, `I type {string} into {string}`)
+3. **Use Codegen** to find the right Playwright selectors
+4. **Prefer semantic selectors** — Codegen generates these by default
+5. **Wrap in a step definition** — either generic (Layer 1) or domain-specific (Layer 3)
+6. **Test in isolation** with `@wip` tag
+7. **Review with trace viewer** if something's wrong
+8. **Refactor into Page Object** when the same selector appears in multiple steps
 
 ---
 

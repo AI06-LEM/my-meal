@@ -28,7 +28,7 @@
                     <input type="file" id="databaseFile" accept=".json" />
                     <button id="uploadDatabase">Upload Database</button>
                 </div>
-                <div id="uploadStatus"></div>
+                <div id="uploadStatus" role="alert"></div>
             </div>
             
             <div class="admin-section">
@@ -45,7 +45,7 @@
                 <h3>Vote Results (Charts)</h3>
                 <p>See how guests voted for each category. These charts are only visible to the restaurant / system admin.</p>
                 <button id="showVoteResults">Show Vote Charts</button>
-                <div id="voteResultsStatus"></div>
+                <div id="voteResultsStatus" role="alert"></div>
                 <div id="voteCharts" class="charts-container">
                     <div class="chart-category">
                         <h4>Meat Options</h4>
@@ -96,15 +96,15 @@
                     </div>
                 </div>
                 <button id="saveFinalPlan">Save Final Meal Plan</button>
-                <div id="finalPlanStatus"></div>
-                <div id="mealPlanResult"></div>
+                <div id="finalPlanStatus" role="alert"></div>
+                <div id="mealPlanResult" role="status"></div>
             </div>
 
             <div class="admin-section">
                 <h3>Reset System</h3>
                 <p>This will delete all weekly options, guest votes, and meal plans. The meal database will be preserved.</p>
                 <button id="resetSystem" class="danger-button">Reset System</button>
-                <div id="resetStatus"></div>
+                <div id="resetStatus" role="alert"></div>
             </div>
         </div>
 
@@ -128,7 +128,7 @@
                     </div>
                 </div>
                 <button id="saveWeeklyOptions">Save Weekly Options</button>
-                <div id="saveStatus"></div>
+                <div id="saveStatus" role="alert"></div>
             </div>
         </div>
 
@@ -160,7 +160,7 @@
                     </div>
                     
                     <button id="submitVote">Submit Vote</button>
-                    <div id="voteStatus"></div>
+                    <div id="voteStatus" role="alert"></div>
                 </div>
             </div>
         </div>
