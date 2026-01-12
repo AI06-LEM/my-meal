@@ -7,11 +7,11 @@ This document explores testing strategies that leverage natural language specifi
 ## Table of Contents
 
 1. [Executive Summary](#executive-summary)
-2. [Question 1: Existing Tools and Practices](#question-1-existing-tools-and-practices)
-3. [Question 2: Balancing Efficiency and Automatic Updates](#question-2-balancing-efficiency-and-automatic-updates)
-4. [Question 3: Detecting Ambiguities in Specifications](#question-3-detecting-ambiguities-in-specifications)
+2. [Existing Tools and Practices](#existing-tools-and-practices)
+3. [Balancing Efficiency and Automatic Updates](#balancing-efficiency-and-automatic-updates)
+4. [Detecting Ambiguities in Specifications](#detecting-ambiguities-in-specifications)
 5. [Recommended Approach for my-meal](#recommended-approach-for-my-meal)
-6. [Question 4: Helping Students with Step Definitions](#question-4-helping-students-with-step-definitions)
+6. [Helping Students with Step Definitions](#helping-students-with-step-definitions)
 7. [Practical Next Steps](#practical-next-steps)
 
 ---
@@ -34,9 +34,9 @@ There are several established approaches for translating natural language specif
 
 ---
 
-## Question 1: Existing Tools and Practices
+## Existing Tools and Practices
 
-### 1.1 Behavior-Driven Development (BDD) — The Industry Standard
+### 2.1 Behavior-Driven Development (BDD) — The Industry Standard
 
 **Cucumber** with **Gherkin** syntax is the most established approach for writing tests in natural language. It's been used in the industry for over 15 years and has excellent JavaScript/Node.js support.
 
@@ -83,7 +83,7 @@ Feature: Guest Voting
 - **Playwright + Cucumber**: Can be combined for browser testing
 - **Cypress + Cucumber**: Via `@badeball/cypress-cucumber-preprocessor`
 
-### 1.2 Gauge — Markdown-Based Testing (ThoughtWorks)
+### 2.2 Gauge — Markdown-Based Testing (ThoughtWorks)
 
 **Gauge** is particularly interesting for my-meal because it uses **Markdown** for specifications—very similar to our existing `SPECIFICATION.md` format.
 
@@ -117,7 +117,7 @@ Feature: Guest Voting
 
 **Website:** https://gauge.org/
 
-### 1.3 AI-Powered Test Generation Tools
+### 2.3 AI-Powered Test Generation Tools
 
 Several newer tools use AI/LLMs to generate tests from specifications:
 
@@ -140,7 +140,7 @@ Several newer tools use AI/LLMs to generate tests from specifications:
 - Good for understanding what SHOULD be tested, even if not generating executable code
 - Repository: https://github.com/Sousa99/cira
 
-### 1.4 Direct AI Agent Testing (Browser MCP in Cursor)
+### 2.4 Direct AI Agent Testing (Browser MCP in Cursor)
 
 The Browser MCP tools available in Cursor allow an AI model to directly interact with a web application—navigating, clicking, typing, and verifying results.
 
@@ -174,14 +174,14 @@ and 2 vegetarian options.
 
 ---
 
-## Question 2: Balancing Efficiency and Automatic Updates
+## Balancing Efficiency and Automatic Updates
 
 The core challenge is:
 - **Efficiency:** Traditional integration tests (Playwright, Cypress) run fast and cheap
 - **Flexibility:** AI-based tests adapt to changes but consume tokens
 - **Maintenance:** Tests should update when specifications change
 
-### 2.1 Recommended Hybrid Workflow
+### 3.1 Recommended Hybrid Workflow
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -216,7 +216,7 @@ The core challenge is:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.2 Triggering Test Updates from Spec Changes
+### 3.2 Triggering Test Updates from Spec Changes
 
 **Option A: Manual AI-Assisted Regeneration**
 When `SPECIFICATION.md` or `BUGS.md` changes:
@@ -253,7 +253,7 @@ A more sophisticated approach:
 
 This minimizes both manual work and unnecessary regeneration.
 
-### 2.3 Token Efficiency Strategies
+### 3.3 Token Efficiency Strategies
 
 | Strategy | Token Savings | Implementation Effort |
 |----------|--------------|----------------------|
@@ -266,13 +266,13 @@ This minimizes both manual work and unnecessary regeneration.
 
 ---
 
-## Question 3: Detecting Ambiguities in Specifications
+## Detecting Ambiguities in Specifications
 
 Ambiguous specifications cause problems for both:
 - AI models implementing features (they guess wrong)
 - AI models generating tests (they test the wrong thing)
 
-### 3.1 Automated Ambiguity Detection Tools
+### 4.1 Automated Ambiguity Detection Tools
 
 | Tool | Type | Accessibility | Focus |
 |------|------|---------------|-------|
@@ -281,7 +281,7 @@ Ambiguous specifications cause problems for both:
 | **CiRA** | Open source | ⭐⭐⭐ Medium | Conditional requirements analysis |
 | **AI/LLM Review** | Prompt-based | ⭐⭐⭐⭐⭐ High | Ask Claude/GPT to review specs |
 
-### 3.2 Practical AI-Based Ambiguity Review
+### 4.2 Practical AI-Based Ambiguity Review
 
 The most accessible approach for student teams: **ask the AI to review specifications**.
 
@@ -311,7 +311,7 @@ Focus on:
 | Implicit assumption | "unique name" | Case-sensitive? Whitespace? | "Names are case-insensitive, trimmed" |
 | Missing error case | Meal plan generation | What if tie votes? | "In case of tie, prefer alphabetical" |
 
-### 3.3 Specification Quality Checklist
+### 4.3 Specification Quality Checklist
 
 A simple checklist students can use when writing specifications:
 
@@ -332,7 +332,7 @@ A simple checklist students can use when writing specifications:
 - [ ] Are the same terms used consistently?
 - [ ] Do all referenced items exist in the system?
 
-### 3.4 Two-Way Specification Validation
+### 4.4 Two-Way Specification Validation
 
 A powerful practice: after AI generates code from specs, ask it to regenerate specs from the code. Differences reveal ambiguities.
 
@@ -349,7 +349,7 @@ A powerful practice: after AI generates code from specs, ask it to regenerate sp
 
 Given the student development context, here's a phased approach:
 
-### Phase 1: Quick Win with Browser MCP (Now)
+### 5.1 Phase 1: Quick Win with Browser MCP (Now)
 
 Use Cursor's Browser MCP tools for immediate testing:
 
@@ -361,7 +361,7 @@ Use Cursor's Browser MCP tools for immediate testing:
 **Cost:** Tokens only, no setup required
 **Benefit:** Immediate testing capability, catches regressions during development
 
-### Phase 2: Cucumber.js for Core Workflows (Short-term)
+### 5.2 Phase 2: Cucumber.js for Core Workflows (Short-term)
 
 Set up Cucumber with Playwright for the main user journeys:
 
@@ -386,7 +386,7 @@ tests/
 - Extensive documentation and tutorials
 - Industry-standard skill to learn
 
-### Phase 3: AI-Assisted Test Generation (Medium-term)
+### 5.3 Phase 3: AI-Assisted Test Generation (Medium-term)
 
 Once Phase 2 is established:
 
@@ -424,11 +424,11 @@ cursor "Review the changes to SPECIFICATION.md in this commit
 
 ---
 
-## Question 4: Helping Students with Step Definitions
+## Helping Students with Step Definitions
 
 While Gherkin feature files are accessible to everyone, step definitions require understanding code. This section addresses how to make step definitions more approachable for student teams.
 
-### 4.1 Using Playwright Codegen to Generate Step Definitions
+### 6.1 Using Playwright Codegen to Generate Step Definitions
 
 **Playwright Codegen** records browser interactions and generates Playwright code. While it doesn't generate Cucumber step definitions directly, there's a practical workflow used in industry:
 
@@ -497,7 +497,7 @@ When('I click {string}', async function(buttonText) {
 
 **Industry tip:** Many teams keep Codegen running while writing tests. When unsure how to interact with an element, they record the action and copy the selector.
 
-### 4.2 Verifying Individual Step Definitions
+### 6.2 Verifying Individual Step Definitions
 
 Students need ways to confirm their step definitions work correctly before running full scenarios.
 
@@ -586,7 +586,7 @@ When('I select {int} meat option(s)', async function(count) {
 });
 ```
 
-### 4.3 Building Resilient Selectors (Handling UI Changes)
+### 6.3 Building Resilient Selectors (Handling UI Changes)
 
 One of Playwright's strengths is its flexible selector system. Designing selectors well means tests survive UI changes.
 
@@ -662,7 +662,7 @@ await page.locator('.form-input').first().fill('Alice');  // Breaks if form chan
 | Checkbox | Associate with `<label>` | `getByLabel('...')` or `getByRole('checkbox')` |
 | Key containers | Add `data-testid` | `getByTestId('...')` |
 
-### 4.4 The Page Object Model (POM) Pattern
+### 6.4 The Page Object Model (POM) Pattern
 
 The **Page Object Model** is an industry-standard pattern that centralizes all selectors in one place. When the UI changes, you update ONE file instead of many step definitions.
 
@@ -871,7 +871,7 @@ When('I enter my name as {string}', async function(name) {
 
 ## Practical Next Steps
 
-### Immediate Actions (This Week)
+### 7.1 Immediate Actions (This Week)
 
 1. **Try Browser MCP Testing**
    - Start the app with `npm start`
@@ -883,7 +883,7 @@ When('I enter my name as {string}', async function(name) {
    - Add clarifications to the document
    - Consider adding a "Definitions" section
 
-### Short-term Setup (Next 2 Weeks)
+### 7.2 Short-term Setup (Next 2 Weeks)
 
 3. **Install Cucumber + Playwright**
    ```bash
@@ -904,7 +904,7 @@ When('I enter my name as {string}', async function(name) {
    }
    ```
 
-### Medium-term Goals (Next Month)
+### 7.3 Medium-term Goals (Next Month)
 
 6. **Cover Core Workflows**
    - Admin database upload
