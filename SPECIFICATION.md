@@ -85,8 +85,10 @@ The rest of this section sketches possible internal data structures. Again, thes
 ### *meal* 
  - Name - string
  - Later: a unique ID - string
- - Vegetarian? - boolean 
+ - Category: "meat" | "fish" | "vegetarian",
  - Vegan? - boolean
+
+ Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are not considered meat.
 
 
 ### *meal_combination* 
