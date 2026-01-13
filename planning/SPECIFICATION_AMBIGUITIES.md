@@ -2,6 +2,23 @@
 
 I'll analyze the SPECIFICATION.md file for ambiguities and missing details that could cause implementation or testing issues.
 
+## Table of Contents
+
+- [Critical Ambiguities](#critical-ambiguities)
+  - [1. Voting Unit: Meals vs. Meal Combinations](#1-voting-unit-meals-vs-meal-combinations)
+  - [2. Duplicate Guest Names: Contradictory Statements](#2-duplicate-guest-names-contradictory-statements)
+  - [3. Fish vs. Meat vs. Vegetarian: Missing Definitions](#3-fish-vs-meat-vs-vegetarian-missing-definitions)
+  - [4. When Does Voting Reset?](#4-when-does-voting-reset)
+  - [5. Meal Combinations Must Contain Vegetarian Option](#5-meal-combinations-must-contain-vegetarian-option)
+  - [6. Missing: Week Definition and Timeline](#6-missing-week-definition-and-timeline)
+  - [7. Restaurant Selection vs. Final Meal Plan](#7-restaurant-selection-vs-final-meal-plan)
+  - [8. [DONE] Missing: Image File Requirements](#8-done-missing-image-file-requirements)
+  - [9. Missing: Success Criteria for Voting](#9-missing-success-criteria-for-voting)
+  - [10. JSON Upload: Missing Validation Rules](#10-json-upload-missing-validation-rules)
+  - [11. Missing: Concurrent Access Handling](#11-missing-concurrent-access-handling)
+  - [12. Missing: Error Recovery](#12-missing-error-recovery)
+- [Summary](#summary)
+
 ## Critical Ambiguities
 
 ### 1. **Voting Unit: Meals vs. Meal Combinations**
@@ -16,8 +33,13 @@ The specification alternates between saying guests vote on "meals" versus select
 - Does a guest vote on 4 individual meals, or on 4 meal combinations (choosing one meal from each)?
 - When aggregating results, do you count votes per individual meal or per combination?
 
-**Suggested clarification:**
+**AI: Suggested clarification:**
 Explicitly state: "Guests are shown 4 meal combinations for the week. From each combination, they select exactly one meal. The system counts votes for each individual meal within its combination."
+
+**Correct clarification:**
+
+Explicitly state: "Guests are shown the full set of meal combinations (options) the restaurant chose for the week: at least 2 meat meal combinations (meat option), at least 2 fish meal combinations and at least 4 vegetarian meal combinations. Guest can choose 1 meat option (still a meal combination), 1 fish option and 2 vegetarian options. The system counts votes for each individual meal combination."
+
 
 ---
 
