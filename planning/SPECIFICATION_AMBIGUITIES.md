@@ -13,7 +13,7 @@ I'll analyze the SPECIFICATION.md file for ambiguities and missing details that 
   - [6. Missing: Week Definition and Timeline](#6-missing-week-definition-and-timeline)
   - [7. Restaurant Selection vs. Final Meal Plan](#7-restaurant-selection-vs-final-meal-plan)
   - [8. [DONE] Missing: Image File Requirements](#8-missing-image-file-requirements)
-  - [9. [AI02] Missing: Success Criteria for Voting](#9-missing-success-criteria-for-voting)
+  - [9. [DONE] Missing: Success Criteria for Voting](#9-missing-success-criteria-for-voting)
   - [10. JSON Upload: Missing Validation Rules](#10-json-upload-missing-validation-rules)
   - [11. Missing: Concurrent Access Handling](#11-missing-concurrent-access-handling)
   - [12. Missing: Error Recovery](#12-missing-error-recovery)
@@ -116,10 +116,14 @@ If EVERY combination must have a vegetarian option, then the "meat combination" 
 - Is the purpose of combinations to always offer veg alternatives?
 - Or can there be meat-only combinations?
 
-**Suggested clarification:**
+**AI: Suggested clarification:**
 Either:
 - "Every meal combination MUST contain at least one vegetarian option (to ensure all guests can vote on all categories)"
 - OR: "Meal combinations may contain only vegetarian meals, or may mix categories"
+
+**Correct clarification**
+Change line 29 from: Restaurant selects "one meal combination with at least one meal containing meat"
+to: "These four meal combinations contain exactly one meal combination with at least one meat combination and exactly one other fish combination"
 
 ---
 
@@ -157,12 +161,20 @@ The workflow is unclear:
 2. Or does restaurant select combinations, guests vote, and the highest votes automatically win?
 3. What is the system admin's role in "obtaining" results?
 
-**Suggested clarification:**
+**AI: Suggested clarification:**
 "Workflow:
 1. Restaurant selects 4 meal combinations for weekly voting
 2. Guests vote on their preferred meals from these combinations
 3. System aggregates votes and displays results to restaurant
 4. Restaurant confirms the final meal plan (typically the most-voted meal from each combination, but can override)
+5. System admin can export/view the final confirmed plan"
+
+**Correct clarification**
+"Workflow:
+1. Restaurant selects meal combinations for weekly voting
+2. Guests vote on their preferred meals from these combinations
+3. System aggregates votes and displays results to restaurant
+4. Restaurant creates the final meal plan
 5. System admin can export/view the final confirmed plan"
 
 ---
