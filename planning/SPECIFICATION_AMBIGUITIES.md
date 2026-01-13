@@ -9,10 +9,10 @@ I'll analyze the SPECIFICATION.md file for ambiguities and missing details that 
   - [2. [AI05] Duplicate Guest Names: Contradictory Statements](#2-duplicate-guest-names-contradictory-statements)
   - [3. Fish vs. Meat vs. Vegetarian: Missing Definitions](#3-fish-vs-meat-vs-vegetarian-missing-definitions)
   - [4. [AI01] When Does Voting Reset?](#4-when-does-voting-reset)
-  - [5. [AI02] Meal Combinations Must Contain Vegetarian Option](#5-meal-combinations-must-contain-vegetarian-option)
+  - [5. [DONE] Meal Combinations Must Contain Vegetarian Option](#5-meal-combinations-must-contain-vegetarian-option)
   - [6. Missing: Week Definition and Timeline](#6-missing-week-definition-and-timeline)
   - [7. Restaurant Selection vs. Final Meal Plan](#7-restaurant-selection-vs-final-meal-plan)
-  - [8. [DONE] Missing: Image File Requirements](#8-done-missing-image-file-requirements)
+  - [8. [DONE] Missing: Image File Requirements](#8-missing-image-file-requirements)
   - [9. Missing: Success Criteria for Voting](#9-missing-success-criteria-for-voting)
   - [10. JSON Upload: Missing Validation Rules](#10-json-upload-missing-validation-rules)
   - [11. Missing: Concurrent Access Handling](#11-missing-concurrent-access-handling)
@@ -167,7 +167,7 @@ The workflow is unclear:
 
 ---
 
-### 8. [DONE]**Missing: Image File Requirements**
+### 8. **Missing: Image File Requirements**
 
 **What's ambiguous:**
 - Line 89: "Image (path to a file) - string"
