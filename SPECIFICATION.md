@@ -114,15 +114,20 @@ Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final resul
 
 
 ## Edge cases/errors
- - All meals in a week should differ, no repetitions
- - Ensure that guests can only select 1 meat (or a meal combination with a meat option), 1 fish (or a meal combination), and 2 vegetarian options
- - Ensure that the final result includes 1 meat (or a meal combination with a meat option), 1 fish (or a meal combination), and 2 vegetarian options
+ - All meal combinations in a week should differ, no repetitions
+ - Ensure that guests can only select 1 meat meal combination, 1 fish meal combination, and 2 vegetarian options
+ - Ensure that the final result includes 1 meatvmeal combination, 1 fish meal combination, and 2 vegetarian options
  - Handle cases where insufficient votes are cast for any category
- - Validate that selected meals exist in the restaurant's weekly options
+ - Validate that selected meal combinations exist in the restaurant's weekly options
  - Prevent duplicate guest names from voting multiple times (enforced by database UNIQUE constraint)
  - Handle invalid or corrupted data gracefully
  - Ensure meal combinations are properly categorized (meat/fish/vegetarian)
  - When uploading a new meals database, automatically reset the system (clear weekly options, votes, and meal plan)
+
+ "Minimum voting requirements:
+- At least 1 vote must be cast for the week to be valid
+- If any meal combination receives 0 votes, the restaurant must manually select a meal combination
+- The system warns (but doesn't block) if total votes < 10"
 
 
 # Tech stack

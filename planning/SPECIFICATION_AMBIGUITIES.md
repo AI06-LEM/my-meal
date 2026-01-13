@@ -5,7 +5,7 @@ I'll analyze the SPECIFICATION.md file for ambiguities and missing details that 
 ## Table of Contents
 
 - [Critical Ambiguities](#critical-ambiguities)
-  - [1. Voting Unit: Meals vs. Meal Combinations](#1-voting-unit-meals-vs-meal-combinations)
+  - [1. [DONE] Voting Unit: Meals vs. Meal Combinations](#1-voting-unit-meals-vs-meal-combinations)
   - [2. [AI05] Duplicate Guest Names: Contradictory Statements](#2-duplicate-guest-names-contradictory-statements)
   - [3. [DONE] Fish vs. Meat vs. Vegetarian: Missing Definitions](#3-fish-vs-meat-vs-vegetarian-missing-definitions)
   - [4. [AI01] When Does Voting Reset?](#4-when-does-voting-reset)
@@ -13,7 +13,7 @@ I'll analyze the SPECIFICATION.md file for ambiguities and missing details that 
   - [6. Missing: Week Definition and Timeline](#6-missing-week-definition-and-timeline)
   - [7. Restaurant Selection vs. Final Meal Plan](#7-restaurant-selection-vs-final-meal-plan)
   - [8. [DONE] Missing: Image File Requirements](#8-missing-image-file-requirements)
-  - [9. Missing: Success Criteria for Voting](#9-missing-success-criteria-for-voting)
+  - [9. [AI02] Missing: Success Criteria for Voting](#9-missing-success-criteria-for-voting)
   - [10. JSON Upload: Missing Validation Rules](#10-json-upload-missing-validation-rules)
   - [11. Missing: Concurrent Access Handling](#11-missing-concurrent-access-handling)
   - [12. Missing: Error Recovery](#12-missing-error-recovery)
