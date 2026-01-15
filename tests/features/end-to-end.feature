@@ -23,10 +23,12 @@ Feature: End-to-End Workflow
     # Step 1: Admin uploads database
     Given I am on the home page
     When I go to the "System Admin" tab
+    And I reset the system
     And I upload the meal database
     Then the database should be uploaded successfully
     And the database status should show "Loaded"
 
+    # TODO: insufficient weekly options
     # Step 2: Restaurant selects weekly options
     When I go to the "Restaurant" tab
     Then meal options should be displayed
@@ -37,6 +39,7 @@ Feature: End-to-End Workflow
     And I save the weekly options
     Then the weekly options should be saved successfully
 
+    # TODO: guest votes unrelated to weekly options
     # Step 3: Guests vote for their preferences
     When I go to the "Guests" tab
     And I enter my name as "Student Alice"
