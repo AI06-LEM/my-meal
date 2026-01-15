@@ -18,6 +18,12 @@ Terminology: The restaurant is part of a school enterprise called Seefood.
    - Later: The restaurant can further edit the resulting plan
  - Manually: the restaurant chooses four meals for the week to make a final menu: one meat meal per week, one fish meal per week, and two vegetarian meals (the fifth day uses leftovers, it's called "SEEMPHONIE")
  - The vote results and meal choice interface are to be shown on the restaurant page as well as on the admin page
+ - A "Reset" button is available on the restaurant and admin pages which:
+    Clears all guest votes (background data) and vote charts (admin/restaurant)
+    Clears weekly options (guest page)
+    Clears all visualized data (charts, meal plan, etc.) from the admin and restaurant pages
+    Refreshes all pages (admin, restaurant, guest)
+    Opens the system for new restaurant selections
  - Once the meal plan is selected by the restaurant, the guest page is to be cleared (except last two weeks' meal plans) for the next round of voting, open on the following week
  - Later: Always show the last two weeks' meal plans decided by the restaurant on the guest page separate from the voting interface (above, below, or on either side)
 
@@ -147,5 +153,11 @@ Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final resul
  - Tutorial showing how to use the software
  - Ask seefood: option for two fish or two meat options per week?
 
- - The software keeps a memory of the last three weeks of meal plans, and no meal repeats within two weeks
+### Features - archives
+- After the restaurant confirms the weekly meal plan, the system admin must click on a 'Start New Week' button which:
+    Archives current week's data
+    Clears all guest votes (background data) and vote charts (admin/restaurant)
+    Clears weekly options (guest page)
+    Displays the meal plan selected by the restaurant on the guest page
+- The software keeps a memory of the last three weeks of meal plans, and no meal repeats within two weeks
 
