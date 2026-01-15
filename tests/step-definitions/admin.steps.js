@@ -13,10 +13,10 @@
 const { Given, When, Then } = require('@cucumber/cucumber');
 const { expect } = require('@playwright/test');
 const { AdminPage } = require('../pages/AdminPage');
-const path = require('path');
+const config = require('../config');
 
-// Path to the test database file
-const TEST_DATABASE_PATH = path.join(__dirname, '..', '..', 'meals_database_en_test.json');
+// Path to the test database file (loaded from centralized config)
+const TEST_DATABASE_PATH = config.TEST_DATABASE_PATH;
 
 // ==================== Navigation ====================
 

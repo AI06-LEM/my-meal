@@ -13,9 +13,10 @@
 const { Before, After, BeforeAll, AfterAll, Status } = require('@cucumber/cucumber');
 const fs = require('fs');
 const path = require('path');
+const config = require('../config');
 
 // Ensure screenshots directory exists
-const screenshotsDir = path.join(__dirname, '..', 'screenshots');
+const screenshotsDir = config.SCREENSHOTS_DIR;
 if (!fs.existsSync(screenshotsDir)) {
   fs.mkdirSync(screenshotsDir, { recursive: true });
 }

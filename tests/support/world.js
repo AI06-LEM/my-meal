@@ -13,6 +13,7 @@
 
 const { setWorldConstructor, World } = require('@cucumber/cucumber');
 const { chromium } = require('playwright');
+const config = require('../config');
 
 /**
  * Custom World class that provides Playwright browser access to all step definitions.
@@ -29,8 +30,8 @@ class PlaywrightWorld extends World {
     // Shared test data storage for passing data between steps
     this.testData = {};
     
-    // Base URL for the application (can be overridden via environment variable)
-    this.baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+    // Base URL for the application (loaded from centralized config)
+    this.baseUrl = config.BASE_URL;
   }
 
   /**
@@ -40,16 +41,14 @@ class PlaywrightWorld extends World {
     // Launch browser
     // headless: false shows the browser window (useful for debugging)
     // Use HEADLESS=false npm run test:features to see the browser
-    const headless = process.env.HEADLESS !== 'false';
-    
     this.browser = await chromium.launch({ 
-      headless,
-      slowMo: process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0
+      headless: config.HEADLESS,
+      slowMo: config.SLOW_MO
     });
     
     // Create a new browser context
     this.context = await this.browser.newContext({
-      viewport: { width: 1280, height: 720 },
+      viewport: config.VIEWPORT,
       // Record video for debugging (optional)
       // recordVideo: { dir: 'tests/videos/' }
     });

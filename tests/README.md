@@ -5,13 +5,14 @@ This directory contains the Behavior-Driven Development (BDD) test suite for the
 ## Table of Contents
 
 1. [Quick Start](#quick-start)
-2. [Test Structure](#test-structure)
-3. [Running Tests](#running-tests)
-4. [Writing New Tests](#writing-new-tests)
-5. [Best Practices](#best-practices)
-6. [Debugging Failed Tests](#debugging-failed-tests)
-7. [Available Test Profiles](#available-test-profiles)
-8. [Understanding the Architecture](#understanding-the-architecture)
+2. [Test Configuration](#test-configuration)
+3. [Test Structure](#test-structure)
+4. [Running Tests](#running-tests)
+5. [Writing New Tests](#writing-new-tests)
+6. [Best Practices](#best-practices)
+7. [Debugging Failed Tests](#debugging-failed-tests)
+8. [Available Test Profiles](#available-test-profiles)
+9. [Understanding the Architecture](#understanding-the-architecture)
 
 ---
 
@@ -37,18 +38,75 @@ npm run test:smoke
 
 ---
 
+## Test Configuration
+
+All test configuration settings are centralized in `tests/config.js`. This single file controls:
+
+### Environment Variables
+
+| Variable | Default | Description | Config Property |
+|----------|---------|-------------|-----------------|
+| `BASE_URL` | `http://localhost:3000` | Application URL | `config.BASE_URL` |
+| `HEADLESS` | `true` | Set to `false` to see the browser | `config.HEADLESS` |
+| `SLOW_MO` | `0` | Milliseconds to slow down actions (for debugging) | `config.SLOW_MO` |
+
+### Test Data Paths
+
+| Config Property | Default | Description |
+|-----------------|---------|-------------|
+| `TEST_DATABASE_PATH` | `meals_database_en_test.json` | Path to the test meal database |
+
+### Browser Settings
+
+| Config Property | Default | Description |
+|-----------------|---------|-------------|
+| `VIEWPORT` | `{ width: 1280, height: 720 }` | Browser viewport size |
+| `DEFAULT_TIMEOUT` | `30000` | Default timeout in milliseconds |
+
+### Test Directories
+
+| Config Property | Default | Description |
+|-----------------|---------|-------------|
+| `SCREENSHOTS_DIR` | `tests/screenshots` | Directory for failure screenshots |
+| `REPORTS_DIR` | `tests/reports` | Directory for test reports |
+
+### Using the Configuration
+
+In your step definitions or page objects, import the configuration:
+
+```javascript
+const config = require('../config');
+
+// Use environment settings
+console.log(`Testing against: ${config.BASE_URL}`);
+
+// Use test data paths
+await adminPage.uploadDatabase(config.TEST_DATABASE_PATH);
+
+// Use browser settings
+await this.page.setDefaultTimeout(config.DEFAULT_TIMEOUT);
+```
+
+### Overriding Configuration
+
+Override settings via environment variables when running tests:
+
+```bash
+# Examples
+BASE_URL=http://localhost:8080 npm test
+HEADLESS=false npm test
+SLOW_MO=500 npm run test:debug
+```
+
+---
+
 ## Test Structure
 
 ```
 tests/
-├── features/                    # Gherkin feature files (test specifications)
-│   ├── admin-upload.feature     # Admin database upload tests
-│   ├── restaurant-selection.feature  # Restaurant weekly options tests
-│   ├── guest-voting.feature     # Guest voting workflow tests
-│   ├── meal-plan.feature        # Final meal plan creation tests
-│   ├── system-reset.feature     # System reset functionality tests
-│   ├── navigation.feature       # Tab navigation tests
-│   └── end-to-end.feature       # Complete workflow tests
+├── config.js                    # ⭐ Centralized test configuration
+│
+├── features/                    # Gherkin feature files (test specifications) go here
 │
 ├── step-definitions/            # Step implementation code
 │   ├── common.steps.js          # Generic reusable steps (Layer 1)
@@ -146,21 +204,6 @@ npm run test:tag -- "@focus"
 ```
 
 Remember to remove temporary tags before committing!
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `BASE_URL` | `http://localhost:3000` | Application URL |
-| `HEADLESS` | `true` | Set to `false` to see the browser |
-| `SLOW_MO` | `0` | Milliseconds to slow down actions (for debugging) |
-
-```bash
-# Examples
-BASE_URL=http://localhost:8080 npm test
-HEADLESS=false npm test
-SLOW_MO=500 npm run test:debug
-```
 
 ---
 
