@@ -95,7 +95,7 @@ Feature: End-to-End Workflow
 
     # Verify vote count
     When I go to the "System Admin" tab
-    Then the system status should show 2 vote(s)
+    Then the system status should show 2 votes
 
   # ====================
   # New Week Workflow
@@ -110,7 +110,7 @@ Feature: End-to-End Workflow
 
     # Verify current state
     Then the system status should show options as "Set"
-    And the system status should show 1 vote(s)
+    And the system status should show 1 votes
 
     # Reset for new week
     When I reset the system

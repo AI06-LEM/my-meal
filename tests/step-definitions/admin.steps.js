@@ -103,7 +103,7 @@ Then('the system status should show votes as {string}', async function(expectedS
   expect(status).toBe(expectedStatus);
 });
 
-Then('the system status should show {int} vote(s)', async function(count) {
+Then('the system status should show {int} votes', async function(count) {
   const adminPage = new AdminPage(this.page);
   const status = await adminPage.getVotesStatus();
   expect(status).toContain(count.toString());

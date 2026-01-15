@@ -68,7 +68,7 @@ Feature: System Reset
 
   @votes
   Scenario: Vote count shows zero after reset
-    Given the system status should show 1 vote(s)
+    Given the system status should show 1 votes
     When I reset the system
     Then the system status should show votes as "No votes"
 
