@@ -82,6 +82,17 @@ Add to meal data structure:
 ```
 And state: "Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are not considered meat."
 
+**Correct clarification**
+Add to meal data structure:
+```json
+{
+  "category": "meat" | "fish" | "vegetarian", // mutually exclusive
+  "vegan": boolean
+}
+```
+And state: "Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are not considered meat."
+
+
 ---
 
 ### 4. **When Does Voting Reset?**
@@ -123,7 +134,7 @@ Either:
 
 **Correct clarification**
 Change line 29 from: Restaurant selects "one meal combination with at least one meal containing meat"
-to: "These four meal combinations contain exactly one meal combination with at least one meat combination and exactly one other fish combination"
+to: "Out of these possible meal combinations, the restaurant pre-selects weekly at least eight meal combinations that specify the options out of which restaurant guests can choose their preferences. These eight meal combinations contain at least two meat combination, at least two other fish combination and at least four  vegetarian meal combinations."
 
 ---
 
@@ -220,6 +231,11 @@ The workflow is unclear:
 "Minimum voting requirements:
 - At least 1 vote must be cast for the week to be valid
 - If any meal combination receives 0 votes, the restaurant must manually select a meal from that combination
+- The system warns (but doesn't block) if total votes < 10"
+
+**Correct clarification:**
+ "Minimum voting requirements:
+- At least 1 vote must be cast for the week to be valid
 - The system warns (but doesn't block) if total votes < 10"
 
 ---

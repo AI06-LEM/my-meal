@@ -26,7 +26,7 @@ Terminology: The restaurant is part of a school enterprise called Seefood.
 Prototype: This project defines a single app. There are three UI areas in the app (three tabs), for different types of users to interact with the app: a system admin, the Seefood restaurant, and restaurant guests (students etc.). In later versions, these areas will be separated into separate apps.
 
  - A system admin can upload a JSON file detailing all the available meals. This action resets the system (all persistent data in the internal SQLite database is overwritten) and overwrites the list of all possible meal combinations.
- - Out of these possible meal combinations, the restaurant pre-selects weekly exactly four meal combinations that specify the options out of which restaurant guests can choose their preferences. These four meal combinations contain exactly one meal combination with at least one meat combination and exactly one other fish combination. The two remaining meal combinations contain only vegetarian meals.
+ - Out of these possible meal combinations, the restaurant pre-selects weekly at least eight meal combinations that specify the options out of which restaurant guests can choose their preferences. These eight meal combinations contain at least two meat combination, at least two other fish combination and at least four  vegetarian meal combinations.
  - Each guest is then shown the meal combinations selected by the restaurant for the current week, again one meal combinations with meat, one with fish and two purely vegetarian meal combinations. Out of each meal combination, the guest can select exactly one meal of their choice.
  - The system admin can obtain final voting results 
 
@@ -126,7 +126,6 @@ Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final resul
 
  "Minimum voting requirements:
 - At least 1 vote must be cast for the week to be valid
-- If any meal combination receives 0 votes, the restaurant must manually select a meal combination
 - The system warns (but doesn't block) if total votes < 10"
 
 
