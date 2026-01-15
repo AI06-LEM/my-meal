@@ -385,12 +385,18 @@ This opens a visible browser window so you can watch the test run.
 
 ### 3. Slow Down the Test
 
+**Automatic slow-down:** When using `npm run test:debug` (visible browser), tests automatically slow down by 500ms between actions for easier observation.
+
+**Custom slow-down:** To use a different speed:
+
 MacOS/Linux:
 ```bash
 SLOW_MO=1000 npm run test:debug
 ```
 
-This adds a 1-second delay between each action.
+This adds a 1-second delay between each action, overriding the default 500ms.
+
+**Note:** Headless tests (without `:debug`) always run at full speed unless you explicitly set SLOW_MO.
 
 ### 4. Add Breakpoints with Playwright Inspector
 

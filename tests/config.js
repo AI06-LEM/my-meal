@@ -33,9 +33,17 @@ const HEADLESS = process.env.HEADLESS !== 'false';
 /**
  * Slow down Playwright operations by specified milliseconds
  * Useful for debugging and watching tests execute
+ * 
+ * Behavior:
+ * - If SLOW_MO is explicitly set: uses that value
+ * - If browser is visible (HEADLESS=false): defaults to 500ms
+ * - Otherwise: runs at full speed (0ms)
+ * 
  * Override with: SLOW_MO=1000 npm test
  */
-const SLOW_MO = process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0;
+const SLOW_MO = process.env.SLOW_MO 
+  ? parseInt(process.env.SLOW_MO) 
+  : (HEADLESS ? 0 : 500);
 
 // ==================== Test Data Configuration ====================
 
