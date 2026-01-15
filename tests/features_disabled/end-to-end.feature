@@ -21,6 +21,7 @@ Feature: End-to-End Workflow
   @multiple-voters
   Scenario: Multiple guests can vote and results are aggregated
     # Setup
+    # TODO: fix BUG: In step definition, restaurant does not select correct options (only four meal combinations chosen)
     Given the restaurant has selected weekly options
 
     # First voter
@@ -55,6 +56,7 @@ Feature: End-to-End Workflow
   @new-week
   Scenario: Starting a new week by resetting and reconfiguring
     # Setup existing week
+    # TODO: fix BUG: In step definition, restaurant does not select correct options (only four meal combinations chosen)
     Given the restaurant has selected weekly options
     And "ExistingVoter" has already voted
     And I am on the admin tab
