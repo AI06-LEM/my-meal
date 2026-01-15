@@ -281,6 +281,48 @@ ifconfig -a
 - [ ] Checked firewall settings
 - [ ] Tried mobile hotspot as alternative
 
+## Testing
+
+The application includes a comprehensive BDD test suite using Cucumber.js and Playwright.
+
+### Running Tests
+
+**Prerequisites:**
+1. The server must be running on port 3000 (in a separate terminal): `npm start`
+2. Playwright browsers must be installed: `npx playwright install chromium` (one-time setup)
+
+**Test Commands:**
+
+MacOS/Linux:
+```bash
+# Run all tests
+npm test
+
+# Run quick smoke tests
+npm run test:smoke
+
+# Run with visible browser (for debugging)
+npm run test:debug
+
+# Run tests with specific tag
+npm run test:tag -- "@tagname"
+```
+
+Windows:
+```powershell
+# Run all tests
+npm.cmd test
+
+# Run quick smoke tests
+npm.cmd run test:smoke
+```
+
+**For detailed testing documentation, see [tests/README.md](tests/README.md)**
+
+### Note for AI Assistants
+
+When running tests using the Shell tool in Cursor, use `required_permissions: ["all"]` because Playwright needs access to browsers installed in the system cache directory. See `.cursorrules` for details.
+
 ## Troubleshooting
 
 ### Installation Issues
