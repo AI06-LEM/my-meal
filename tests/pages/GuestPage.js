@@ -219,7 +219,12 @@ class GuestPage extends BasePage {
    */
   async submitVote() {
     await this.submitButton.click();
-    await this.waitForNetworkIdle();
+    
+    // Wait for the status message to appear with actual content
+    await this.page.locator('#voteStatus:not(:empty)').waitFor({ 
+      state: 'visible',
+      timeout: 10000
+    });
   }
 
   /**
@@ -233,7 +238,12 @@ class GuestPage extends BasePage {
    * Check if vote was successful
    */
   async isVoteSuccessful() {
-    const status = await this.getVoteStatus();
+    const statusElement = this.page.locator('#voteStatus');
+    
+    // Wait for the element to be visible
+    await statusElement.waitFor({ state: 'visible', timeout: 5000 });
+    
+    const status = await statusElement.textContent();
     return status.includes('successfully');
   }
 

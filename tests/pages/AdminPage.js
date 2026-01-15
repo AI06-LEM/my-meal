@@ -43,8 +43,13 @@ class AdminPage extends BasePage {
     // Click the upload button
     await this.page.getByRole('button', { name: 'Upload Database' }).click();
     
-    // Wait for upload to complete
-    await this.waitForNetworkIdle();
+    // Wait for the status message to appear with actual content
+    // FileReader is async but not a network operation, so networkidle won't catch it
+    // Wait for either success or error message to appear
+    await this.page.locator('#uploadStatus:not(:empty)').waitFor({ 
+      state: 'visible',
+      timeout: 10000
+    });
   }
 
   /**
@@ -58,7 +63,12 @@ class AdminPage extends BasePage {
    * Check if upload was successful
    */
   async isUploadSuccessful() {
-    const status = await this.getUploadStatus();
+    const statusElement = this.page.locator('#uploadStatus');
+    
+    // Wait for the element to be visible
+    await statusElement.waitFor({ state: 'visible', timeout: 5000 });
+    
+    const status = await statusElement.textContent();
     return status.includes('successfully');
   }
 
@@ -111,7 +121,12 @@ class AdminPage extends BasePage {
    */
   async showVoteResults() {
     await this.page.getByRole('button', { name: 'Show Vote Charts' }).click();
-    await this.waitForNetworkIdle();
+    
+    // Wait for the status message to appear (synchronous operation but good practice)
+    await this.page.locator('#voteResultsStatus:not(:empty)').waitFor({ 
+      state: 'visible',
+      timeout: 10000
+    });
   }
 
   /**
@@ -187,7 +202,12 @@ class AdminPage extends BasePage {
    */
   async saveFinalPlan() {
     await this.page.getByRole('button', { name: 'Save Final Meal Plan' }).click();
-    await this.waitForNetworkIdle();
+    
+    // Wait for the status message to appear with actual content
+    await this.page.locator('#finalPlanStatus:not(:empty)').waitFor({ 
+      state: 'visible',
+      timeout: 10000
+    });
   }
 
   /**
@@ -236,7 +256,12 @@ class AdminPage extends BasePage {
     });
     
     await this.clickResetSystem();
-    await this.waitForNetworkIdle();
+    
+    // Wait for the status message to appear with actual content
+    await this.page.locator('#resetStatus:not(:empty)').waitFor({ 
+      state: 'visible',
+      timeout: 10000
+    });
   }
 
   /**

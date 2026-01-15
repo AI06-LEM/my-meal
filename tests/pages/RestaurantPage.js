@@ -175,7 +175,12 @@ class RestaurantPage extends BasePage {
    */
   async saveWeeklyOptions() {
     await this.page.getByRole('button', { name: 'Save Weekly Options' }).click();
-    await this.waitForNetworkIdle();
+    
+    // Wait for the status message to appear with actual content
+    await this.page.locator('#saveStatus:not(:empty)').waitFor({ 
+      state: 'visible',
+      timeout: 10000
+    });
   }
 
   /**
@@ -189,7 +194,12 @@ class RestaurantPage extends BasePage {
    * Check if save was successful
    */
   async isSaveSuccessful() {
-    const status = await this.getSaveStatus();
+    const statusElement = this.page.locator('#saveStatus');
+    
+    // Wait for the element to be visible
+    await statusElement.waitFor({ state: 'visible', timeout: 5000 });
+    
+    const status = await statusElement.textContent();
     return status.includes('successfully');
   }
 
