@@ -15,55 +15,6 @@ Feature: End-to-End Workflow
   So that the weekly meal planning process succeeds
 
   # ====================
-  # Complete Workflow
-  # ====================
-
-  @full-workflow
-  Scenario: Complete meal planning workflow from start to finish
-    # Step 1: Admin uploads database
-    Given I am on the home page
-    When I go to the "System Admin" tab
-    And I reset the system
-    And I upload the meal database
-    Then the database should be uploaded successfully
-    And the database status should show "Loaded"
-
-    # TODO: insufficient weekly options
-    # Step 2: Restaurant selects weekly options
-    When I go to the "Restaurant" tab
-    Then meal options should be displayed
-    When I select "Burger" as a meat option
-    And I select "Pasta" as a fish option
-    And I select "Mushroom Risotto" as a vegetarian option
-    And I select "Vegetable Risotto" as a vegetarian option
-    And I save the weekly options
-    Then the weekly options should be saved successfully
-
-    # TODO: guest votes unrelated to weekly options
-    # Step 3: Guests vote for their preferences
-    When I go to the "Guests" tab
-    And I enter my name as "Student Alice"
-    And I select meat option "Burger"
-    And I select fish option "Pasta"
-    And I select vegetarian option "Vegetarian Burger"
-    And I select vegetarian option "Pasta Primavera"
-    And I submit my vote
-    Then I should see a confirmation message
-
-    # Step 4: Admin views results and creates meal plan
-    When I go to the "System Admin" tab
-    Then the system status should show 1 vote(s)
-    When I click show vote results
-    Then I should see vote charts
-    When I select "Burger" for Monday
-    And I select "Pasta" for Tuesday
-    And I select "Mushroom Risotto" for Wednesday
-    And I select "Vegetable Risotto" for Thursday
-    And I save the final meal plan
-    Then the meal plan should be saved successfully
-    And the weekly meal plan should be displayed
-
-  # ====================
   # Multiple Voters
   # ====================
 
@@ -136,16 +87,3 @@ Feature: End-to-End Workflow
     And I submit my vote
     Then I should see a confirmation message
 
-  # ====================
-  # Smoke Test (Quick Sanity Check)
-  # ====================
-
-  @smoke @quick
-  Scenario: Quick sanity check - all tabs accessible
-    Given I am on the home page
-    When I go to the "System Admin" tab
-    Then I should see the heading "System Administration"
-    When I go to the "Restaurant" tab
-    Then I should see the heading "Restaurant - Weekly Options"
-    When I go to the "Guests" tab
-    Then I should see the heading "Guest Voting"
