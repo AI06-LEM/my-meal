@@ -2,6 +2,23 @@
 
 I'll analyze the SPECIFICATION.md file for ambiguities and missing details that could cause implementation or testing issues.
 
+## Table of Contents
+
+- [Critical Ambiguities](#critical-ambiguities)
+  - [1. [DONE] Voting Unit: Meals vs. Meal Combinations](#1-voting-unit-meals-vs-meal-combinations)
+  - [2. [AI05] Duplicate Guest Names: Contradictory Statements](#2-duplicate-guest-names-contradictory-statements)
+  - [3. [DONE] Fish vs. Meat vs. Vegetarian: Missing Definitions](#3-fish-vs-meat-vs-vegetarian-missing-definitions)
+  - [4. [AI01] When Does Voting Reset?](#4-when-does-voting-reset)
+  - [5. [DONE] Meal Combinations Must Contain Vegetarian Option](#5-meal-combinations-must-contain-vegetarian-option)
+  - [6. Missing: Week Definition and Timeline](#6-missing-week-definition-and-timeline)
+  - [7. [DONE] Restaurant Selection vs. Final Meal Plan](#7-restaurant-selection-vs-final-meal-plan)
+  - [8. [DONE] Missing: Image File Requirements](#8-missing-image-file-requirements)
+  - [9. [DONE] Missing: Success Criteria for Voting](#9-missing-success-criteria-for-voting)
+  - [10. [DONE] JSON Upload: Missing Validation Rules](#10-json-upload-missing-validation-rules)
+  - [11. Missing: Concurrent Access Handling](#11-missing-concurrent-access-handling)
+  - [12. Missing: Error Recovery](#12-missing-error-recovery)
+- [Summary](#summary)
+
 ## Critical Ambiguities
 
 ### 1. **Voting Unit: Meals vs. Meal Combinations**
@@ -16,8 +33,13 @@ The specification alternates between saying guests vote on "meals" versus select
 - Does a guest vote on 4 individual meals, or on 4 meal combinations (choosing one meal from each)?
 - When aggregating results, do you count votes per individual meal or per combination?
 
-**Suggested clarification:**
+**AI: Suggested clarification:**
 Explicitly state: "Guests are shown 4 meal combinations for the week. From each combination, they select exactly one meal. The system counts votes for each individual meal within its combination."
+
+**Correct clarification:**
+
+Explicitly state: "Guests are shown the full set of meal combinations (options) the restaurant chose for the week: at least 2 meat meal combinations (meat option), at least 2 fish meal combinations and at least 4 vegetarian meal combinations. Guest can choose 1 meat option (still a meal combination), 1 fish option and 2 vegetarian options. The system counts votes for each individual meal combination."
+
 
 ---
 
@@ -60,6 +82,17 @@ Add to meal data structure:
 ```
 And state: "Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are not considered meat."
 
+**Correct clarification**
+Add to meal data structure:
+```json
+{
+  "category": "meat" | "fish" | "vegetarian", // mutually exclusive
+  "vegan": boolean
+}
+```
+And state: "Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are not considered meat."
+
+
 ---
 
 ### 4. **When Does Voting Reset?**
@@ -94,10 +127,14 @@ If EVERY combination must have a vegetarian option, then the "meat combination" 
 - Is the purpose of combinations to always offer veg alternatives?
 - Or can there be meat-only combinations?
 
-**Suggested clarification:**
+**AI: Suggested clarification:**
 Either:
 - "Every meal combination MUST contain at least one vegetarian option (to ensure all guests can vote on all categories)"
 - OR: "Meal combinations may contain only vegetarian meals, or may mix categories"
+
+**Correct clarification**
+- Change line 29 from: Restaurant selects "one meal combination with at least one meal containing meat"
+- to: "Out of these possible meal combinations, the restaurant pre-selects weekly at least eight meal combinations that specify the options out of which restaurant guests can choose their preferences. These eight meal combinations contain at least two meat combination, at least two other fish combination and at least four  vegetarian meal combinations."
 
 ---
 
@@ -135,7 +172,7 @@ The workflow is unclear:
 2. Or does restaurant select combinations, guests vote, and the highest votes automatically win?
 3. What is the system admin's role in "obtaining" results?
 
-**Suggested clarification:**
+**AI: Suggested clarification:**
 "Workflow:
 1. Restaurant selects 4 meal combinations for weekly voting
 2. Guests vote on their preferred meals from these combinations
@@ -143,9 +180,17 @@ The workflow is unclear:
 4. Restaurant confirms the final meal plan (typically the most-voted meal from each combination, but can override)
 5. System admin can export/view the final confirmed plan"
 
+**Correct clarification**
+"Workflow:
+1. Restaurant selects meal combinations for weekly voting
+2. Guests vote on their preferred meals from these combinations
+3. System aggregates votes and displays results to restaurant
+4. Restaurant creates the final meal plan
+5. System admin can export/view the final confirmed plan"
+
 ---
 
-### 8. [DONE]**Missing: Image File Requirements**
+### 8. **Missing: Image File Requirements**
 
 **What's ambiguous:**
 - Line 89: "Image (path to a file) - string"
@@ -188,6 +233,11 @@ The workflow is unclear:
 - If any meal combination receives 0 votes, the restaurant must manually select a meal from that combination
 - The system warns (but doesn't block) if total votes < 10"
 
+**Correct clarification:**
+ "Minimum voting requirements:
+- At least 1 vote must be cast for the week to be valid
+- The system warns (but doesn't block) if total votes < 10"
+
 ---
 
 ### 10. **JSON Upload: Missing Validation Rules**
@@ -209,6 +259,22 @@ Provide complete JSON schema example and state:
 - All meals referenced in combinations must exist in meals array
 - Each combination must contain 1-5 meals
 - Required fields: [list them]
+- On validation error: reject upload and display specific error message"
+
+**Correct clarification:**
+Provide complete JSON schema example and state:
+"JSON validation rules:
+- All meal IDs must be unique
+- Meals cannot exist without being in any combination
+- Each combination must contain 1-2 meals
+- Required fields: ["name", "vegan", "category"]
+```json
+{
+  "name": string,
+  "vegan": boolean,
+  "category": "meat" | "fish" | "vegetarian"
+}
+```
 - On validation error: reject upload and display specific error message"
 
 ---
