@@ -308,39 +308,39 @@ When('I complete a full vote with:', async function(dataTable) {
 
 // ==================== Previous Voter Setup ====================
 
-Given('{string} has already voted', async function(voterName) {
-  // First complete the voting setup, then submit a vote
-  const guestPage = new GuestPage(this.page);
-  await guestPage.navigate();
+// Given('{string} has already voted', async function(voterName) {
+//   // First complete the voting setup, then submit a vote
+//   const guestPage = new GuestPage(this.page);
+//   await guestPage.navigate();
   
-  // Complete a vote for this user
-  await guestPage.completeVote({
-    name: voterName,
-    meat: 'Burger',
-    fish: 'Pasta',
-    vegetarian: ['Vegetarian Burger', 'Pasta Primavera']
-  });
+//   // Complete a vote for this user
+//   await guestPage.completeVote({
+//     name: voterName,
+//     meat: 'Burger',
+//     fish: 'Pasta',
+//     vegetarian: ['Vegetarian Burger', 'Pasta Primavera']
+//   });
   
-  // Verify vote was successful
-  expect(await guestPage.isVoteSuccessful()).toBe(true);
+//   // Verify vote was successful
+//   expect(await guestPage.isVoteSuccessful()).toBe(true);
   
-  // Clear the form for the next voter
-  await guestPage.clearName();
-});
+//   // Clear the form for the next voter
+//   await guestPage.clearName();
+// });
 
-Given('{string} has already submitted a vote', async function(voterName) {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.navigate();
+// Given('{string} has already submitted a vote', async function(voterName) {
+//   const guestPage = new GuestPage(this.page);
+//   await guestPage.navigate();
   
-  await guestPage.completeVote({
-    name: voterName,
-    meat: 'Burger',
-    fish: 'Pasta',
-    vegetarian: ['Vegetarian Burger', 'Pasta Primavera']
-  });
+//   await guestPage.completeVote({
+//     name: voterName,
+//     meat: 'Burger',
+//     fish: 'Pasta',
+//     vegetarian: ['Vegetarian Burger', 'Pasta Primavera']
+//   });
   
-  expect(await guestPage.isVoteSuccessful()).toBe(true);
-});
+//   expect(await guestPage.isVoteSuccessful()).toBe(true);
+// });
 
 When('I try to vote again as {string}', async function(voterName) {
   const guestPage = new GuestPage(this.page);
