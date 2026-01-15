@@ -150,30 +150,82 @@ Then('I should see a message that weekly options are saved', async function() {
 
 // ==================== Combined Setup Steps ====================
 
+// /**
+//  * Complete restaurant setup - select a standard set of weekly options
+//  * This is commonly used as a Background step
+//  */
+// Given('the restaurant has selected weekly options', async function() {
+//   // First, ensure database is uploaded
+//   const adminPage = new AdminPage(this.page);
+//   await adminPage.navigate();
+//   await adminPage.uploadDatabase(TEST_DATABASE_PATH);
+  
+//   // Then select weekly options
+//   const restaurantPage = new RestaurantPage(this.page);
+//   await restaurantPage.navigate();
+  
+//   // Select one meat combo
+//   await restaurantPage.selectMeatOption('Burger');
+  
+//   // Select one fish combo
+//   await restaurantPage.selectFishOption('Pasta');
+  
+//   // Note: The combos automatically add their vegetarian counterparts
+//   // We need two additional vegetarian options for guests to choose from
+//   await restaurantPage.selectVegetarianOption('Mushroom Risotto');
+//   await restaurantPage.selectVegetarianOption('Vegetable Risotto');
+  
+//   // Save the options
+//   await restaurantPage.saveWeeklyOptions();
+  
+//   // Store in test data for verification
+//   this.testData.weeklyOptionsSet = true;
+// });
+
 /**
- * Complete restaurant setup - select a standard set of weekly options
- * This is commonly used as a Background step
+ * Complete restaurant setup with custom meal selections specified in a data table
+ * This allows explicit control over which meals are selected in Gherkin syntax
+ * Includes system reset to ensure clean state
+ * 
+ * Usage in Gherkin:
+ *   Given the restaurant has selected weekly options with:
+ *     | category    | meal                |
+ *     | meat        | Burger              |
+ *     | meat        | Meatballs           |
+ *     | fish        | Fish and Chips      |
+ *     | fish        | Pasta               |
+ *     | vegetarian  | Lasagna             |
+ *     | vegetarian  | Stir Fry            |
+ *     | vegetarian  | Salad               |
+ *     | vegetarian  | Curry               |
  */
-Given('the restaurant has selected weekly options', async function() {
-  // First, ensure database is uploaded
+Given('the restaurant has selected weekly options with:', async function(dataTable) {
+  // First, reset system and upload database
   const adminPage = new AdminPage(this.page);
   await adminPage.navigate();
+  await adminPage.resetSystem();
   await adminPage.uploadDatabase(TEST_DATABASE_PATH);
   
-  // Then select weekly options
+  // Navigate to restaurant page
   const restaurantPage = new RestaurantPage(this.page);
   await restaurantPage.navigate();
   
-  // Select one meat combo
-  await restaurantPage.selectMeatOption('Burger');
+  // Parse the data table rows
+  const rows = dataTable.hashes();
   
-  // Select one fish combo
-  await restaurantPage.selectFishOption('Pasta');
-  
-  // Note: The combos automatically add their vegetarian counterparts
-  // We need two additional vegetarian options for guests to choose from
-  await restaurantPage.selectVegetarianOption('Mushroom Risotto');
-  await restaurantPage.selectVegetarianOption('Vegetable Risotto');
+  // Select meals based on data table
+  for (const row of rows) {
+    const category = row.category.toLowerCase();
+    const mealName = row.meal || row.name;
+    
+    if (category === 'meat') {
+      await restaurantPage.selectMeatOption(mealName);
+    } else if (category === 'fish') {
+      await restaurantPage.selectFishOption(mealName);
+    } else if (category === 'vegetarian') {
+      await restaurantPage.selectVegetarianOption(mealName);
+    }
+  }
   
   // Save the options
   await restaurantPage.saveWeeklyOptions();
@@ -182,31 +234,16 @@ Given('the restaurant has selected weekly options', async function() {
   this.testData.weeklyOptionsSet = true;
 });
 
-Given('the restaurant has selected weekly options with:', async function(dataTable) {
-  // First, ensure database is uploaded
-  const adminPage = new AdminPage(this.page);
-  await adminPage.navigate();
-  await adminPage.uploadDatabase(TEST_DATABASE_PATH);
-  
-  // Parse the data table
-  const data = dataTable.rowsHash();
-  
-  const restaurantPage = new RestaurantPage(this.page);
-  await restaurantPage.navigate();
-  
-  // Select options based on data table
-  // Expected format: | category | count | or | category | options |
-  // For now, we'll select a standard set
-  await restaurantPage.selectMeatOption('Burger');
-  await restaurantPage.selectFishOption('Pasta');
-  await restaurantPage.selectVegetarianOption('Mushroom Risotto');
-  await restaurantPage.selectVegetarianOption('Vegetable Risotto');
-  
-  await restaurantPage.saveWeeklyOptions();
-});
-
 /**
- * Select specific weekly options from a data table
+ * Select specific weekly options from a data table (without upload/save)
+ * Use this in the middle of a scenario when you're already on the restaurant page
+ * For complete setup, use: Given('the restaurant has selected weekly options with:')
+ * 
+ * Usage in Gherkin:
+ *   When I select the following weekly options:
+ *     | category    | meal      |
+ *     | meat        | Burger    |
+ *     | fish        | Pasta     |
  */
 When('I select the following weekly options:', async function(dataTable) {
   const restaurantPage = new RestaurantPage(this.page);

@@ -22,6 +22,7 @@ const { expect } = require('@playwright/test');
 
 /**
  * Navigate to a specific tab by name
+ * Uses appropriate Page Object for proper waiting logic
  * 
  * Examples:
  *   When I go to the "Guests" tab
@@ -29,13 +30,43 @@ const { expect } = require('@playwright/test');
  *   When I go to the "Restaurant" tab
  */
 When('I go to the {string} tab', async function(tabName) {
-  await this.page.getByRole('button', { name: tabName }).click();
-  await this.page.waitForLoadState('networkidle');
+  const { AdminPage, RestaurantPage, GuestPage } = require('../pages');
+  
+  // Use appropriate Page Object for proper waiting logic
+  if (tabName === 'Guests') {
+    const guestPage = new GuestPage(this.page);
+    await guestPage.navigate();
+  } else if (tabName === 'Restaurant') {
+    const restaurantPage = new RestaurantPage(this.page);
+    await restaurantPage.navigate();
+  } else if (tabName === 'System Admin') {
+    const adminPage = new AdminPage(this.page);
+    await adminPage.navigate();
+  } else {
+    // Fallback for unknown tabs
+    await this.page.getByRole('button', { name: tabName }).click();
+    await this.page.waitForLoadState('networkidle');
+  }
 });
 
 Given('I am on the {string} tab', async function(tabName) {
-  await this.page.getByRole('button', { name: tabName }).click();
-  await this.page.waitForLoadState('networkidle');
+  const { AdminPage, RestaurantPage, GuestPage } = require('../pages');
+  
+  // Use appropriate Page Object for proper waiting logic
+  if (tabName === 'Guests') {
+    const guestPage = new GuestPage(this.page);
+    await guestPage.navigate();
+  } else if (tabName === 'Restaurant') {
+    const restaurantPage = new RestaurantPage(this.page);
+    await restaurantPage.navigate();
+  } else if (tabName === 'System Admin') {
+    const adminPage = new AdminPage(this.page);
+    await adminPage.navigate();
+  } else {
+    // Fallback for unknown tabs
+    await this.page.getByRole('button', { name: tabName }).click();
+    await this.page.waitForLoadState('networkidle');
+  }
 });
 
 Given('I am on the home page', async function() {

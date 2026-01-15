@@ -22,9 +22,16 @@ class GuestPage extends BasePage {
 
   /**
    * Navigate to Guests tab and wait for it to be ready
+   * Waits for voting options to be loaded from localStorage
    */
   async navigate() {
     await this.goToGuestsTab();
+    
+    // Wait for voting options to be loaded (indicates weekly options have been set)
+    await this.page.locator('#meatVoting .vote-option').first().waitFor({ 
+      state: 'visible',
+      timeout: 10000 
+    });
   }
 
   // ==================== Name Entry ====================
