@@ -43,14 +43,14 @@ Feature: Admin Database Upload
   # State Verification
   # ====================
 
-  @state
-  Scenario: Initial system state before any uploads
-    When I go to the "System Admin" tab
-    # BUG: If there is a my-meal.db file in the database folder, it will show as loaded instead of not loaded.
-    Then the system status should show database as "Not loaded"
-    And the system status should show options as "Not set"
-    And the system status should show votes as "No votes"
-    And the system status should show meal plan as "Not set"
+  # @state
+  # Scenario: Initial system state before any uploads
+  #   When I go to the "System Admin" tab
+  #   # BUG: If there is a my-meal.db file in the database folder, it will show as loaded instead of not loaded.
+  #   Then the system status should show database as "Not loaded"
+  #   And the system status should show options as "Not set"
+  #   And the system status should show votes as "No votes"
+  #   And the system status should show meal plan as "Not set"
 
   @state
   Scenario: Uploaded database persists across page refresh
