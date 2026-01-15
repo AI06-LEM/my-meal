@@ -25,6 +25,19 @@ This directory contains the Behavior-Driven Development (BDD) test suite for the
 
 ### Running Your First Test
 
+Windows:
+```powershell
+# 1. Start the server (in one terminal)
+npm.cmd start
+
+# 2. Run all tests (in another terminal)
+npm.cmd test
+
+# 3. Or run just the smoke tests (quick sanity check)
+npm.cmd test run test:smoke
+```
+
+MacOS/Linux:
 ```bash
 # 1. Start the server (in one terminal)
 npm start
@@ -91,6 +104,7 @@ await this.page.setDefaultTimeout(config.DEFAULT_TIMEOUT);
 
 Override settings via environment variables when running tests:
 
+MacOS/Linux:
 ```bash
 # Examples
 BASE_URL=http://localhost:8080 npm test
@@ -151,6 +165,7 @@ tests/
 
 ### Running Specific Tags
 
+MacOS/Linux:
 ```bash
 # Run tests with a specific tag
 npm run test:tag -- @validation
@@ -167,6 +182,7 @@ npm run test:tag -- "not @slow"
 
 ### Running Specific Feature Files
 
+MacOS/Linux:
 ```bash
 # Run a specific feature file
 npx cucumber-js tests/features/guest-voting.feature
@@ -199,6 +215,7 @@ Scenario: Restaurant can deselect a meal option
 
 **Workflow tip:** Add temporary tags like `@focus` or `@wip` to scenarios you're actively working on, then run just those:
 
+MacOS/Linux:
 ```bash
 npm run test:tag -- "@focus"
 ```
@@ -257,6 +274,7 @@ When('I select my favorite meal', async function() {
 
 ### Step 4: Run Your Test
 
+MacOS/Linux:
 ```bash
 # Run just your new test (using the tag)
 npm run test:tag -- @new-feature
@@ -358,6 +376,7 @@ tests/screenshots/FAILED_Guest_submits_a_valid_vote_2024-01-15T10-30-00.png
 
 ### 2. Run with Visible Browser
 
+MacOS/Linux:
 ```bash
 npm run test:debug
 ```
@@ -366,6 +385,7 @@ This opens a visible browser window so you can watch the test run.
 
 ### 3. Slow Down the Test
 
+MacOS/Linux:
 ```bash
 SLOW_MO=1000 npm run test:debug
 ```
@@ -374,6 +394,7 @@ This adds a 1-second delay between each action.
 
 ### 4. Add Breakpoints with Playwright Inspector
 
+MacOS/Linux:
 ```bash
 PWDEBUG=1 npm test
 ```
@@ -392,6 +413,7 @@ Scenario: My new test
 
 Then run only that test:
 
+MacOS/Linux:
 ```bash
 npm run test:wip
 ```
@@ -513,6 +535,8 @@ When I wait 2 seconds
 ### "Server not running" Errors
 
 Make sure the application is running:
+
+MacOS/Linux:
 ```bash
 npm start
 ```
