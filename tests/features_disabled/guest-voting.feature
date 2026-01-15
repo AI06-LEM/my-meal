@@ -127,20 +127,20 @@ Feature: Guest Voting
   @selection
   Scenario: Meat options use radio buttons (only one selectable)
     When I select meat option "Burger"
-    Then I should have 1 meat option(s) selected
+    Then I should have 1 meat options selected
     And the meat option "Burger" should be selected
 
   @selection
   Scenario: Fish options use radio buttons (only one selectable)
     When I select fish option "Pasta"
-    Then I should have 1 fish option(s) selected
+    Then I should have 1 fish options selected
     And the fish option "Pasta" should be selected
 
   @selection
   Scenario: Vegetarian options use checkboxes (multiple selectable)
     When I select vegetarian option "Vegetarian Burger"
     And I select vegetarian option "Pasta Primavera"
-    Then I should have 2 vegetarian option(s) selected
+    Then I should have 2 vegetarian options selected
 
   @selection
   Scenario: Guest can change vegetarian selection before submitting
@@ -148,7 +148,7 @@ Feature: Guest Voting
     And I select vegetarian option "Pasta Primavera"
     And I deselect vegetarian option "Pasta Primavera"
     And I select vegetarian option "Mushroom Risotto"
-    Then I should have 2 vegetarian option(s) selected
+    Then I should have 2 vegetarian options selected
     And the vegetarian option "Vegetarian Burger" should be selected
     And the vegetarian option "Mushroom Risotto" should be selected
 

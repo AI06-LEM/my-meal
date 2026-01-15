@@ -94,37 +94,37 @@ Then('{string} should not be selected', async function(mealName) {
   expect(isSelected).toBe(false);
 });
 
-Then('I should see {int} meat option(s) available', async function(count) {
+Then('I should see {int} meat options available', async function(count) {
   const restaurantPage = new RestaurantPage(this.page);
   const options = await restaurantPage.getMeatOptions();
   expect(options.length).toBe(count);
 });
 
-Then('I should see {int} fish option(s) available', async function(count) {
+Then('I should see {int} fish options available', async function(count) {
   const restaurantPage = new RestaurantPage(this.page);
   const options = await restaurantPage.getFishOptions();
   expect(options.length).toBe(count);
 });
 
-Then('I should see {int} vegetarian option(s) available', async function(count) {
+Then('I should see {int} vegetarian options available', async function(count) {
   const restaurantPage = new RestaurantPage(this.page);
   const options = await restaurantPage.getVegetarianOptions();
   expect(options.length).toBe(count);
 });
 
-Then('I should have {int} meat option(s) selected', async function(count) {
+Then('I should have {int} meat options selected', async function(count) {
   const restaurantPage = new RestaurantPage(this.page);
   const selectedCount = await restaurantPage.getSelectedCount('meat');
   expect(selectedCount).toBe(count);
 });
 
-Then('I should have {int} fish option(s) selected', async function(count) {
+Then('I should have {int} fish options selected', async function(count) {
   const restaurantPage = new RestaurantPage(this.page);
   const selectedCount = await restaurantPage.getSelectedCount('fish');
   expect(selectedCount).toBe(count);
 });
 
-Then('I should have {int} vegetarian option(s) selected', async function(count) {
+Then('I should have {int} vegetarian options selected', async function(count) {
   const restaurantPage = new RestaurantPage(this.page);
   const selectedCount = await restaurantPage.getSelectedCount('vegetarian');
   expect(selectedCount).toBe(count);

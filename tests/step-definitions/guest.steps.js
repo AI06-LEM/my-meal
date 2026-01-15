@@ -74,7 +74,7 @@ When('I select {int} meat option', async function(count) {
   await guestPage.selectMeatOptions(count);
 });
 
-When('I select {int} meat option(s)', async function(count) {
+When('I select {int} meat options', async function(count) {
   const guestPage = new GuestPage(this.page);
   await guestPage.selectMeatOptions(count);
 });
@@ -84,7 +84,7 @@ When('I select {int} fish option', async function(count) {
   await guestPage.selectFishOptions(count);
 });
 
-When('I select {int} fish option(s)', async function(count) {
+When('I select {int} fish options', async function(count) {
   const guestPage = new GuestPage(this.page);
   await guestPage.selectFishOptions(count);
 });
@@ -94,7 +94,7 @@ When('I select {int} vegetarian option', async function(count) {
   await guestPage.selectVegetarianOptions(count);
 });
 
-When('I select {int} vegetarian option(s)', async function(count) {
+When('I select {int} vegetarian options', async function(count) {
   const guestPage = new GuestPage(this.page);
   await guestPage.selectVegetarianOptions(count);
 });
@@ -206,19 +206,19 @@ Then('I should NOT see the error {string}', async function(errorText) {
 
 // ==================== Selection State Verification ====================
 
-Then('I should have {int} meat option(s) selected', async function(count) {
+Then('I should have {int} meat options selected', async function(count) {
   const guestPage = new GuestPage(this.page);
   const selectedCount = await guestPage.getSelectedCount('meat');
   expect(selectedCount).toBe(count);
 });
 
-Then('I should have {int} fish option(s) selected', async function(count) {
+Then('I should have {int} fish options selected', async function(count) {
   const guestPage = new GuestPage(this.page);
   const selectedCount = await guestPage.getSelectedCount('fish');
   expect(selectedCount).toBe(count);
 });
 
-Then('I should have {int} vegetarian option(s) selected', async function(count) {
+Then('I should have {int} vegetarian options selected', async function(count) {
   const guestPage = new GuestPage(this.page);
   const selectedCount = await guestPage.getSelectedCount('vegetarian');
   expect(selectedCount).toBe(count);
