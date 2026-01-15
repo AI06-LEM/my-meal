@@ -22,16 +22,29 @@ class GuestPage extends BasePage {
 
   /**
    * Navigate to Guests tab and wait for it to be ready
-   * Waits for voting options to be loaded from localStorage
+   * Waits for voting options if they exist (weekly options have been set)
    */
   async navigate() {
     await this.goToGuestsTab();
     
-    // Wait for voting options to be loaded (indicates weekly options have been set)
-    await this.page.locator('#meatVoting .vote-option').first().waitFor({ 
+    // Wait for the voting form to be loaded
+    // This doesn't guarantee options exist, just that the form is ready
+    await this.page.locator('#guestName').waitFor({ 
       state: 'visible',
-      timeout: 10000 
+      timeout: 5000 
     });
+    
+    // If voting options exist, wait for them to stabilize
+    // Use a short timeout to fail fast if they don't exist
+    try {
+      await this.page.locator('#meatVoting .vote-option').first().waitFor({ 
+        state: 'visible',
+        timeout: 1000 
+      });
+    } catch (error) {
+      // Voting options not available yet (weekly options not set) - this is OK
+      // Just continue without waiting
+    }
   }
 
   // ==================== Name Entry ====================
