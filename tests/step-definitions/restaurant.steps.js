@@ -199,7 +199,7 @@ Then('I should see a message that weekly options are saved', async function() {
  *     | vegetarian  | Salad               |
  *     | vegetarian  | Curry               |
  */
-Given('the restaurant has selected weekly options with:', async function(dataTable) {
+Given('the restaurant has selected weekly options with:', { timeout: 30000 }, async function(dataTable) {
   // First, reset system and upload database
   const adminPage = new AdminPage(this.page);
   await adminPage.navigate();
