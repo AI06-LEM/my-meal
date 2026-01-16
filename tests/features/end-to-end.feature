@@ -8,7 +8,7 @@
 # - Multi-role scenarios
 # - Complex workflow orchestration
 
-@e2e @smoke
+@e2e
 Feature: End-to-End Workflow
   As the complete system
   I want all components to work together
