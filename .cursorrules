@@ -1,5 +1,11 @@
 # Cursor Rules for my-meal Project
 
+## General Behaviour 
+
+Please feel free to come back with questions for clarification if my prompt is not clear.
+
+Also, please push back in case my prompt contains misconceptions.
+
 ## Running Tests
 
 **IMPORTANT**: When running the test suite with the Shell tool, you MUST use `required_permissions: ["all"]` because:
