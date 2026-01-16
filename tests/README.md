@@ -34,7 +34,7 @@ npm.cmd start
 npm.cmd test
 
 # 3. Or run just the smoke tests (quick sanity check)
-npm.cmd test run test:smoke
+npm.cmd run test:smoke
 ```
 
 MacOS/Linux:
@@ -162,6 +162,8 @@ tests/
 | `npm run test:admin` | Run admin-related tests only |
 | `npm run test:wip` | Run tests tagged @wip |
 | `npm run test:debug` | Run with visible browser (for debugging) |
+| `npm run test:tag -- @tagname` | Run tests with specific tag |
+| `npm run test:tagged_debug -- @tagname` | Run tagged tests with visible browser |
 
 ### Running Specific Tags
 
@@ -169,6 +171,9 @@ MacOS/Linux:
 ```bash
 # Run tests with a specific tag
 npm run test:tag -- @validation
+
+# Run tests with a specific tag in DEBUG MODE (visible browser, slowed down)
+npm run test:tagged_debug -- @e2e
 
 # Run tests with multiple tags (AND)
 npm run test:tag -- "@guest and @happy-path"
@@ -179,6 +184,8 @@ npm run test:tag -- "@guest or @admin"
 # Exclude certain tags
 npm run test:tag -- "not @slow"
 ```
+
+**Debug Mode:** When using `test:tagged_debug`, tests automatically run with a visible browser and slow down by 500ms between actions for easier observation. This is the same behavior as `test:debug` but allows you to filter by tags.
 
 ### Running Specific Feature Files
 
@@ -378,25 +385,33 @@ tests/screenshots/FAILED_Guest_submits_a_valid_vote_2024-01-15T10-30-00.png
 
 MacOS/Linux:
 ```bash
+# Run all tests with visible browser
 npm run test:debug
+
+# Run specific tagged tests with visible browser
+npm run test:tagged_debug -- @e2e
 ```
 
 This opens a visible browser window so you can watch the test run.
 
 ### 3. Slow Down the Test
 
-**Automatic slow-down:** When using `npm run test:debug` (visible browser), tests automatically slow down by 500ms between actions for easier observation.
+**Automatic slow-down:** When using `npm run test:debug` or `npm run test:tagged_debug` (visible browser), tests automatically slow down by 500ms between actions for easier observation.
 
 **Custom slow-down:** To use a different speed:
 
 MacOS/Linux:
 ```bash
+# Override slow-mo for all tests
 SLOW_MO=1000 npm run test:debug
+
+# Override slow-mo for tagged tests
+SLOW_MO=1000 npm run test:tagged_debug -- @e2e
 ```
 
 This adds a 1-second delay between each action, overriding the default 500ms.
 
-**Note:** Headless tests (without `:debug`) always run at full speed unless you explicitly set SLOW_MO.
+**Note:** Headless tests (without `:debug` or `:tagged_debug`) always run at full speed unless you explicitly set SLOW_MO.
 
 ### 4. Add Breakpoints with Playwright Inspector
 

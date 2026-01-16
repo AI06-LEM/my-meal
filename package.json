@@ -15,7 +15,8 @@
         "test:wip": "cucumber-js --profile wip",
         "test:ci": "cucumber-js --profile ci",
         "test:debug": "HEADLESS=false cucumber-js --profile debug",
-        "test:tag": "cucumber-js --tags"
+        "test:tag": "cucumber-js --tags",
+        "test:tagged_debug": "HEADLESS=false cucumber-js --tags"
     },
     "engines": {
         "node": ">=22.5.0",
