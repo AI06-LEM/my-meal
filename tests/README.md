@@ -22,6 +22,9 @@ This directory contains the Behavior-Driven Development (BDD) test suite for the
 
 1. Node.js v22.5.0 or higher
 2. The application server running on port 3000
+3. Playwright browsers installed (run `npx playwright install` if needed)
+
+**Note:** The test suite is fully cross-platform and works on Windows, macOS, and Linux. The `cross-env` package is used to ensure environment variables work consistently across all platforms.
 
 ### Running Your First Test
 
@@ -38,8 +41,10 @@ npm.cmd test
 npm.cmd run test:tag -- @smoke
 
 # 4. Run tests with certain tag in debug mode (with UI) 
-npm.cmd run test:tagged_debug -- @e2e
+npx.cmd cross-env HEADLESS=false cucumber-js --tags "@smoke"
 ```
+
+**Note:** On Windows PowerShell, use `npm` (not `npm.cmd`) and put quotes around tags when passing them as arguments.
 
 MacOS/Linux:
 ```bash
@@ -109,6 +114,24 @@ tests/
 
 ### Running Specific Tags
 
+Windows:
+```powershell
+# Run tests with a specific tag
+npm run test:tag -- "@validation"
+
+# Run tests with a specific tag in DEBUG MODE (visible browser, slowed down)
+npm run test:tagged_debug -- "@e2e"
+
+# Run tests with multiple tags (AND)
+npm run test:tag -- "@guest and @happy-path"
+
+# Run tests with multiple tags (OR)
+npm run test:tag -- "@guest or @admin"
+
+# Exclude certain tags
+npm run test:tag -- "not @slow"
+```
+
 MacOS/Linux:
 ```bash
 # Run tests with a specific tag
@@ -130,6 +153,16 @@ npm run test:tag -- "not @slow"
 **Debug Mode:** When using `test:tagged_debug`, tests automatically run with a visible browser and slow down by 500ms between actions for easier observation. This is the same behavior as `test:debug` but allows you to filter by tags.
 
 ### Running Specific Feature Files
+
+Windows:
+```powershell
+# Run a specific feature file
+npx cucumber-js tests/features/end-to-end.feature
+
+# Run a specific scenario by line number
+# Actually, it seemingly runs all tests in file from that line on?
+npx cucumber-js tests/features/end-to-end.feature:21
+```
 
 MacOS/Linux:
 ```bash
@@ -164,6 +197,11 @@ Scenario: Restaurant can deselect a meal option
 ```
 
 **Workflow tip:** Add temporary tags like `@focus` or `@wip` to scenarios you're actively working on, then run just those:
+
+Windows:
+```powershell
+npm run test:tag -- "@focus"
+```
 
 MacOS/Linux:
 ```bash
@@ -226,6 +264,19 @@ await this.page.setDefaultTimeout(config.DEFAULT_TIMEOUT);
 ### Overriding Configuration
 
 Override settings via environment variables when running tests:
+
+Windows (PowerShell):
+```powershell
+# Examples
+$env:BASE_URL="http://localhost:8080"; npm test
+$env:HEADLESS="false"; npm test
+$env:SLOW_MO="500"; npm run test:debug
+
+# Or use cross-env (works on all platforms)
+npx cross-env BASE_URL=http://localhost:8080 npm test
+npx cross-env HEADLESS=false npm test
+npx cross-env SLOW_MO=500 npm run test:debug
+```
 
 MacOS/Linux:
 ```bash
@@ -389,6 +440,15 @@ tests/screenshots/FAILED_Guest_submits_a_valid_vote_2024-01-15T10-30-00.png
 
 ### 2. Run with Visible Browser
 
+Windows:
+```powershell
+# Run all tests with visible browser
+npm run test:debug
+
+# Run specific tagged tests with visible browser
+npm run test:tagged_debug -- "@e2e"
+```
+
 MacOS/Linux:
 ```bash
 # Run all tests with visible browser
@@ -406,6 +466,19 @@ This opens a visible browser window so you can watch the test run.
 
 **Custom slow-down:** To use a different speed:
 
+Windows (PowerShell):
+```powershell
+# Override slow-mo for all tests
+$env:SLOW_MO="1000"; npm run test:debug
+
+# Override slow-mo for tagged tests
+$env:SLOW_MO="1000"; npm run test:tagged_debug -- "@e2e"
+
+# Or use cross-env (works on all platforms)
+npx cross-env SLOW_MO=1000 npm run test:debug
+npx cross-env SLOW_MO=1000 npm run test:tagged_debug -- "@e2e"
+```
+
 MacOS/Linux:
 ```bash
 # Override slow-mo for all tests
@@ -420,6 +493,14 @@ This adds a 1-second delay between each action, overriding the default 500ms.
 **Note:** Headless tests (without `:debug` or `:tagged_debug`) always run at full speed unless you explicitly set SLOW_MO.
 
 ### 4. Add Breakpoints with Playwright Inspector
+
+Windows (PowerShell):
+```powershell
+$env:PWDEBUG="1"; npm test
+
+# Or use cross-env (works on all platforms)
+npx cross-env PWDEBUG=1 npm test
+```
 
 MacOS/Linux:
 ```bash
@@ -439,6 +520,11 @@ Scenario: My new test
 ```
 
 Then run only that test:
+
+Windows:
+```powershell
+npm run test:wip
+```
 
 MacOS/Linux:
 ```bash
@@ -562,6 +648,11 @@ When I wait 2 seconds
 ### "Server not running" Errors
 
 Make sure the application is running:
+
+Windows:
+```powershell
+npm start
+```
 
 MacOS/Linux:
 ```bash
