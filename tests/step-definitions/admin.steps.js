@@ -36,6 +36,7 @@ Given('I navigate to the admin page', async function() {
  * Upload the test meal database
  * This is a common setup step for many test scenarios
  */
+// !? Redundant step definition, see 'I upload the meal database'
 Given('I upload the test meal database', async function() {
   const adminPage = new AdminPage(this.page);
   await adminPage.navigate();
