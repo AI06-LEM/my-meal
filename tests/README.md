@@ -5,9 +5,9 @@ This directory contains the Behavior-Driven Development (BDD) test suite for the
 ## Table of Contents
 
 1. [Quick Start](#quick-start)
-2. [Test Configuration](#test-configuration)
-3. [Test Structure](#test-structure)
-4. [Running Tests](#running-tests)
+2. [Test Structure](#test-structure)
+3. [Running Tests](#running-tests)
+4. [Test Configuration](#test-configuration)
 5. [Writing New Tests](#writing-new-tests)
 6. [Best Practices](#best-practices)
 7. [Debugging Failed Tests](#debugging-failed-tests)
@@ -51,74 +51,12 @@ npm run test:smoke
 
 ---
 
-## Test Configuration
-
-All test configuration settings are centralized in `tests/config.js`. This single file controls:
-
-### Environment Variables
-
-| Variable | Default | Description | Config Property |
-|----------|---------|-------------|-----------------|
-| `BASE_URL` | `http://localhost:3000` | Application URL | `config.BASE_URL` |
-| `HEADLESS` | `true` | Set to `false` to see the browser | `config.HEADLESS` |
-| `SLOW_MO` | `0` | Milliseconds to slow down actions (for debugging) | `config.SLOW_MO` |
-
-### Test Data Paths
-
-| Config Property | Default | Description |
-|-----------------|---------|-------------|
-| `TEST_DATABASE_PATH` | `meals_database_en_test.json` | Path to the test meal database |
-
-### Browser Settings
-
-| Config Property | Default | Description |
-|-----------------|---------|-------------|
-| `VIEWPORT` | `{ width: 1280, height: 720 }` | Browser viewport size |
-| `DEFAULT_TIMEOUT` | `30000` | Default timeout in milliseconds |
-
-### Test Directories
-
-| Config Property | Default | Description |
-|-----------------|---------|-------------|
-| `SCREENSHOTS_DIR` | `tests/screenshots` | Directory for failure screenshots |
-| `REPORTS_DIR` | `tests/reports` | Directory for test reports |
-
-### Using the Configuration
-
-In your step definitions or page objects, import the configuration:
-
-```javascript
-const config = require('../config');
-
-// Use environment settings
-console.log(`Testing against: ${config.BASE_URL}`);
-
-// Use test data paths
-await adminPage.uploadDatabase(config.TEST_DATABASE_PATH);
-
-// Use browser settings
-await this.page.setDefaultTimeout(config.DEFAULT_TIMEOUT);
-```
-
-### Overriding Configuration
-
-Override settings via environment variables when running tests:
-
-MacOS/Linux:
-```bash
-# Examples
-BASE_URL=http://localhost:8080 npm test
-HEADLESS=false npm test
-SLOW_MO=500 npm run test:debug
-```
-
----
 
 ## Test Structure
 
 ```
 tests/
-├── config.js                    # ⭐ Centralized test configuration
+├── config.js                    # Centralized test configuration
 │
 ├── features/                    # Gherkin feature files (test specifications) go here
 │
@@ -192,10 +130,11 @@ npm run test:tag -- "not @slow"
 MacOS/Linux:
 ```bash
 # Run a specific feature file
-npx cucumber-js tests/features/guest-voting.feature
+npx cucumber-js tests/features/end-to-end.feature
 
 # Run a specific scenario by line number
-npx cucumber-js tests/features/guest-voting.feature:25
+# Actually, it seemingly runs all tests in file from that line on?
+npx cucumber-js tests/features/end-to-end.feature:21
 ```
 
 **Important:** To run a single scenario, you **must** use `npx cucumber-js` directly with the file path. Using `npm test -- file:line` will not work as expected because the `cucumber.js` configuration's `paths` setting will cause all tests to run.
@@ -228,6 +167,69 @@ npm run test:tag -- "@focus"
 ```
 
 Remember to remove temporary tags before committing!
+
+---
+
+## Test Configuration
+
+All test configuration settings are centralized in `tests/config.js`. This single file controls:
+
+### Environment Variables
+
+| Variable | Default | Description | Config Property |
+|----------|---------|-------------|-----------------|
+| `BASE_URL` | `http://localhost:3000` | Application URL | `config.BASE_URL` |
+| `HEADLESS` | `true` | Set to `false` to see the browser | `config.HEADLESS` |
+| `SLOW_MO` | `0` | Milliseconds to slow down actions (for debugging) | `config.SLOW_MO` |
+
+### Test Data Paths
+
+| Config Property | Default | Description |
+|-----------------|---------|-------------|
+| `TEST_DATABASE_PATH` | `meals_database_en_test.json` | Path to the test meal database |
+
+### Browser Settings
+
+| Config Property | Default | Description |
+|-----------------|---------|-------------|
+| `VIEWPORT` | `{ width: 1280, height: 720 }` | Browser viewport size |
+| `DEFAULT_TIMEOUT` | `30000` | Default timeout in milliseconds |
+
+### Test Directories
+
+| Config Property | Default | Description |
+|-----------------|---------|-------------|
+| `SCREENSHOTS_DIR` | `tests/screenshots` | Directory for failure screenshots |
+| `REPORTS_DIR` | `tests/reports` | Directory for test reports |
+
+### Using the Configuration
+
+In your step definitions or page objects, import the configuration:
+
+```javascript
+const config = require('../config');
+
+// Use environment settings
+console.log(`Testing against: ${config.BASE_URL}`);
+
+// Use test data paths
+await adminPage.uploadDatabase(config.TEST_DATABASE_PATH);
+
+// Use browser settings
+await this.page.setDefaultTimeout(config.DEFAULT_TIMEOUT);
+```
+
+### Overriding Configuration
+
+Override settings via environment variables when running tests:
+
+MacOS/Linux:
+```bash
+# Examples
+BASE_URL=http://localhost:8080 npm test
+HEADLESS=false npm test
+SLOW_MO=500 npm run test:debug
+```
 
 ---
 
