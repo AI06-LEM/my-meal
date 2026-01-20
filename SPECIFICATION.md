@@ -4,7 +4,7 @@
 For a school restaurant serving lunch, restaurant guests (students, teachers, ...) can indicate meal combination preferences (votes) from a set of options offered by the restaurant. The final results are the guest voting results (the kitchen will use these to create the actual meal plan manually).
 
 
-## [UNFINISHED] Terminology
+## Terminology
 
 ### User: system admin
 
@@ -13,7 +13,6 @@ A system administrator belongs to the team who developed this app. They maintain
 ### User: restaurant
 
 The restaurant is the (place and) team in the school that is choosing, cooking and serving meals. This team is using the Restaurant tab of this software to preselect meal combinations for the guests to vote on.
-
 
 #### Seefood
 
@@ -52,57 +51,52 @@ A vegetarian meal is a meal with its category set to vegetarian.
 
 ### Data structure: meal combination
 
-A meal combination is a set (array) of meals. A meal combination contains always one or more meals.
+A meal combination is a set (or array) of meals. A meal combination contains always one or more meals.
 
-Meals are always grouped in meal combinations for this purpose of this software. For example, the database stores all potentially possible meal combinations, the restaurant pre-selects multiple meal combinations according to certain restrictions (detailed later), from which the guests then can choose meal combinations. Neither the restaurant nor the guests ever select individual meals, they all always can only select meal combinations.
+A meal combination specifies options served by the restaurant on a day out of which restaurant guests can then choose one (in the restaurant, not this app).
 
-Every meal combination must contain at least one vegetarian meal (a meal with its category set to vegetarian). While this condition should be fulfilled by the system admin who enters data into the database, this condition should additionally be double-checked by the app when the system admin uploads a JSON file with database data, and in case of a violation a warning should be shown (in the area below the Upload Meal Database controls on the system admin tab).
+Meals are always grouped in meal combinations for the purpose of this software. For example, the database stores all potentially possible meal combinations, the restaurant pre-selects multiple meal combinations according to certain restrictions (detailed later), from which the guests then can choose meal combinations. Neither the restaurant nor the guests ever select individual meals, they all always can only select meal combinations.
+
+Every meal combination must contain at least one vegetarian meal (a meal with its category set to vegetarian). While this condition should be fulfilled by the system admin who enters data into the database, this condition should additionally be double-checked by the app when the system admin uploads a JSON file with database data, and in case of a violation, a warning should be shown (in the area below the Upload Meal Database controls on the system admin tab).
 
 #### Meat meal combination
 
 A meat meal combination contains at least one meat meal. Remember that each meal combination also always must contain at least one vegetarian meal.
 
-### Fish meal combination
+#### Fish meal combination
 
 A fish meal combination contains at least one fish meal. Remember that each meal combination also always must contain at least one vegetarian meal.
 
-### Vegetarian meal combination
+#### Vegetarian meal combination
 
 A vegetarian meal combination contains only vegetarian meals.
 
 
 ### Weekly procedure
 
-The school uses this app to decide on a meal plan for four days of the week (the fifth weekday, leftovers are served). The result of this app will be voting results for these four days. 
+The school uses this app to decide on a meal plan for four days of the week (on the fifth weekday, leftovers are served, these happen to be called "SEEMPHONIE"). The result of this app will be voting results for these four days. 
 
 The school (e.g., the system admin and restaurant) makes scheduling decisions for this app manually, i.e. they decide when to start the voting process and when to close it to new votes. 
-
-
 
 This app is reset by the system admin manually once the voting process finished (with the corresponding button), but in two other cases the system is partially reset:
  1. If the system admin uploads a JSON database file, then 
     - All meals and meal combinations stored in the database are overwritten by the uploaded data
     - All weekly options selected by the restaurant are deleted
     - All guest votes are deleted 
- 2. If the restaurant saves selected weekly options, then all guest votes are deleted 
+ 2. If the restaurant saves selected weekly options, then all guest votes are deleted
+    - A warning is shown to remind the restaurant that guest votes were deleted
 
 
 ### Data structure: Weekly (meal) options
 
 The weekly meal options are the set of all the meal combinations that have been preselected by the restaurant. 
 
-
-
-A meal combination specifies options offered by the restaurant for a day, out of which restaurant guests can choose exactly one. 
-
-
 Each week, the restaurant selects at least:
 - 2 meat combos
 - 2 fish combos
 - 4 vegetarian combos
 
-
-Upon saving in the restaurant tab, the weekly options are stored in the SQLite database.
+Upon saving in the restaurant tab, the software validates the above composition of a meal options, and in case of a wrongly entered data displays an error message. Otherwise, the weekly options are stored in the database.
 
 
 ### Data structure: (Guest) Vote
@@ -112,77 +106,72 @@ A guest can vote on meal combinations out of the weekly meal options preselected
  - 1 fish meal combination
  - 2 vegetarian meal combinations
 
-In other words, guests can vote on four meals per week (on the fifth weekday, the restaurant serves leftovers, which they call "SEEMPHONIE").
+In other words, guests can vote on four meals per week (remember: on the fifth weekday, the restaurant serves leftovers).
 
-The software validates the above composition of a guest vote and in case of a wrongly entered vote displays an error message without accepting that vote.
-
-Upon saving/submitting a vote successfully in the guest tab, this vote is stored in the SQLite database.
+Upon saving in the guests tab, the software validates the above composition of a vote, and in case of a wrongly entered data displays an error message. Otherwise, the vote is stored in the database.
 
 
 ### Voting result
 
 The voting result is the main result of this software. This information is used by the restaurant to manually decide on the final meal plan for the week.
 
-The voting result (vote charts) displays the sum of all the votes per meal combination. The presentation of the result is arranged into three groups corresponding to the three different meal categories (meat, fish and vegetarian).
+The voting result displays for each voted on meal combination how often it was voted for (as a bar chart with a numeric label). The presentation of the result is arranged into three groups corresponding to the three different meal categories (meat, fish and vegetarian).
 
+This voting result is displayed at both the admin and restaurant tabs.
 
-### Weekly meal plan
-
-Weekly plan generated by SEEFOOD after seeing results. Not important for the purpose of this app.
-
-
-## Features
-
- - The results of this software will be:
-    - A chart of the voted meals that includes the number of votes visible only to the restaurant
-    - After manual input from the restaurant: a meal plan visible to both the restaurant and guests
- - Voting mechanics translate the student preferences into comparison charts (column charts) that show the votes, one per category 
-   - The system counts votes for each meal option and shows it on its respective chart
- - Manually: the restaurant chooses four meals for the week to make a final menu: one meat meal combination, one fish meal combination, and two vegetarian meal combinations
- - The vote results and meal choice interface are to be shown on the restaurant page as well as on the admin page
- - Once the meal plan is selected by the restaurant, the guest page is to be cleared (except last two weeks' meal plans) for the next round of voting, open on the following week
- - Later: Always show the last two weeks' meal plans decided by the restaurant on the guest page separate from the voting interface (above, below, or on either side)
 
 ## User interactions: prototype
  
-Prototype: This project defines a single app. There are three UI areas in the app (three tabs), for different types of users to interact with the app: a system admin, the Seefood restaurant, and restaurant guests (students etc.). In later versions, these areas will be separated into separate apps.
+Prototype: This project defines a single app. There are three UI areas in the app (three tabs), for different types of users to interact with the app: a system admin, the Seefood restaurant, and restaurant guests (students etc.). 
 
- - A system admin can upload a JSON file detailing all the available meals. This action resets the system (all persistent data in the internal SQLite database is overwritten) and overwrites the list of all possible meal combinations.
- - Out of these possible meal combinations, the restaurant pre-selects weekly at least eight meal combinations that specify the options out of which restaurant guests can choose their preferences. These eight meal combinations contain at least two meat combination and at least two other fish combination. The four remaining meal combinations contain only vegetarian meals.
- - Each guest is then shown the meal combinations selected by the restaurant for the current week, again at least: two meal combinations with meat, two with fish and four purely vegetarian meal combinations. The user then chooses exactly one meat combination, one fish combination and two vegetarian combinations.
+In the prototype, the system admin and the restaurant users do not need to authenticate themselves. Each guest should identify themselves with a name, but there is no actual login process. The guest names are arbitrary in the prototype, but they must be unique, and the system validates their uniqueness.
+
+The application follows a step-by-step process as detailed in the next subsections.
 
 
- - The system admin can obtain final voting results 
- - When starting the voting process for a new week, the system admin resets the system (with a reset button), which
-   - Clears all weekly options (restaurant pre-selection) in the running software and database
-   - Clears all guest votes in the running software and database
-   - Clears the shown voting results (vote charts)
- 
+### System admin uploads data in JSON format
 
-The system admin and the restaurant users do not need to authenticate themselves. Each guest should identify themselves with a unique name, but there is no actual login process and these names are not double-checked. 
+A system admin uploads a JSON file detailing all the available meals. This action resets the system, i.e. all persistent data in the internal SQLite database (and the internal data) is either deleted or overwritten. 
+ - All meals and meal combinations are overwritten by the information in the uploaded JSON file (data on meal combinations and meals)
+ - Weekly options and guest votes deleted
+ - The chart of the voting result is removed
+   
+### Restaurant preselects weekly options
+
+Out of the uploaded range of possible meal combinations, the restaurant pre-selects weekly at least eight meal combinations that specify the options out of which restaurant guests can choose their preferences. These eight meal combinations contain 
+ - At least two meat meal combinations 
+ - At least two fish meal combinations 
+ - Four vegetarian meal combinations
+
+### Guests vote
+
+Each guest is then shown the meal combinations selected by the restaurant for the current week. A guest vote consists of
+ - Exactly one meat meal combination
+ - Exactly one fish meal combination
+ - Exactly two vegetarian meal combinations
+
+### System admin collects voting results
+
+At any time after guests submitted votes (also repeatedly), the system admin can obtain final voting results.
+
+When starting the voting process for a new week, the system admin resets the system (with a reset button), which
+ - Clears all weekly options (restaurant pre-selection) in the running software and database
+ - Clears all guest votes in the running software and database
+ - Clears the shown voting results (vote charts)
+
 
 ## User interactions: later version
 
-This project defines multiple apps, one for the system admin and the Seefood restaurant, and another independent app for the restaurant guests.
+In a later version of this software, the three current tabs will be separated into two separate apps: one for the system admin and the Seefood restaurant, and another independent app for the restaurant guests.
 
 The system admin and the restaurant users need to log into their app. Also, each guest must log into the app. 
 
 
-## Workflow
-
-The application follows this step-by-step process:
-
-1. **Setup Phase**: System admin uploads the meal database containing all possible meals
-2. **Restaurant Selection Phase**: Restaurant staff selects available meal options for the week from the database
-3. **Guest Voting Phase**: Guests vote for their preferences (1 meat, 1 fish, 2 vegetarian options)
-4. **Results Phase**: System admin retrieves the final weekly meal plan based on vote aggregation
-5. **Later: Optional Editing Phase**: Restaurant can modify the final plan if needed
-
 ## Data structure
 
-Prototype: all persistent data is stored in a local SQLite database (`data/my-meal.db`) using Node.js's native `node:sqlite` module (available in Node.js v22.5.0+). Additionally, there is a folder with graphic files (with the corresponding ID and meal name as file name). Later, for the actual implementation, the data is stored in a database on a remote server.
+Prototype: all persistent data is stored in a local SQLite database (`data/my-meal.db`) using Node.js's native `node:sqlite` module (available in Node.js v22.5.0+). 
 
-The system admin can upload meal data via a JSON file (`meals_database.json` format), which will be imported into the database. When new meal data is uploaded, the system automatically resets by clearing weekly options, guest votes, and the meal plan.
+The system admin can upload meal data via a JSON file (example: `meals_database_en_test.json`), which will be imported into the database.
 
 ### Database Structure
 The application organizes data in the following SQLite tables:
@@ -198,6 +187,7 @@ Additionally:
 - `data/` - Folder containing the SQLite database file
 
 ### JSON Upload Format
+
 The system admin uploads meal data as JSON with this structure:
 ```json
 {
@@ -206,64 +196,56 @@ The system admin uploads meal data as JSON with this structure:
 }
 ```
 
+Note: the meals feature is meanwhile redundant, and this format will soon be simplified.
+
 This data is then imported into the database, preserving the same logical structure.
 
-The rest of this section sketches possible internal data structures. Again, these data structures are only a suggestion to help you understand our intentions for this application, but you can make a sensible design decision yourself.
+The rest of this section sketches possible internal data structures. These data structures are only a suggestion to help you understand our intentions for this application, but you can make a sensible design decision yourself.
 
 
-### [Partly outdated] *meal* 
- - Name - string
- - Later: a unique ID - string
+### *meal* 
+ - Name: string
+ - A unique ID: string (added automatically during JSON file upload)
  - Category: "meat" | "fish" | "vegetarian",
- - Vegan? - boolean
+ - Vegan: boolean
 
- Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are not considered meat.
+Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are not considered meat.
 
 
-### [Outdated] *meal_combination* 
-This data represents alternative versions of the same dish (e.g., vegetarian vs. non-vegetarian)
-Examples:
-   - A vegetarian and non-vegetarian combination: burger and vegetarian_burger
-   - Multiple vegetarian options: some dish with either mushrooms or vegetables
+### *meal_combination* 
+ - Name: string 
+ - A unique ID: string (added automatically during JSON file upload)
+ - Meals: multiple related *meal* data, where one component differs, a JSON array of meal objects
 
-Data structure:
- - Name - string
- - Multiple related *meal* data, where one component differs - JSON array of meal objects
-
-### *meal_plan*
-Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final result. - JSON object
+TODO: Do we really need a name for a meal combination?
 
 
 ### *guest_vote*
- - Prototype: free form name of a guest - string
- - Selected meal options - JSON object with categories:
-   - meat_option: string (one meat meal or meal_combination)
-   - fish_option: string (one fish meal or meal_combination) 
-   - vegetarian_options: JSON array of strings (exactly two vegetarian meals or meal_combinations)
+ - Name: string
+ - Selected meal options for all three categories:
+   - meat_option: string (meal_combination IDs)
+   - fish_option: string (meal_combination IDs) 
+   - vegetarian_options: array of strings (meal_combinations IDs)
 
 
 ## Edge cases/errors
- - All meal combinations in a week should differ, no repetitions
- - Ensure that guests can only select 1 meat meal combination, 1 fish meal combination, and 2 vegetarian options
- - Ensure that the final result includes 1 meat meal combination, 1 fish meal combination, and 2 vegetarian options
- - Handle cases where insufficient votes are cast for any category
+
  - Validate that selected meal combinations exist in the restaurant's weekly options
- - Prevent duplicate guest names from voting multiple times (enforced by database UNIQUE constraint)
- - Handle invalid or corrupted data gracefully
- - Ensure meal combinations are properly categorized (meat/fish/vegetarian)
- - When uploading a new meals database, automatically reset the system (clear weekly options, votes, and meal plan)
+ - Prevent duplicate guest names from voting multiple times
+ - Validate the uploaded JSON file, e.g, 
+   - Ensure meal combinations are properly categorized (meat/fish/vegetarian)
+
  - In case the software crashes, all its data in the database (meals, meal combinations, weekly options and guest votes) are preserved so that the system can be restarted without data loss
 
- "Minimum voting requirements:
-- At least 1 vote must be cast for the week to be valid
-- The system warns (but doesn't block) if total votes < 10"
 
+## Tech stack
 
-# Tech stack
-  Prototype: use HTML, CSS and JavaScript, implementation as a server with Node.js.
+Use HTML, CSS, JavaScript and Node.js.
 
 
 ## What to test?
+
+TODO: Check regression tests cover all the clauses below.
 
    - A system admin can enter the initial database
      - Create a test meal database text file with a range of options
