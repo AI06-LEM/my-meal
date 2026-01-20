@@ -10,7 +10,6 @@
 
 @e2e
 Feature: End-to-End Workflow
-  As the complete system
   I want all components to work together
   So that the weekly meal planning process succeeds
 
