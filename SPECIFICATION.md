@@ -245,7 +245,7 @@ Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final resul
 ## Edge cases/errors
  - All meal combinations in a week should differ, no repetitions
  - Ensure that guests can only select 1 meat meal combination, 1 fish meal combination, and 2 vegetarian options
- - Ensure that the final result includes 1 meatvmeal combination, 1 fish meal combination, and 2 vegetarian options
+ - Ensure that the final result includes 1 meat meal combination, 1 fish meal combination, and 2 vegetarian options
  - Handle cases where insufficient votes are cast for any category
  - Validate that selected meal combinations exist in the restaurant's weekly options
  - Prevent duplicate guest names from voting multiple times (enforced by database UNIQUE constraint)
@@ -275,19 +275,3 @@ Mapping of 4 weekdays to a *meal* or *meal_combination* per day. The final resul
    - The system admin can retrieve the final weekly meal plan result
      - Write suitable regression test
    
-
-## [Ignore] Possible extensions later, after the initial prototype
-
- - Multiple meals per day
- - Allow for different language (fr, en, de)
- - Tutorial showing how to use the software
- - Ask Seefood: option for two fish or two meat options per week?
-
-### Later feature: archiving
-- After the restaurant confirms the weekly meal plan, the system admin must click on a new button 'Start New Week' which:
-  - Archives current week's data
-  - Clears all guest votes (background data) and vote charts (admin/restaurant)
-  - Clears weekly options (guest page)
-  - Displays the meal plan selected by the restaurant on the guest page
-- The software keeps a memory of the last three weeks of meal plans, and no meal repeats within two weeks
-
