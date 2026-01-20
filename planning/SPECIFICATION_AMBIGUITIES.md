@@ -10,7 +10,7 @@ I'll analyze the SPECIFICATION.md file for ambiguities and missing details that 
   - [3. [DONE] Fish vs. Meat vs. Vegetarian: Missing Definitions](#3-fish-vs-meat-vs-vegetarian-missing-definitions)
   - [4. [AI01] When Does Voting Reset?](#4-when-does-voting-reset)
   - [5. [DONE] Meal Combinations Must Contain Vegetarian Option](#5-meal-combinations-must-contain-vegetarian-option)
-  - [6. Missing: Week Definition and Timeline](#6-missing-week-definition-and-timeline)
+  - [6. [DONE] Missing: Week Definition and Timeline](#6-missing-week-definition-and-timeline)
   - [7. Restaurant Selection vs. Final Meal Plan](#7-restaurant-selection-vs-final-meal-plan)
   - [8. [DONE] Missing: Image File Requirements](#8-missing-image-file-requirements)
   - [9. [DONE] Missing: Success Criteria for Voting](#9-missing-success-criteria-for-voting)
@@ -25,7 +25,7 @@ I'll analyze the SPECIFICATION.md file for ambiguities and missing details that 
 
 **What's ambiguous:**
 - Line 12: "Restaurant guests can vote on exactly four meals per week"
-- Line 30: "the guest can select exactly one meal of their choice" from each combination
+- [DONE] Line 30: "the guest can select exactly one meal of their choice" from each combination
 - Line 110-113: guest_vote structure references both "meals" and "meal_combinations"
 
 **Why problematic:**
