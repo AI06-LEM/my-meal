@@ -14,9 +14,9 @@
         "test:admin": "cucumber-js --profile admin",
         "test:wip": "cucumber-js --profile wip",
         "test:ci": "cucumber-js --profile ci",
-        "test:debug": "HEADLESS=false cucumber-js --profile debug",
+        "test:debug": "cross-env HEADLESS=false cucumber-js --profile debug",
         "test:tag": "cucumber-js --tags",
-        "test:tagged_debug": "HEADLESS=false cucumber-js --tags"
+        "test:tagged_debug": "cross-env HEADLESS=false cucumber-js --tags"
     },
     "engines": {
         "node": ">=22.5.0",
@@ -30,6 +30,7 @@
     "devDependencies": {
         "@cucumber/cucumber": "^12.5.0",
         "@playwright/test": "^1.57.0",
+        "cross-env": "^7.0.3",
         "nodemon": "^3.0.1",
         "playwright": "^1.57.0"
     },
