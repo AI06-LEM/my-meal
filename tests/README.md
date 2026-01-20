@@ -28,13 +28,17 @@ This directory contains the Behavior-Driven Development (BDD) test suite for the
 Windows:
 ```powershell
 # 1. Start the server (in one terminal)
+npm.cmd install
 npm.cmd start
 
 # 2. Run all tests (in another terminal)
 npm.cmd test
 
-# 3. Or run just the smoke tests (quick sanity check)
-npm.cmd run test:smoke
+# 3. Or run just the tests with the smoke tag (for a quick sanity check)
+npm.cmd run test:tag -- @smoke
+
+# 4. Run tests with certain tag in debug mode (with UI) 
+npm.cmd run test:tagged_debug -- @e2e
 ```
 
 MacOS/Linux:
