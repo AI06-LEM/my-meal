@@ -1,0 +1,48 @@
+# Cursor Rules for my-meal Project
+
+## General Behaviour 
+
+Please feel free to come back with questions for clarification if my prompt is not clear.
+
+Also, please push back in case my prompt contains misconceptions.
+
+## Running Tests
+
+**IMPORTANT**: When running the test suite with the Shell tool, you MUST use `required_permissions: ["all"]` because:
+- Tests use Playwright which requires access to browsers installed in the user's home directory cache (platform-dependent location)
+- The default sandbox blocks access to these system locations outside the workspace
+- Without this permission, tests will fail with "Executable doesn't exist" errors
+
+### Correct way to run tests:
+
+```javascript
+// ✅ CORRECT - with required_permissions
+Shell({
+  command: "npm test",
+  required_permissions: ["all"]
+})
+
+// ❌ WRONG - will fail in sandbox
+Shell({
+  command: "npm test"
+})
+```
+
+## Test Commands
+
+- `npm test` - Run all tests (requires server running on port 3000)
+- `npm run test:smoke` - Quick smoke tests
+- `npm run test:debug` - Run with visible browser
+- `npm run test:tag -- "@tagname"` - Run tests with specific tag
+
+## Prerequisites
+
+Before running tests:
+1. Ensure the server is running: `npm start` (in a separate terminal)
+2. Server must be accessible at http://localhost:3000
+
+## Documentation
+
+- Main test documentation: `tests/README.md`
+- Test features: `tests/features/`
+- Step definitions: `tests/step-definitions/`

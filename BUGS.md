@@ -1,6 +1,8 @@
 
 # Bugs
 
+- ? [TODO] Neither the programming logic nor the user interface should ever process or display individual meals. Meals are always grouped in meal combinations. Also, in the interface for the restaurant, every meal combination should only be shown once. Likewise for the guests, every meal combination should only be shown once.
+
 - [TODO] Remove all references to images of meals in SQLite database format, JSON meals database format, within the program logic and remove the images folder.
 
  - [TODO] In the guest UI, an error appears even when selecting everything correctly: "Please select two different vegetarian options. You cannot select the same option twice."

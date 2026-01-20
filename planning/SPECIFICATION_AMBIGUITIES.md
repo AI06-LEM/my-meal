@@ -11,10 +11,10 @@ I'll analyze the SPECIFICATION.md file for ambiguities and missing details that 
   - [4. [AI01] When Does Voting Reset?](#4-when-does-voting-reset)
   - [5. [DONE] Meal Combinations Must Contain Vegetarian Option](#5-meal-combinations-must-contain-vegetarian-option)
   - [6. [DONE] Missing: Week Definition and Timeline](#6-missing-week-definition-and-timeline)
-  - [7. Restaurant Selection vs. Final Meal Plan](#7-restaurant-selection-vs-final-meal-plan)
+  - [7. [DONE] Restaurant Selection vs. Final Meal Plan](#7-restaurant-selection-vs-final-meal-plan)
   - [8. [DONE] Missing: Image File Requirements](#8-missing-image-file-requirements)
   - [9. [DONE] Missing: Success Criteria for Voting](#9-missing-success-criteria-for-voting)
-  - [10. JSON Upload: Missing Validation Rules](#10-json-upload-missing-validation-rules)
+  - [10. [DONE] JSON Upload: Missing Validation Rules](#10-json-upload-missing-validation-rules)
   - [11. Missing: Concurrent Access Handling](#11-missing-concurrent-access-handling)
   - [12. Missing: Error Recovery](#12-missing-error-recovery)
 - [Summary](#summary)
@@ -82,6 +82,17 @@ Add to meal data structure:
 ```
 And state: "Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are not considered meat."
 
+**Correct clarification**
+Add to meal data structure:
+```json
+{
+  "category": "meat" | "fish" | "vegetarian", // mutually exclusive
+  "vegan": boolean
+}
+```
+And state: "Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are not considered meat."
+
+
 ---
 
 ### 4. **When Does Voting Reset?**
@@ -122,8 +133,8 @@ Either:
 - OR: "Meal combinations may contain only vegetarian meals, or may mix categories"
 
 **Correct clarification**
-Change line 29 from: Restaurant selects "one meal combination with at least one meal containing meat"
-to: "These four meal combinations contain exactly one meal combination with at least one meat combination and exactly one other fish combination"
+- Change line 29 from: Restaurant selects "one meal combination with at least one meal containing meat"
+- to: "Out of these possible meal combinations, the restaurant pre-selects weekly at least eight meal combinations that specify the options out of which restaurant guests can choose their preferences. These eight meal combinations contain at least two meat combination, at least two other fish combination and at least four  vegetarian meal combinations."
 
 ---
 
@@ -222,6 +233,11 @@ The workflow is unclear:
 - If any meal combination receives 0 votes, the restaurant must manually select a meal from that combination
 - The system warns (but doesn't block) if total votes < 10"
 
+**Correct clarification:**
+ "Minimum voting requirements:
+- At least 1 vote must be cast for the week to be valid
+- The system warns (but doesn't block) if total votes < 10"
+
 ---
 
 ### 10. **JSON Upload: Missing Validation Rules**
@@ -243,6 +259,22 @@ Provide complete JSON schema example and state:
 - All meals referenced in combinations must exist in meals array
 - Each combination must contain 1-5 meals
 - Required fields: [list them]
+- On validation error: reject upload and display specific error message"
+
+**Correct clarification:**
+Provide complete JSON schema example and state:
+"JSON validation rules:
+- All meal IDs must be unique
+- Meals cannot exist without being in any combination
+- Each combination must contain 1-2 meals
+- Required fields: ["name", "vegan", "category"]
+```json
+{
+  "name": string,
+  "vegan": boolean,
+  "category": "meat" | "fish" | "vegetarian"
+}
+```
 - On validation error: reject upload and display specific error message"
 
 ---

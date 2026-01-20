@@ -1023,7 +1023,7 @@ async function saveDataToStorage(options = {}) {
             await saveMealsDatabase();
         }
         if (weekly) {
-            await saveWeeklyOptions();
+            await persistWeeklyOptions();
         }
         if (votes) {
             await saveGuestVotes();
@@ -1105,7 +1105,7 @@ async function loadWeeklyOptions() {
     return null;
 }
 
-async function saveWeeklyOptions() {
+async function persistWeeklyOptions() {
     try {
         const response = await fetch('/api/weekly-options', {
             method: 'POST',

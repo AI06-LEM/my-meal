@@ -1,0 +1,40 @@
+{
+    // Cucumber (Gherkin) Full Support Extension Configuration
+    // Configuration for the "Cucumber (Gherkin) Full Support" extension by alexkrechik
+    // If you don't use this extension, these settings are safely ignored
+    // Step definitions - glob patterns for where step definitions are located
+    "cucumberautocomplete.steps": [
+        "tests/step-definitions/**/*.js",
+        "tests/support/**/*.js"
+    ],
+    // Sync feature files - enables Go to Definition and autocomplete
+    "cucumberautocomplete.syncfeatures": "tests/features/**/*.feature",
+    // Strict Gherkin validation
+    "cucumberautocomplete.strictGherkinCompletion": true,
+    // Strict Gherkin validation for scenarios
+    // Cucumber-js doesn't care - Given, When, Then are interchangeable, so we don't need to be strict with the Cursor extension either.
+    "cucumberautocomplete.strictGherkinValidation": false,
+    // Smart snippets - autocomplete based on existing steps
+    "cucumberautocomplete.smartSnippets": true,
+    // Steps invocation format for autocomplete
+    "cucumberautocomplete.stepsInvariants": true,
+    // Format for custom parameters (optional, for better autocomplete)
+    "cucumberautocomplete.customParameters": [
+        {
+            "parameter": "{string}",
+            "value": "\"([^\"]*)\""
+        },
+        {
+            "parameter": "{int}",
+            "value": "(\\d+)"
+        }
+    ],
+    // Additional settings for better IDE experience
+    "[feature]": {
+        "editor.quickSuggestions": {
+            "comments": false,
+            "strings": true,
+            "other": true
+        }
+    }
+}
