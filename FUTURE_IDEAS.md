@@ -1,3 +1,12 @@
+# Data structure
+
+The application organizes data in the following SQLite tables:
+ ... (see specification)
+
+To add: 
+- `meal_plan` - Final weekly meal plan result
+
+
 # Ideas for potential future features
 
  - ! Anonymise names of guest votes with some unique IDs
@@ -43,3 +52,9 @@ Once voting results are collected, then within this app the Restaurant can manua
   - Clears weekly options (guest page)
   - Displays the meal plan selected by the restaurant on the guest page
 - The software keeps a memory of the last three weeks of meal plans, and no meal repeats within two weeks
+
+
+## Tests
+
+   - The system admin can retrieve the final weekly meal plan result
+     - Write suitable regression test

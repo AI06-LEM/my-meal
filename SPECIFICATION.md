@@ -51,9 +51,9 @@ A vegetarian meal is a meal with its category set to vegetarian.
 
 ### Data structure: meal combination
 
-A meal combination is a set (or array) of meals. A meal combination contains always one or more meals.
+A meal combination is a set (or array) of meals. A meal combination contains always one or more meals (typically 2 meals, sometimes 1 or 3).
 
-A meal combination specifies options served by the restaurant on a day out of which restaurant guests can then choose one (in the restaurant, not this app).
+Typically, a meal combination represents the same dish in different dietary variations. A meal combination specifies options served by the restaurant on a day out of which restaurant guests can then choose one (in the restaurant, not this app).
 
 Meals are always grouped in meal combinations for the purpose of this software. For example, the database stores all potentially possible meal combinations, the restaurant pre-selects multiple meal combinations according to certain restrictions (detailed later), from which the guests then can choose meal combinations. Neither the restaurant nor the guests ever select individual meals, they all always can only select meal combinations.
 
@@ -96,7 +96,7 @@ Each week, the restaurant selects at least:
 - 2 fish combos
 - 4 vegetarian combos
 
-Upon saving in the restaurant tab, the software validates the above composition of a meal options, and in case of a wrongly entered data displays an error message. Otherwise, the weekly options are stored in the database.
+Upon saving in the restaurant tab, the software validates the above composition of a meal options, and in case of wrongly entered data displays an error message (e.g., "Please select exactly 2 vegetarian options"). Otherwise, the weekly options are stored in the database.
 
 
 ### Data structure: (Guest) Vote
@@ -116,6 +116,8 @@ Upon saving in the guests tab, the software validates the above composition of a
 The voting result is the main result of this software. This information is used by the restaurant to manually decide on the final meal plan for the week.
 
 The voting result displays for each voted on meal combination how often it was voted for (as a bar chart with a numeric label). The presentation of the result is arranged into three groups corresponding to the three different meal categories (meat, fish and vegetarian).
+
+All voted-on meal combinations are displayed (including those with zero votes). Results are sorted by vote count (descending) within each category. Tied meal combinations are simply arranged after each other in the order.
 
 This voting result is displayed at both the admin and restaurant tabs.
 
@@ -180,7 +182,6 @@ The application organizes data in the following SQLite tables:
 - `combination_meals` - Links meals to their combinations
 - `weekly_options` - Restaurant's selected options for the current week
 - `guest_votes` - All guest voting data
-- `meal_plan` - Final weekly meal plan result
 - `metadata` - System metadata (timestamps, etc.)
 
 Additionally:
@@ -196,9 +197,9 @@ The system admin uploads meal data as JSON with this structure:
 }
 ```
 
-Note: the meals feature is meanwhile redundant, and this format will soon be simplified.
+Note: In past versions, this software also processed individual meals (not only meal combinations) and therefore these were represented also separately. The "meals" feature/attribute in the JSON upload format is meanwhile obsolete and should be always empty. The JSON format will be later simplified, also removing this "meals" feature.
 
-This data is then imported into the database, preserving the same logical structure.
+This JSON data is then imported into the database, preserving the same logical structure.
 
 The rest of this section sketches possible internal data structures. These data structures are only a suggestion to help you understand our intentions for this application, but you can make a sensible design decision yourself.
 
@@ -209,6 +210,8 @@ The rest of this section sketches possible internal data structures. These data 
  - Category: "meat" | "fish" | "vegetarian",
  - Vegan: boolean
 
+In the JSON upload format, there are no unique IDs for meals or meal combinations. These are created automatically by the system when a JSON file is uploaded (e.g., auto-generated UUIDs).
+
 Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are not considered meat.
 
 
@@ -216,8 +219,6 @@ Each meal has exactly one category: meat, fish, or vegetarian. Fish meals are no
  - Name: string 
  - A unique ID: string (added automatically during JSON file upload)
  - Meals: multiple related *meal* data, where one component differs, a JSON array of meal objects
-
-TODO: Do we really need a name for a meal combination?
 
 
 ### *guest_vote*
@@ -237,23 +238,31 @@ TODO: Do we really need a name for a meal combination?
 
  - In case the software crashes, all its data in the database (meals, meal combinations, weekly options and guest votes) are preserved so that the system can be restarted without data loss
 
+ - In case the SQLite database file is missing at software startup, the software automatically creates an empty database with the required structure.
+
+ - There is no maximum number of meals/combinations nor guests votes set by the system. However, the number of meals will usually not exceed hundreds and the number of guest votes will usually stay below 2000. 
+
+
+## Concurrency (Prototype)
+
+- SQLite handles basic read/write concurrency
+- Simultaneous guest votes are both recorded (no conflict)
+- Restaurant and admin should avoid concurrent modifications (not enforced)
+
 
 ## Tech stack
 
 Use HTML, CSS, JavaScript and Node.js.
 
+For the prototype, there is no need to optimise for performance.
 
-## What to test?
 
-TODO: Check regression tests cover all the clauses below.
+### Browser Compatibility
 
-   - A system admin can enter the initial database
-     - Create a test meal database text file with a range of options
-     - Write a regression test uploading this test database to the software
-   - The kitchen can see the full set of meal options and choose possible meal options for the week
-     - Write suitable regression test
-   - The guests can see the possible meal options and choose their preferences
-     - Write suitable regression test
-   - The system admin can retrieve the final weekly meal plan result
-     - Write suitable regression test
-   
+The prototype targets modern browsers (e.g., Chrome, Firefox, Safari) on the desktop and mobile devices (iOS and Android). Most guests will use mobile devices, the server on which the software will later deployed is running Linux, while the development and testing of this software largely happens on desktop machines (MacOS and Windows). Multi-platform support is therefore essential.
+
+
+## Port Configuration
+
+The port on which the server runs on is configurable at the commandline. The default port is 3000.
+
