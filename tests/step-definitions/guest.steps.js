@@ -275,15 +275,44 @@ Then('I should see voting options for vegetarian', async function() {
 // ==================== Complete Vote Workflows ====================
 
 /**
- * Submit a complete valid vote
+ * Submit a complete valid vote with specific meal selections
+ * This allows explicit control over which meals are selected
+ * 
+ * Usage in Gherkin:
+ *   When I complete a full vote as "Alice" with:
+ *     | category    | meal                |
+ *     | meat        | Burger              |
+ *     | fish        | Pasta               |
+ *     | vegetarian  | Lasagna             |
+ *     | vegetarian  | Stir Fry            |
  */
-When('I complete a full vote as {string}', async function(name) {
+When('I complete a full vote as {string} with:', async function(name, dataTable) {
   const guestPage = new GuestPage(this.page);
+  
+  // Parse the data table to extract meal selections
+  const rows = dataTable.hashes();
+  let meatOption = null;
+  let fishOption = null;
+  const vegetarianOptions = [];
+  
+  for (const row of rows) {
+    const category = row.category.toLowerCase();
+    const mealName = row.meal || row.name;
+    
+    if (category === 'meat') {
+      meatOption = mealName;
+    } else if (category === 'fish') {
+      fishOption = mealName;
+    } else if (category === 'vegetarian') {
+      vegetarianOptions.push(mealName);
+    }
+  }
+  
   await guestPage.completeVote({
     name: name,
-    meat: 'Burger',
-    fish: 'Pasta',
-    vegetarian: ['Vegetarian Burger', 'Pasta Primavera']
+    meat: meatOption,
+    fish: fishOption,
+    vegetarian: vegetarianOptions
   });
 });
 
@@ -359,32 +388,18 @@ Given('{string} has already voted with:', async function(voterName, dataTable) {
 });
 
 /**
- * Simplified version without data table - uses default meal selections
- * This is useful for quick duplicate voting tests without caring about specific meals
+ * Try to vote again with specific meal selections
+ * This allows testing duplicate voting with explicit meal choices
  * 
  * Usage in Gherkin:
- *   Given "Alice" has already voted
+ *   When I try to vote again as "Alice" with:
+ *     | category    | meal                |
+ *     | meat        | Meatballs           |
+ *     | fish        | Pasta               |
+ *     | vegetarian  | Salad               |
+ *     | vegetarian  | Curry               |
  */
-Given('{string} has already voted', async function(voterName) {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.navigate();
-  
-  // Complete a vote with default selections
-  await guestPage.completeVote({
-    name: voterName,
-    meat: 'Burger',
-    fish: 'Pasta',
-    vegetarian: ['Lasagna', 'Stir Fry']
-  });
-  
-  // Verify vote was successful
-  expect(await guestPage.isVoteSuccessful()).toBe(true);
-  
-  // Store voter info for potential verification
-  this.testData.lastVoter = voterName;
-});
-
-When('I try to vote again as {string}', async function(voterName) {
+When('I try to vote again as {string} with:', async function(voterName, dataTable) {
   const guestPage = new GuestPage(this.page);
   
   // Refresh to get a clean form
@@ -392,12 +407,31 @@ When('I try to vote again as {string}', async function(voterName) {
   await this.page.waitForLoadState('networkidle');
   await guestPage.navigate();
   
+  // Parse the data table to extract meal selections
+  const rows = dataTable.hashes();
+  let meatOption = null;
+  let fishOption = null;
+  const vegetarianOptions = [];
+  
+  for (const row of rows) {
+    const category = row.category.toLowerCase();
+    const mealName = row.meal || row.name;
+    
+    if (category === 'meat') {
+      meatOption = mealName;
+    } else if (category === 'fish') {
+      fishOption = mealName;
+    } else if (category === 'vegetarian') {
+      vegetarianOptions.push(mealName);
+    }
+  }
+  
   // Try to submit a vote with the same name
   await guestPage.completeVote({
     name: voterName,
-    meat: 'Burger',
-    fish: 'Pasta',
-    vegetarian: ['Vegetarian Burger', 'Pasta Primavera']
+    meat: meatOption,
+    fish: fishOption,
+    vegetarian: vegetarianOptions
   });
 });
 

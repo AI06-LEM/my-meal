@@ -44,7 +44,9 @@ When('I go to the {string} tab', async function(tabName) {
     await adminPage.navigate();
   } else {
     // Fallback for unknown tabs
-    await this.page.getByRole('button', { name: tabName }).click();
+    const tab = this.page.getByRole('button', { name: tabName });
+    await expect(tab).toBeVisible({ timeout: 2000 });
+    await tab.click();
     await this.page.waitForLoadState('networkidle');
   }
 });
@@ -64,7 +66,9 @@ Given('I am on the {string} tab', async function(tabName) {
     await adminPage.navigate();
   } else {
     // Fallback for unknown tabs
-    await this.page.getByRole('button', { name: tabName }).click();
+    const tab = this.page.getByRole('button', { name: tabName });
+    await expect(tab).toBeVisible({ timeout: 2000 });
+    await tab.click();
     await this.page.waitForLoadState('networkidle');
   }
 });
@@ -89,18 +93,24 @@ When('I refresh the page', async function() {
  *   When I click the "Save Weekly Options" button
  */
 When('I click the {string} button', async function(buttonName) {
-  await this.page.getByRole('button', { name: buttonName }).click();
+  const button = this.page.getByRole('button', { name: buttonName });
+  await expect(button).toBeVisible({ timeout: 2000 });
+  await button.click();
 });
 
 When('I click {string}', async function(buttonName) {
-  await this.page.getByRole('button', { name: buttonName }).click();
+  const button = this.page.getByRole('button', { name: buttonName });
+  await expect(button).toBeVisible({ timeout: 2000 });
+  await button.click();
 });
 
 /**
  * Click a link by its visible text
  */
 When('I click the {string} link', async function(linkText) {
-  await this.page.getByRole('link', { name: linkText }).click();
+  const link = this.page.getByRole('link', { name: linkText });
+  await expect(link).toBeVisible({ timeout: 2000 });
+  await link.click();
 });
 
 // ==================== Form Input Steps ====================
@@ -113,15 +123,21 @@ When('I click the {string} link', async function(linkText) {
  *   When I type "test@example.com" into the "Email" field
  */
 When('I type {string} into the {string} field', async function(value, label) {
-  await this.page.getByLabel(label).fill(value);
+  const field = this.page.getByLabel(label);
+  await expect(field).toBeVisible({ timeout: 2000 });
+  await field.fill(value);
 });
 
 When('I enter {string} in the {string} field', async function(value, label) {
-  await this.page.getByLabel(label).fill(value);
+  const field = this.page.getByLabel(label);
+  await expect(field).toBeVisible({ timeout: 2000 });
+  await field.fill(value);
 });
 
 When('I clear the {string} field', async function(label) {
-  await this.page.getByLabel(label).clear();
+  const field = this.page.getByLabel(label);
+  await expect(field).toBeVisible({ timeout: 2000 });
+  await field.clear();
 });
 
 /**
@@ -131,11 +147,15 @@ When('I clear the {string} field', async function(label) {
  *   When I select "Burger" from the "Monday (Meat)" dropdown
  */
 When('I select {string} from the {string} dropdown', async function(option, label) {
-  await this.page.getByLabel(label).selectOption({ label: option });
+  const dropdown = this.page.getByLabel(label);
+  await expect(dropdown).toBeVisible({ timeout: 2000 });
+  await dropdown.selectOption({ label: option });
 });
 
 When('I select option {string} from {string}', async function(option, label) {
-  await this.page.getByLabel(label).selectOption({ label: option });
+  const dropdown = this.page.getByLabel(label);
+  await expect(dropdown).toBeVisible({ timeout: 2000 });
+  await dropdown.selectOption({ label: option });
 });
 
 /**
@@ -145,11 +165,15 @@ When('I select option {string} from {string}', async function(option, label) {
  *   When I check the "I agree to terms" checkbox
  */
 When('I check the {string} checkbox', async function(label) {
-  await this.page.getByLabel(label).check();
+  const checkbox = this.page.getByLabel(label);
+  await expect(checkbox).toBeVisible({ timeout: 2000 });
+  await checkbox.check();
 });
 
 When('I uncheck the {string} checkbox', async function(label) {
-  await this.page.getByLabel(label).uncheck();
+  const checkbox = this.page.getByLabel(label);
+  await expect(checkbox).toBeVisible({ timeout: 2000 });
+  await checkbox.uncheck();
 });
 
 // ==================== Assertion Steps ====================

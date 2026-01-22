@@ -94,6 +94,17 @@ class GuestPage extends BasePage {
    * @param {string} optionName - The meat option to select
    */
   async selectMeatOption(optionName) {
+    // Validate that the option exists
+    const available = await this.getAvailableOptions('meat');
+    const availableNames = available.map(opt => opt.text);
+    
+    if (!availableNames.some(name => name.includes(optionName))) {
+      throw new Error(
+        `Cannot select meat option "${optionName}" - not available. ` +
+        `Restaurant has only selected: ${availableNames.join(', ')}`
+      );
+    }
+    
     const meatSection = this.page.locator('#meatVoting');
     const option = meatSection.locator('.vote-option').filter({ hasText: optionName });
     await option.click();
@@ -104,6 +115,17 @@ class GuestPage extends BasePage {
    * @param {string} optionName - The fish option to select
    */
   async selectFishOption(optionName) {
+    // Validate that the option exists
+    const available = await this.getAvailableOptions('fish');
+    const availableNames = available.map(opt => opt.text);
+    
+    if (!availableNames.some(name => name.includes(optionName))) {
+      throw new Error(
+        `Cannot select fish option "${optionName}" - not available. ` +
+        `Restaurant has only selected: ${availableNames.join(', ')}`
+      );
+    }
+    
     const fishSection = this.page.locator('#fishVoting');
     const option = fishSection.locator('.vote-option').filter({ hasText: optionName });
     await option.click();
@@ -114,6 +136,17 @@ class GuestPage extends BasePage {
    * @param {string} optionName - The vegetarian option to select
    */
   async selectVegetarianOption(optionName) {
+    // Validate that the option exists
+    const available = await this.getAvailableOptions('vegetarian');
+    const availableNames = available.map(opt => opt.text);
+    
+    if (!availableNames.some(name => name.includes(optionName))) {
+      throw new Error(
+        `Cannot select vegetarian option "${optionName}" - not available. ` +
+        `Restaurant has only selected: ${availableNames.join(', ')}`
+      );
+    }
+    
     const vegSection = this.page.locator('#vegetarianVoting');
     const option = vegSection.locator('.vote-option').filter({ hasText: optionName });
     

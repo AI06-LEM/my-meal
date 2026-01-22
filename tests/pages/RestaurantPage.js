@@ -79,6 +79,17 @@ class RestaurantPage extends BasePage {
    * @param {string} mealName - Meat combo name (e.g., "Burger Combo")
    */
   async selectMeatOption(mealName) {
+    // Validate that the option exists
+    const available = await this.getMeatOptions();
+    const availableNames = available.map(opt => opt.name);
+    
+    if (!availableNames.some(name => name.includes(mealName))) {
+      throw new Error(
+        `Cannot select meat option "${mealName}" - not found in database. ` +
+        `Available options: ${availableNames.join(', ')}`
+      );
+    }
+    
     const meatSection = this.page.locator('#meatOptions');
     const card = meatSection.locator('.meal-card').filter({ hasText: mealName });
     await card.click();
@@ -89,6 +100,17 @@ class RestaurantPage extends BasePage {
    * @param {string} mealName - Fish combo name (e.g., "Pasta Combo")
    */
   async selectFishOption(mealName) {
+    // Validate that the option exists
+    const available = await this.getFishOptions();
+    const availableNames = available.map(opt => opt.name);
+    
+    if (!availableNames.some(name => name.includes(mealName))) {
+      throw new Error(
+        `Cannot select fish option "${mealName}" - not found in database. ` +
+        `Available options: ${availableNames.join(', ')}`
+      );
+    }
+    
     const fishSection = this.page.locator('#fishOptions');
     const card = fishSection.locator('.meal-card').filter({ hasText: mealName });
     await card.click();
@@ -99,6 +121,17 @@ class RestaurantPage extends BasePage {
    * @param {string} mealName - Vegetarian meal or combo name
    */
   async selectVegetarianOption(mealName) {
+    // Validate that the option exists
+    const available = await this.getVegetarianOptions();
+    const availableNames = available.map(opt => opt.name);
+    
+    if (!availableNames.some(name => name.includes(mealName))) {
+      throw new Error(
+        `Cannot select vegetarian option "${mealName}" - not found in database. ` +
+        `Available options: ${availableNames.join(', ')}`
+      );
+    }
+    
     const vegSection = this.page.locator('#vegetarianOptions');
     const card = vegSection.locator('.meal-card').filter({ hasText: mealName });
     await card.click();
