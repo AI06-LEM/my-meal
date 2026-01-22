@@ -132,25 +132,57 @@ Either *one of the following two initialisation actions* is performed to initial
 
 ---
 
-## 4. System States
+## 4. User Interface
+
+### System Admin Tab
+Multiple areas with different settings and information displayed.
+
+#### Upload Meal Database
+Form for uploading JSON file and feedback messages.
+
+#### Current Status
+Status messages on
+ - Database: Empty or Loaded
+ - Weekly Options: Unset or Set
+ - Votes: Number of votes submitted
+
+#### Vote Results (Charts)
+Area for displaying vote results upon button press.
+
+#### Reset System
+Area for reset button and messages.
+
+### Restaurant Tab
+
+#### Weekly Options Selection
+Area to select weekly options (sorted by category), saving and feedback messages.
+
+#### Vote Results (Charts)
+Area for displaying vote results upon button press.
+
+### Guests Tab
+
+#### Guest Voting
+Area for voting on meal combinations (sorted by category), saving and feedback messages.
+
+
+## 5. System States
 
 ### State 1: Empty (No Database)
 
-- **Admin tab:** Shows
-  - Upload form
-  - Current status (meals database, weekly options and submitted votes)
-- **Restaurant tab:** Shows "Please upload a meal database first"
-- **Guest tab:** Shows "Voting is not yet available"
+- **Admin tab:** Shows in Current Status area that database is empty (plus status of weekly options and votes)
+- **Restaurant tab:** Shows message "Please upload a meal database first"
+- **Guest tab:** Shows message "Voting is not yet available"
 
 Note: This state is only possible, if no SQLite database file exists at system startup. Otherwise, at least the database of meals and meal combinations is never empty.
 
 ### State 2: Database Loaded, No Options Selected
 
-- **Admin tab:** Shows upload form and empty chart
-- **Restaurant tab:** Shows meal selection form
+- **Admin tab:** Shows in Current Status area that database is loaded (plus status of weekly options and votes)
+- **Restaurant tab:** Allows meal selection
 - **Guest tab:** Shows "The restaurant has not selected options yet"
 
-### State 3: Options Selected (Voting Open)
+### TODO: FIX State 3: Options Selected (Voting Open)
 
 - **Admin tab:** Shows chart (updates with votes)
 - **Restaurant tab:** Shows selected options and chart
@@ -158,7 +190,7 @@ Note: This state is only possible, if no SQLite database file exists at system s
 
 ---
 
-## 5. NEW Validation Rules
+## 6. NEW Validation Rules
 
 ### JSON Upload Validation
 1. JSON must be valid and parseable
@@ -182,7 +214,7 @@ Note: This state is only possible, if no SQLite database file exists at system s
 
 ---
 
-## 6. Data Reset Behavior
+## 7. Data Reset Behavior
 
 | Action | Meals/Combinations | Weekly Options | Guest Votes | Chart |
 |--------|-------------------|----------------|-------------|-------|
@@ -192,7 +224,7 @@ Note: This state is only possible, if no SQLite database file exists at system s
 
 ---
 
-## 7. Technical Requirements
+## 8. Technical Requirements
 
 ### Tech Stack
 - HTML, CSS, JavaScript, Node.js
@@ -227,7 +259,7 @@ The server port is configurable via command line. Default port: 3000.
 
 ---
 
-## 8. Edge Cases and Error Handling
+## 9. Edge Cases and Error Handling
 
 ### Error Handling
 - **User errors:** Show inline error messages near the relevant form field
@@ -249,7 +281,7 @@ The server port is configurable via command line. Default port: 3000.
 
 ---
 
-## 9. Prototype vs. Later Version
+## 10. Prototype vs. Later Version
 
 ### Prototype (Current)
 - Single app with three tabs (Admin, Restaurant, Guest)
