@@ -268,11 +268,17 @@ class AdminPage extends BasePage {
    * Cancel system reset (dismisses the dialog)
    */
   async cancelResetSystem() {
+    // Clear any existing status messages first (e.g., from Before hook reset)
+    await this.page.locator('#resetStatus').evaluate(el => el.textContent = '');
+    
     this.page.once('dialog', async dialog => {
       await dialog.dismiss();
     });
     
     await this.clickResetSystem();
+    
+    // Give a brief moment to ensure no UI updates occur after cancel
+    await this.page.waitForTimeout(500);
   }
 
   /**
