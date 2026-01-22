@@ -308,39 +308,81 @@ When('I complete a full vote with:', async function(dataTable) {
 
 // ==================== Previous Voter Setup ====================
 
-// Given('{string} has already voted', async function(voterName) {
-//   // First complete the voting setup, then submit a vote
-//   const guestPage = new GuestPage(this.page);
-//   await guestPage.navigate();
+/**
+ * Set up a guest who has already voted with specific meal selections
+ * This allows testing duplicate voting scenarios with explicit meal choices
+ * 
+ * Usage in Gherkin:
+ *   Given "Alice" has already voted with:
+ *     | category    | meal                |
+ *     | meat        | Burger              |
+ *     | fish        | Pasta               |
+ *     | vegetarian  | Lasagna             |
+ *     | vegetarian  | Stir Fry            |
+ */
+Given('{string} has already voted with:', async function(voterName, dataTable) {
+  const guestPage = new GuestPage(this.page);
+  await guestPage.navigate();
   
-//   // Complete a vote for this user
-//   await guestPage.completeVote({
-//     name: voterName,
-//     meat: 'Burger',
-//     fish: 'Pasta',
-//     vegetarian: ['Vegetarian Burger', 'Pasta Primavera']
-//   });
+  // Parse the data table to extract meal selections
+  const rows = dataTable.hashes();
+  let meatOption = null;
+  let fishOption = null;
+  const vegetarianOptions = [];
   
-//   // Verify vote was successful
-//   expect(await guestPage.isVoteSuccessful()).toBe(true);
+  for (const row of rows) {
+    const category = row.category.toLowerCase();
+    const mealName = row.meal || row.name;
+    
+    if (category === 'meat') {
+      meatOption = mealName;
+    } else if (category === 'fish') {
+      fishOption = mealName;
+    } else if (category === 'vegetarian') {
+      vegetarianOptions.push(mealName);
+    }
+  }
   
-//   // Clear the form for the next voter
-//   await guestPage.clearName();
-// });
+  // Complete the vote with specified selections
+  await guestPage.completeVote({
+    name: voterName,
+    meat: meatOption,
+    fish: fishOption,
+    vegetarian: vegetarianOptions
+  });
+  
+  // Verify vote was successful
+  expect(await guestPage.isVoteSuccessful()).toBe(true);
+  
+  // Store voter info for potential verification
+  this.testData.lastVoter = voterName;
+});
 
-// Given('{string} has already submitted a vote', async function(voterName) {
-//   const guestPage = new GuestPage(this.page);
-//   await guestPage.navigate();
+/**
+ * Simplified version without data table - uses default meal selections
+ * This is useful for quick duplicate voting tests without caring about specific meals
+ * 
+ * Usage in Gherkin:
+ *   Given "Alice" has already voted
+ */
+Given('{string} has already voted', async function(voterName) {
+  const guestPage = new GuestPage(this.page);
+  await guestPage.navigate();
   
-//   await guestPage.completeVote({
-//     name: voterName,
-//     meat: 'Burger',
-//     fish: 'Pasta',
-//     vegetarian: ['Vegetarian Burger', 'Pasta Primavera']
-//   });
+  // Complete a vote with default selections
+  await guestPage.completeVote({
+    name: voterName,
+    meat: 'Burger',
+    fish: 'Pasta',
+    vegetarian: ['Lasagna', 'Stir Fry']
+  });
   
-//   expect(await guestPage.isVoteSuccessful()).toBe(true);
-// });
+  // Verify vote was successful
+  expect(await guestPage.isVoteSuccessful()).toBe(true);
+  
+  // Store voter info for potential verification
+  this.testData.lastVoter = voterName;
+});
 
 When('I try to vote again as {string}', async function(voterName) {
   const guestPage = new GuestPage(this.page);
