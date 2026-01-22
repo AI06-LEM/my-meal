@@ -15,8 +15,22 @@ Feature: System Reset
   So that I can start fresh with new weekly options
 
   Background:
-    Given the restaurant has selected weekly options
-    And "ResetTestVoter" has already voted
+    Given the restaurant has selected weekly options with:
+      | category    | meal                |
+      | meat        | Burger              |
+      | meat        | Meatballs           |
+      | fish        | Fish and Chips      |
+      | fish        | Pasta               |
+      | vegetarian  | Lasagna             |
+      | vegetarian  | Stir Fry            |
+      | vegetarian  | Salad               |
+      | vegetarian  | Curry               |
+    And "ResetTestVoter" has already voted with:
+      | category    | meal                |
+      | meat        | Meatballs           |
+      | fish        | Pasta               |
+      | vegetarian  | Salad               |
+      | vegetarian  | Curry               |
     And I am on the admin tab
 
   # ====================
@@ -84,8 +98,8 @@ Feature: System Reset
     And I save the weekly options
     And I go to the "Guests" tab
     And I enter my name as "ResetTestVoter"
-    And I select 1 meat option
-    And I select 1 fish option
+    And I select 1 meat options
+    And I select 1 fish options
     And I select 2 vegetarian options
     And I submit my vote
     Then my vote should be recorded
