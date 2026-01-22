@@ -16,7 +16,16 @@ Feature: Guest Voting
   So that my preferences influence the weekly meal plan
 
   Background:
-    Given the restaurant has selected weekly options
+    Given the restaurant has selected weekly options with:
+      | category    | meal                |
+      | meat        | Burger              |
+      | meat        | Meatballs           |
+      | fish        | Fish and Chips      |
+      | fish        | Pasta               |
+      | vegetarian  | Lasagna             |
+      | vegetarian  | Stir Fry            |
+      | vegetarian  | Salad               |
+      | vegetarian  | Curry               |
     And I am on the guests tab
 
   # ====================
@@ -101,7 +110,12 @@ Feature: Guest Voting
 
   @duplicate-prevention
   Scenario: Same guest cannot vote twice
-    Given "Alice" has already voted
+    Given "Alice" has already voted with:
+      | category    | meal                |
+      | meat        | Meatballs           |
+      | fish        | Pasta               |
+      | vegetarian  | Salad               |
+      | vegetarian  | Curry               |
     When I try to vote again as "Alice"
     Then I should see an error about duplicate voting
     And only one vote for "Alice" should exist
