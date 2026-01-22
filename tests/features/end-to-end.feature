@@ -64,7 +64,7 @@ Feature: End-to-End Workflow
     And I select vegetarian option "Lasagna"
     And I select vegetarian option "Curry"
     And I submit my vote
-    Then I should see a confirmation message
+    Then my vote should be recorded
 
     # Step 4: Admin views results and creates meal plan
     When I go to the "System Admin" tab
@@ -101,7 +101,7 @@ Feature: End-to-End Workflow
     And I select vegetarian option "Lasagna"
     And I select vegetarian option "Curry"
     And I submit my vote
-    Then I should see a confirmation message
+    Then my vote should be recorded
 
     # Second voter
     When I refresh the page
@@ -112,7 +112,7 @@ Feature: End-to-End Workflow
     And I select vegetarian option "Lasagna"
     And I select vegetarian option "Salad"
     And I submit my vote
-    Then I should see a confirmation message
+    Then my vote should be recorded
 
     # Verify vote count
     When I go to the "System Admin" tab

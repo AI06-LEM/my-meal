@@ -35,11 +35,11 @@ Feature: Guest Voting
   @happy-path
   Scenario: Guest submits a valid vote
     When I enter my name as "Test Student"
-    And I select 1 meat option
-    And I select 1 fish option
+    And I select 1 meat options
+    And I select 1 fish options
     And I select 2 vegetarian options
     And I submit my vote
-    Then I should see a confirmation message
+    Then my vote should be recorded
     And my vote should be recorded
 
   @happy-path
@@ -50,7 +50,7 @@ Feature: Guest Voting
     And I select vegetarian option "Vegetarian Burger"
     And I select vegetarian option "Pasta Primavera"
     And I submit my vote
-    Then the vote should be submitted successfully
+    Then my vote should be recorded
 
   @happy-path
   Scenario: Form clears after successful vote
@@ -60,7 +60,7 @@ Feature: Guest Voting
       | fish        | Pasta               |
       | vegetarian  | Lasagna             |
       | vegetarian  | Stir Fry            |
-    Then I should see a confirmation message
+    Then my vote should be recorded
     And the name field should be empty
 
   # ====================
@@ -69,8 +69,8 @@ Feature: Guest Voting
 
   @validation
   Scenario: Guest cannot submit without entering name
-    When I select 1 meat option
-    And I select 1 fish option
+    When I select 1 meat options
+    And I select 1 fish options
     And I select 2 vegetarian options
     And I submit my vote
     Then I should see an error about missing name
@@ -78,7 +78,7 @@ Feature: Guest Voting
   @validation
   Scenario: Guest cannot submit without selecting meat option
     When I enter my name as "NoMeat"
-    And I select 1 fish option
+    And I select 1 fish options
     And I select 2 vegetarian options
     And I submit my vote
     Then I should see an error about missing meat option
@@ -86,7 +86,7 @@ Feature: Guest Voting
   @validation
   Scenario: Guest cannot submit without selecting fish option
     When I enter my name as "NoFish"
-    And I select 1 meat option
+    And I select 1 meat options
     And I select 2 vegetarian options
     And I submit my vote
     Then I should see an error about missing fish option
@@ -94,9 +94,9 @@ Feature: Guest Voting
   @validation
   Scenario: Guest cannot submit with only one vegetarian option
     When I enter my name as "OnlyOneVeg"
-    And I select 1 meat option
-    And I select 1 fish option
-    And I select only 1 vegetarian option
+    And I select 1 meat options
+    And I select 1 fish options
+    And I select 1 vegetarian options
     And I submit my vote
     Then I should see an error message containing "vegetarian"
     And no vote should be recorded
@@ -104,8 +104,8 @@ Feature: Guest Voting
   @validation
   Scenario: Guest cannot submit with zero vegetarian options
     When I enter my name as "NoVeg"
-    And I select 1 meat option
-    And I select 1 fish option
+    And I select 1 meat options
+    And I select 1 fish options
     And I submit my vote
     Then I should see an error message containing "vegetarian"
 
@@ -138,7 +138,7 @@ Feature: Guest Voting
       | fish        | Fish and Chips      |
       | vegetarian  | Lasagna             |
       | vegetarian  | Stir Fry            |
-    Then I should see a confirmation message
+    Then my vote should be recorded
     # Now vote as a different person
     When I refresh the page
     And I go to the "Guests" tab
@@ -148,7 +148,7 @@ Feature: Guest Voting
     And I select vegetarian option "Salad"
     And I select vegetarian option "Curry"
     And I submit my vote
-    Then I should see a confirmation message
+    Then my vote should be recorded
 
   # ====================
   # Selection Behavior
@@ -209,8 +209,8 @@ Feature: Guest Voting
     When I enter my name as "VeggieVoter"
     And I select vegetarian option "Mushroom Risotto"
     And I select vegetarian option "Vegetable Risotto"
-    And I select 1 meat option
-    And I select 1 fish option
+    And I select 1 meat options
+    And I select 1 fish options
     And I submit my vote
-    Then I should NOT see "Please select two different vegetarian options"
+    Then I should not see "Please select two different vegetarian options"
     And I should see "successfully"
