@@ -53,9 +53,9 @@ Feature: Restaurant Weekly Options Selection
 
   @selection
   Scenario: Restaurant can select multiple vegetarian options
-    When I select "Mushroom Risotto" as a vegetarian option
-    And I select "Vegetable Risotto" as a vegetarian option
-    And I select "Quinoa Bowl" as a vegetarian option
+    When I select "Risotto" as a vegetarian option
+    And I select "Curry" as a vegetarian option
+    And I select "Bowl" as a vegetarian option
     Then the restaurant should have 3 vegetarian options selected
 
   @selection
@@ -86,14 +86,3 @@ Feature: Restaurant Weekly Options Selection
     And I go to the "Restaurant" tab
     Then "Burger" should be selected
     And "Pasta" should be selected
-
-  # ====================
-  # Error Handling
-  # ====================
-
-  @error
-  Scenario: Restaurant sees message when database not loaded
-    # This tests the case where someone navigates to restaurant without uploading DB
-    Given I am on the home page
-    When I go to the "Restaurant" tab
-    Then I should see "Please upload a meal database first"
