@@ -54,7 +54,12 @@ Feature: Guest Voting
 
   @happy-path
   Scenario: Form clears after successful vote
-    When I complete a full vote as "FormClearTest"
+    When I complete a full vote as "FormClearTest" with:
+      | category    | meal                |
+      | meat        | Burger              |
+      | fish        | Pasta               |
+      | vegetarian  | Lasagna             |
+      | vegetarian  | Stir Fry            |
     Then I should see a confirmation message
     And the name field should be empty
 
@@ -116,21 +121,32 @@ Feature: Guest Voting
       | fish        | Pasta               |
       | vegetarian  | Salad               |
       | vegetarian  | Curry               |
-    When I try to vote again as "Alice"
+    When I try to vote again as "Alice" with:
+      | category    | meal                |
+      | meat        | Meatballs           |
+      | fish        | Pasta               |
+      | vegetarian  | Salad               |
+      | vegetarian  | Curry               |
     Then I should see an error about duplicate voting
     And only one vote for "Alice" should exist
 
   @duplicate-prevention
   Scenario: Different guests can vote with different names
-    When I complete a full vote as "FirstVoter"
+    When I complete a full vote as "FirstVoter" with:
+      | category    | meal                |
+      | meat        | Burger              |
+      | fish        | Fish and Chips      |
+      | vegetarian  | Lasagna             |
+      | vegetarian  | Stir Fry            |
     Then I should see a confirmation message
     # Now vote as a different person
     When I refresh the page
     And I go to the "Guests" tab
     And I enter my name as "SecondVoter"
-    And I select 1 meat option
-    And I select 1 fish option
-    And I select 2 vegetarian options
+    And I select meat option "Meatballs"
+    And I select fish option "Pasta"
+    And I select vegetarian option "Salad"
+    And I select vegetarian option "Curry"
     And I submit my vote
     Then I should see a confirmation message
 
