@@ -45,7 +45,7 @@ Feature: Restaurant Weekly Options Selection
   #   When I select the meat option "Burger"
   #   Then "Burger" should be selected
   #   # When selecting a combo, the vegetarian variant is auto-included
-  #   And I should have 1 meat options selected
+  #   And the restaurant should have 1 meat options selected
 
   # ====================
   # Selection Behavior
@@ -56,14 +56,14 @@ Feature: Restaurant Weekly Options Selection
     When I select "Mushroom Risotto" as a vegetarian option
     And I select "Vegetable Risotto" as a vegetarian option
     And I select "Quinoa Bowl" as a vegetarian option
-    Then I should have 3 vegetarian options selected
+    Then the restaurant should have 3 vegetarian options selected
 
   @selection
   Scenario: Restaurant can deselect a meal option
     When I select "Burger" as a meat option
     And I deselect "Burger"
     Then "Burger" should not be selected
-    And I should have 0 meat options selected
+    And the restaurant should have 0 meat options selected
 
   @selection
   Scenario: Selected options persist after saving

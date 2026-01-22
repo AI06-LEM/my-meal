@@ -112,19 +112,19 @@ Then('I should see {int} vegetarian options available', async function(count) {
   expect(options.length).toBe(count);
 });
 
-Then('I should have {int} meat options selected', async function(count) {
+Then('the restaurant should have {int} meat options selected', async function(count) {
   const restaurantPage = new RestaurantPage(this.page);
   const selectedCount = await restaurantPage.getSelectedCount('meat');
   expect(selectedCount).toBe(count);
 });
 
-Then('I should have {int} fish options selected', async function(count) {
+Then('the restaurant should have {int} fish options selected', async function(count) {
   const restaurantPage = new RestaurantPage(this.page);
   const selectedCount = await restaurantPage.getSelectedCount('fish');
   expect(selectedCount).toBe(count);
 });
 
-Then('I should have {int} vegetarian options selected', async function(count) {
+Then('the restaurant should have {int} vegetarian options selected', async function(count) {
   const restaurantPage = new RestaurantPage(this.page);
   const selectedCount = await restaurantPage.getSelectedCount('vegetarian');
   expect(selectedCount).toBe(count);
