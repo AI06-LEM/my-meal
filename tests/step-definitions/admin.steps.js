@@ -25,11 +25,6 @@ Given('I am on the admin tab', async function() {
   await adminPage.navigate();
 });
 
-Given('I navigate to the admin page', async function() {
-  const adminPage = new AdminPage(this.page);
-  await adminPage.navigate();
-});
-
 // ==================== Database Upload ====================
 
 /**
@@ -119,11 +114,6 @@ Then('the system status should show meal plan as {string}', async function(expec
 // ==================== Vote Results ====================
 
 When('I click show vote results', async function() {
-  const adminPage = new AdminPage(this.page);
-  await adminPage.showVoteResults();
-});
-
-When('I view the vote results', async function() {
   const adminPage = new AdminPage(this.page);
   await adminPage.showVoteResults();
 });

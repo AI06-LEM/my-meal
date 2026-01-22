@@ -28,24 +28,9 @@ Given('I am on the guests tab', async function() {
   await guestPage.navigate();
 });
 
-Given('I am on the guest voting page', async function() {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.navigate();
-});
-
-Given('I navigate to the guest page', async function() {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.navigate();
-});
-
 // ==================== Name Entry ====================
 
 When('I enter my name as {string}', async function(name) {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.enterName(name);
-});
-
-When('I enter the name {string}', async function(name) {
   const guestPage = new GuestPage(this.page);
   await guestPage.enterName(name);
 });
@@ -69,19 +54,9 @@ Then('the name field should contain {string}', async function(expectedName) {
 
 // ==================== Meal Selection by Count ====================
 
-When('I select {int} meat option', async function(count) {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.selectMeatOptions(count);
-});
-
 When('I select {int} meat options', async function(count) {
   const guestPage = new GuestPage(this.page);
   await guestPage.selectMeatOptions(count);
-});
-
-When('I select {int} fish option', async function(count) {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.selectFishOptions(count);
 });
 
 When('I select {int} fish options', async function(count) {
@@ -89,22 +64,7 @@ When('I select {int} fish options', async function(count) {
   await guestPage.selectFishOptions(count);
 });
 
-When('I select {int} vegetarian option', async function(count) {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.selectVegetarianOptions(count);
-});
-
 When('I select {int} vegetarian options', async function(count) {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.selectVegetarianOptions(count);
-});
-
-When('I select {int} different vegetarian options', async function(count) {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.selectVegetarianOptions(count);
-});
-
-When('I select only {int} vegetarian option', async function(count) {
   const guestPage = new GuestPage(this.page);
   await guestPage.selectVegetarianOptions(count);
 });
@@ -138,27 +98,7 @@ When('I submit my vote', async function() {
   await guestPage.submitVote();
 });
 
-When('I click submit vote', async function() {
-  const guestPage = new GuestPage(this.page);
-  await guestPage.submitVote();
-});
-
-Then('I should see a confirmation message', async function() {
-  const guestPage = new GuestPage(this.page);
-  expect(await guestPage.isVoteSuccessful()).toBe(true);
-});
-
 Then('my vote should be recorded', async function() {
-  const guestPage = new GuestPage(this.page);
-  expect(await guestPage.isVoteSuccessful()).toBe(true);
-});
-
-Then('my vote should be recorded in the system', async function() {
-  const guestPage = new GuestPage(this.page);
-  expect(await guestPage.isVoteSuccessful()).toBe(true);
-});
-
-Then('the vote should be submitted successfully', async function() {
   const guestPage = new GuestPage(this.page);
   expect(await guestPage.isVoteSuccessful()).toBe(true);
 });
@@ -200,9 +140,6 @@ Then('I should see an error about missing fish option', async function() {
   expect(error).toContain('fish');
 });
 
-Then('I should NOT see the error {string}', async function(errorText) {
-  await expect(this.page.getByText(errorText)).not.toBeVisible();
-});
 
 // ==================== Selection State Verification ====================
 

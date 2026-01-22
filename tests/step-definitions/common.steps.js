@@ -98,12 +98,6 @@ When('I click the {string} button', async function(buttonName) {
   await button.click();
 });
 
-When('I click {string}', async function(buttonName) {
-  const button = this.page.getByRole('button', { name: buttonName });
-  await expect(button).toBeVisible({ timeout: 2000 });
-  await button.click();
-});
-
 /**
  * Click a link by its visible text
  */
@@ -128,12 +122,6 @@ When('I type {string} into the {string} field', async function(value, label) {
   await field.fill(value);
 });
 
-When('I enter {string} in the {string} field', async function(value, label) {
-  const field = this.page.getByLabel(label);
-  await expect(field).toBeVisible({ timeout: 2000 });
-  await field.fill(value);
-});
-
 When('I clear the {string} field', async function(label) {
   const field = this.page.getByLabel(label);
   await expect(field).toBeVisible({ timeout: 2000 });
@@ -147,12 +135,6 @@ When('I clear the {string} field', async function(label) {
  *   When I select "Burger" from the "Monday (Meat)" dropdown
  */
 When('I select {string} from the {string} dropdown', async function(option, label) {
-  const dropdown = this.page.getByLabel(label);
-  await expect(dropdown).toBeVisible({ timeout: 2000 });
-  await dropdown.selectOption({ label: option });
-});
-
-When('I select option {string} from {string}', async function(option, label) {
   const dropdown = this.page.getByLabel(label);
   await expect(dropdown).toBeVisible({ timeout: 2000 });
   await dropdown.selectOption({ label: option });
@@ -189,22 +171,17 @@ Then('I should see {string}', async function(expectedText) {
   await expect(this.page.getByText(expectedText).first()).toBeVisible();
 });
 
-Then('I should see the text {string}', async function(expectedText) {
-  await expect(this.page.getByText(expectedText).first()).toBeVisible();
-});
-
 /**
  * Assert that text is NOT visible on the page
+ * 
+ * Note: We use .toBeHidden() because:
+ * - .toBeHidden() passes if element is either hidden OR doesn't exist in DOM (correct behavior for "should not see")
  * 
  * Examples:
  *   Then I should not see "Error"
  */
 Then('I should not see {string}', async function(text) {
-  await expect(this.page.getByText(text)).not.toBeVisible();
-});
-
-Then('I should NOT see {string}', async function(text) {
-  await expect(this.page.getByText(text)).not.toBeVisible();
+  await expect(this.page.getByText(text)).toBeHidden();
 });
 
 /**

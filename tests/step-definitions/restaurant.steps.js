@@ -26,22 +26,12 @@ Given('I am on the restaurant tab', async function() {
   await restaurantPage.navigate();
 });
 
-Given('I navigate to the restaurant page', async function() {
-  const restaurantPage = new RestaurantPage(this.page);
-  await restaurantPage.navigate();
-});
-
 // ==================== Meal Selection ====================
 
 /**
  * Select a specific meat option by name
  */
 When('I select {string} as a meat option', async function(mealName) {
-  const restaurantPage = new RestaurantPage(this.page);
-  await restaurantPage.selectMeatOption(mealName);
-});
-
-When('I select the meat option {string}', async function(mealName) {
   const restaurantPage = new RestaurantPage(this.page);
   await restaurantPage.selectMeatOption(mealName);
 });
@@ -54,20 +44,10 @@ When('I select {string} as a fish option', async function(mealName) {
   await restaurantPage.selectFishOption(mealName);
 });
 
-When('I select the fish option {string}', async function(mealName) {
-  const restaurantPage = new RestaurantPage(this.page);
-  await restaurantPage.selectFishOption(mealName);
-});
-
 /**
  * Select a specific vegetarian option by name
  */
 When('I select {string} as a vegetarian option', async function(mealName) {
-  const restaurantPage = new RestaurantPage(this.page);
-  await restaurantPage.selectVegetarianOption(mealName);
-});
-
-When('I select the vegetarian option {string}', async function(mealName) {
   const restaurantPage = new RestaurantPage(this.page);
   await restaurantPage.selectVegetarianOption(mealName);
 });
