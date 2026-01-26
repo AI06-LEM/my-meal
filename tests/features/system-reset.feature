@@ -64,17 +64,8 @@ Feature: System Reset
   Scenario: Database remains after reset
     When I reset the system
     Then the database status should show "Loaded"
-    # Only the database is preserved; weekly options, votes, and plan are cleared
+    # Only the database is preserved; weekly options (and votes -- not testing here?) are cleared
     And the system status should show options as "Not set"
-
-  @state
-  Scenario: Restaurant can set new weekly options after reset
-    When I reset the system
-    And I go to the "Restaurant" tab
-    And I select "Burger" as a meat option
-    And I select "Pasta" as a fish option
-    And I save the weekly options
-    Then the weekly options should be saved successfully
 
   # ====================
   # Vote Count Reset
@@ -87,6 +78,7 @@ Feature: System Reset
     Then the system status should show votes as "No votes"
 
   @votes
+  # Redundant test?
   Scenario: Guest can vote again after reset
     When I reset the system
     # Set up weekly options again

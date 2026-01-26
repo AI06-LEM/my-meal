@@ -73,6 +73,15 @@ Feature: Restaurant Weekly Options Selection
     Then "Burger" should be selected
     And "Pasta" should be selected
 
+  @incomplete_selection
+  Scenario: Restaurant cannot save incomplete weekly options
+    # Required: at least 2 meat, 2 fish, and 4 vegetarian combinations
+    When I select "Burger" as a meat option
+    And I select "Pasta" as a fish option
+    And I save the weekly options
+    Then I should see an error message
+
+
   # ====================
   # Persistence
   # ====================
