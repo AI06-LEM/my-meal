@@ -253,7 +253,28 @@ Then('I should see a success message containing {string}', async function(text) 
  *   Then I should see an error message containing "required"
  */
 Then('I should see an error message', async function() {
-  await expect(this.page.locator('.error')).toBeVisible();
+  const errorLocator = this.page.locator('.error');
+  
+  // Check if error element exists
+  const count = await errorLocator.count();
+  if (count === 0) {
+    throw new Error(
+      'Expected to see an error message (element with class ".error"), but no such element exists on the page.\n' +
+      'The application may not be implementing validation for this action yet.'
+    );
+  }
+  
+  // Check if error is visible
+  const isVisible = await errorLocator.isVisible();
+  if (!isVisible) {
+    throw new Error(
+      'Expected error message to be visible, but found ' + count + ' hidden error element(s).\n' +
+      'The application may have an error element that is not being shown.'
+    );
+  }
+  
+  // Final assertion for Playwright's built-in waiting
+  await expect(errorLocator).toBeVisible();
 });
 
 Then('I should see an error message containing {string}', async function(text) {
