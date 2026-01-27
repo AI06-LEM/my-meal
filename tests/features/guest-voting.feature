@@ -207,8 +207,8 @@ Feature: Guest Voting
   Scenario: Selecting two valid vegetarian options works correctly
     # Regression test for: "Please select two different vegetarian options" error
     When I enter my name as "VeggieVoter"
-    And I select vegetarian option "Mushroom Risotto"
-    And I select vegetarian option "Vegetable Risotto"
+    And I select vegetarian option "Lasagna"              
+    And I select vegetarian option "Curry"
     And I select 1 meat options
     And I select 1 fish options
     And I submit my vote
