@@ -135,7 +135,7 @@ Either *one of the following two initialisation actions* is performed to initial
 ## 4. User Interface
 
 ### System Admin Tab
-Multiple areas with different settings and information displayed.
+Multiple sections with different settings and information displayed.
 
 #### Upload Meal Database
 Form for uploading JSON file and feedback messages.
@@ -146,51 +146,53 @@ Status messages on
  - Weekly Options: Unset or Set
  - Votes: Number of votes submitted
 
-#### Vote Results (Charts)
-Area for displaying vote results upon button press.
+#### Vote Results
+Section for displaying vote results upon button press.
 
 #### Reset System
-Area for reset button and messages.
+Section for reset button and messages.
 
 ### Restaurant Tab
 
-#### Weekly Options Selection
-Area to select weekly options (sorted by category), saving and feedback messages.
+#### Vote Results
+Section for displaying vote results upon button press.
 
-#### Vote Results (Charts)
-Area for displaying vote results upon button press.
+#### Weekly Options Selection
+Section to select weekly options (sorted by category), saving and feedback messages.
 
 ### Guests Tab
 
 #### Guest Voting
-Area for voting on meal combinations (sorted by category), saving and feedback messages.
+Section for voting on meal combinations (sorted by category), saving and feedback messages.
 
 
 ## 5. System States
 
+The UI sections of a tab are always shown for simplicity (prototype). Below are details on how certain sections change for different system states.
+
 ### State 1: Empty (No Database)
 
-- **Admin tab:** Shows in Current Status area that database is empty (plus status of weekly options and votes)
+- **Admin tab:** Shows in Current Status section that database is empty (plus unset status of weekly options and votes)
 - **Restaurant tab:** Shows message "Please upload a meal database first"
-- **Guest tab:** Shows message "Voting is not yet available"
+- **Guest tab:** Shows message "Voting is not yet available. Please wait for restaurant to select options."
 
-Note: This state is only possible, if no SQLite database file exists at system startup. Otherwise, at least the database of meals and meal combinations is never empty.
+**Note:** This state is only possible, if no SQLite database file exists at system startup. Otherwise, at least the database of meals and meal combinations is not empty, but preserved from a previous system run.
 
 ### State 2: Database Loaded, No Options Selected
 
-- **Admin tab:** Shows in Current Status area that database is loaded (plus status of weekly options and votes)
+- **Admin tab:** Shows in Current Status section that database is loaded (plus unset of weekly options and votes)
 - **Restaurant tab:** Allows meal selection
-- **Guest tab:** Shows "The restaurant has not selected options yet"
+- **Guest tab:** Shows "Voting is not yet available. Please wait for restaurant to select options."
 
-### TODO: FIX State 3: Options Selected (Voting Open)
+### FIX State 3: Options Selected (Voting Open)
 
-- **Admin tab:** Shows chart (updates with votes)
-- **Restaurant tab:** Shows selected options and chart
+- **Admin tab:** Shows chart in Vote Results section
+- **Restaurant tab:** Shows chart and selected options
 - **Guest tab:** Shows voting form
 
 ---
 
-## 6. NEW Validation Rules
+## 6. Validation Rules
 
 ### JSON Upload Validation
 1. JSON must be valid and parseable
@@ -202,15 +204,15 @@ Note: This state is only possible, if no SQLite database file exists at system s
 ### Restaurant Selection Validation
 1. Must select at least 2 meat combinations
 2. Must select at least 2 fish combinations
-3. Must select exactly 4 vegetarian combinations
-4. Show error message if requirements not met
+3. Must select at least 4 vegetarian combinations
+4. When user tries to save, show error message if requirements not met
 
 ### Guest Vote Validation
 1. Guest name required and must be unique
 2. Must select exactly 1 meat combination
 3. Must select exactly 1 fish combination
 4. Must select exactly 2 vegetarian combinations
-5. Show error message if requirements not met
+5. When user tries to save, show error message if requirements not met
 
 ---
 
@@ -252,7 +254,7 @@ Data is stored in a local SQLite database (`data/my-meal.db`):
 Example file: `meals_database_en_test.json`
 
 ### Browser Compatibility
-The prototype targets modern browsers (Chrome, Firefox, Safari) on desktop and mobile devices (iOS and Android). Most guests will use mobile devices. The server runs on Linux, while development/testing happens on MacOS and Windows.
+The prototype targets modern browsers (Chrome, Firefox, Safari, ...) on desktop and mobile devices (iOS and Android). Most guests will use mobile devices. The server runs on Linux, while development/testing happens on MacOS and Windows.
 
 ### Port Configuration
 The server port is configurable via command line. Default port: 3000.
@@ -277,7 +279,7 @@ The server port is configurable via command line. Default port: 3000.
 
 ### Limits
 - No maximum number of meals/combinations or guest votes set by the system
-- Expected usage: hundreds of meals, under 2000 guest votes
+- Expected usage: up to hundreds of meals, under 2000 guest votes
 
 ---
 
