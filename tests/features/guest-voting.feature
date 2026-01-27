@@ -47,8 +47,8 @@ Feature: Guest Voting
     When I enter my name as "Alice"
     And I select meat option "Burger"
     And I select fish option "Pasta"
-    And I select vegetarian option "Vegetarian Burger"
-    And I select vegetarian option "Pasta Primavera"
+    And I select vegetarian option "Lasagna"
+    And I select vegetarian option "Curry"
     And I submit my vote
     Then my vote should be recorded
 
@@ -174,13 +174,13 @@ Feature: Guest Voting
 
   @selection
   Scenario: Guest can change vegetarian selection before submitting
-    When I select vegetarian option "Vegetarian Burger"
-    And I select vegetarian option "Pasta Primavera"
-    And I deselect vegetarian option "Pasta Primavera"
-    And I select vegetarian option "Mushroom Risotto"
+    When I select vegetarian option "Stir Fry"
+    And I select vegetarian option "Lasagna"
+    And I deselect vegetarian option "Lasagna"
+    And I select vegetarian option "Curry"
     Then I should have 2 vegetarian options selected
-    And the vegetarian option "Vegetarian Burger" should be selected
-    And the vegetarian option "Mushroom Risotto" should be selected
+    And the vegetarian option "Stir Fry" should be selected
+    And the vegetarian option "Curry" should be selected
 
   # ====================
   # UI and Display
