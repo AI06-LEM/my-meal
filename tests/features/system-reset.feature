@@ -1,12 +1,5 @@
-# tests/features/system-reset.feature
-#
 # Feature: System Reset
 # Tests for the system reset functionality.
-#
-# This feature demonstrates:
-# - Dialog handling (confirm/cancel)
-# - State cleanup verification
-# - Potentially destructive operations
 
 @reset @admin
 Feature: System Reset
@@ -43,7 +36,8 @@ Feature: System Reset
     Then the system should be reset
     And the weekly options should be cleared
     And the votes should be cleared
-    And the meal plan should be cleared
+    # Meal plan is obsolete for now
+    # And the meal plan should be cleared
 
   # ====================
   # Cancel Behavior
@@ -63,8 +57,9 @@ Feature: System Reset
   @state
   Scenario: Database remains after reset
     When I reset the system
+    # TODO: Ensure first that a SQLite DB file exists
     Then the database status should show "Loaded"
-    # Only the database is preserved; weekly options (and votes -- not testing here?) are cleared
+    # Only the database is preserved; weekly options are cleared (vote count reset tested separately)
     And the system status should show options as "Not set"
 
   # ====================

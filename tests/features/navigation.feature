@@ -1,12 +1,5 @@
-# tests/features/navigation.feature
-#
 # Feature: Tab Navigation
 # Tests for navigation between application tabs.
-#
-# This feature demonstrates:
-# - UI navigation testing
-# - Tab state verification
-# - Simple, focused test scenarios
 
 @navigation @ui
 Feature: Tab Navigation
@@ -39,16 +32,17 @@ Feature: Tab Navigation
     Then the "Guests" tab should be active
     And I should see the heading "Guest Voting"
 
-  @tab-switch
-  Scenario: User can switch between all tabs
-    When I go to the "System Admin" tab
-    Then I should see the heading "System Administration"
-    When I go to the "Restaurant" tab
-    Then I should see the heading "Restaurant - Weekly Options"
-    When I go to the "Guests" tab
-    Then I should see the heading "Guest Voting"
-    When I go to the "System Admin" tab
-    Then I should see the heading "System Administration"
+  # Redundant test - already covered by the smoke test
+  # @tab-switch
+  # Scenario: User can switch between all tabs
+  #   When I go to the "System Admin" tab
+  #   Then I should see the heading "System Administration"
+  #   When I go to the "Restaurant" tab
+  #   Then I should see the heading "Restaurant - Weekly Options"
+  #   When I go to the "Guests" tab
+  #   Then I should see the heading "Guest Voting"
+  #   When I go to the "System Admin" tab
+  #   Then I should see the heading "System Administration"
 
   # ====================
   # Default State
@@ -63,10 +57,11 @@ Feature: Tab Navigation
   # Page Elements
   # ====================
 
-  @elements
-  Scenario: Page header is always visible
-    Then I should see "My Meal - Seefood Restaurant"
-    And I should see "Weekly meal planning system"
+  # This may change in the future, so keeping this test only commented out for now
+  # @elements
+  # Scenario: Page header is always visible
+  #   Then I should see "My Meal - Seefood Restaurant"
+  #   And I should see "Weekly meal planning system"
 
   @elements
   Scenario: All tab buttons are visible

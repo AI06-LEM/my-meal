@@ -1,20 +1,14 @@
-# tests/features/end-to-end.feature
-#
 # Feature: Complete End-to-End Workflow
 # Tests the entire application flow from database upload to meal plan creation.
-#
-# This feature demonstrates:
-# - Full user journey testing
-# - Multi-role scenarios
-# - Complex workflow orchestration
 
 @e2e
 Feature: End-to-End Workflow
+  As a software developer/tester
   I want all components to work together
   So that the weekly meal planning process succeeds
 
   # ====================
-  # Smoke Test (Quick Sanity Check)
+  # Minimal Smoke Test (Quick Sanity Check)
   # ====================
 
   @smoke @quick

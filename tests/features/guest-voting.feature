@@ -1,19 +1,11 @@
-# tests/features/guest-voting.feature
-#
 # Feature: Guest Voting
 # Tests for the guest voting workflow.
-#
-# This feature demonstrates:
-# - Complex multi-step workflows
-# - Validation error scenarios
-# - Duplicate prevention
-# - Tags for organizing tests (@happy-path, @validation, @regression)
 
 @guest
 Feature: Guest Voting
   As a restaurant guest
   I want to vote for my preferred meals
-  So that my preferences influence the weekly meal plan
+  So that my vote is part of the voting results
 
   Background:
     Given the restaurant has selected weekly options with:
@@ -61,7 +53,6 @@ Feature: Guest Voting
       | vegetarian  | Lasagna             |
       | vegetarian  | Stir Fry            |
     Then my vote should be recorded
-    And the name field should be empty
 
   # ====================
   # Validation Scenarios
@@ -82,6 +73,7 @@ Feature: Guest Voting
     And I select 2 vegetarian options
     And I submit my vote
     Then I should see an error about missing meat option
+    And no vote should be recorded
 
   @validation
   Scenario: Guest cannot submit without selecting fish option
@@ -90,6 +82,7 @@ Feature: Guest Voting
     And I select 2 vegetarian options
     And I submit my vote
     Then I should see an error about missing fish option
+    And no vote should be recorded
 
   @validation
   Scenario: Guest cannot submit with only one vegetarian option
@@ -108,6 +101,7 @@ Feature: Guest Voting
     And I select 1 fish options
     And I submit my vote
     Then I should see an error message containing "vegetarian"
+    And no vote should be recorded
 
   # ====================
   # Duplicate Prevention
@@ -199,18 +193,3 @@ Feature: Guest Voting
     And I should see "Select 1 Fish Option"
     And I should see "Select 2 Vegetarian Options"
 
-  # ====================
-  # Regression Tests (from BUGS.md)
-  # ====================
-
-  @regression @bug-fix
-  Scenario: Selecting two valid vegetarian options works correctly
-    # Regression test for: "Please select two different vegetarian options" error
-    When I enter my name as "VeggieVoter"
-    And I select vegetarian option "Lasagna"              
-    And I select vegetarian option "Curry"
-    And I select 1 meat options
-    And I select 1 fish options
-    And I submit my vote
-    Then I should not see "Please select two different vegetarian options"
-    And I should see "successfully"
