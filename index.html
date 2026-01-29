@@ -34,10 +34,9 @@
             <div class="admin-section">
                 <h3>Current Status</h3>
                 <div id="systemStatus">
-                    <p>Database: <span id="dbStatus">Not loaded</span></p>
-                    <p>Weekly Options: <span id="optionsStatus">Not set</span></p>
+                    <p>Database: <span id="dbStatus">Empty</span></p>
+                    <p>Weekly Options: <span id="optionsStatus">Unset</span></p>
                     <p>Votes: <span id="votesStatus">No votes</span></p>
-                    <p>Meal Plan: <span id="planStatus">Not generated</span></p>
                 </div>
             </div>
 
@@ -63,46 +62,8 @@
             </div>
 
             <div class="admin-section">
-                <h3>Final Weekly Meal Plan (Manual)</h3>
-                <p>Based on the vote charts, choose 4 meals for this week: 1 meat, 1 fish, and 2 vegetarian meals. The fifth day uses leftovers.</p>
-                <div id="finalPlanForm" class="final-plan-form">
-                    <div class="final-plan-row">
-                        <label for="mondaySelect">Monday (Meat):</label>
-                        <select id="mondaySelect">
-                            <option value="">Select a meat option</option>
-                        </select>
-                    </div>
-                    <div class="final-plan-row">
-                        <label for="tuesdaySelect">Tuesday (Fish):</label>
-                        <select id="tuesdaySelect">
-                            <option value="">Select a fish option</option>
-                        </select>
-                    </div>
-                    <div class="final-plan-row">
-                        <label for="wednesdaySelect">Wednesday (Vegetarian):</label>
-                        <select id="wednesdaySelect">
-                            <option value="">Select a vegetarian option</option>
-                        </select>
-                    </div>
-                    <div class="final-plan-row">
-                        <label for="thursdaySelect">Thursday (Vegetarian):</label>
-                        <select id="thursdaySelect">
-                            <option value="">Select a vegetarian option</option>
-                        </select>
-                    </div>
-                    <div class="final-plan-row">
-                        <label>Friday:</label>
-                        <span>Leftovers</span>
-                    </div>
-                </div>
-                <button id="saveFinalPlan">Save Final Meal Plan</button>
-                <div id="finalPlanStatus" role="alert"></div>
-                <div id="mealPlanResult" role="status"></div>
-            </div>
-
-            <div class="admin-section">
                 <h3>Reset System</h3>
-                <p>This will delete all weekly options, guest votes, and meal plans. The meal database will be preserved.</p>
+                <p>This will delete all weekly options and guest votes. The meal database will be preserved.</p>
                 <button id="resetSystem" class="danger-button">Reset System</button>
                 <div id="resetStatus" role="alert"></div>
             </div>
@@ -111,8 +72,10 @@
         <!-- Restaurant Tab -->
         <div id="restaurant" class="tab-content">
             <h2>Restaurant - Weekly Options</h2>
+            <div id="restaurantStateMessage" class="state-message" style="display: none;"></div>
             <div class="restaurant-section">
                 <h3>Select Meals for This Week</h3>
+                <p class="selection-requirements">Required: at least 2 meat, 2 fish, and 4 vegetarian options.</p>
                 <div id="mealSelection">
                     <div class="category-section">
                         <h4>Meat Options</h4>
@@ -130,11 +93,33 @@
                 <button id="saveWeeklyOptions">Save Weekly Options</button>
                 <div id="saveStatus" role="alert"></div>
             </div>
+
+            <div class="restaurant-section">
+                <h3>Vote Results</h3>
+                <p>View how guests have voted for each category.</p>
+                <button id="restaurantShowVoteResults">Show Vote Charts</button>
+                <div id="restaurantVoteResultsStatus" role="alert"></div>
+                <div id="restaurantVoteCharts" class="charts-container">
+                    <div class="chart-category">
+                        <h4>Meat Options</h4>
+                        <div id="restaurantMeatChart" class="chart"></div>
+                    </div>
+                    <div class="chart-category">
+                        <h4>Fish Options</h4>
+                        <div id="restaurantFishChart" class="chart"></div>
+                    </div>
+                    <div class="chart-category">
+                        <h4>Vegetarian Options</h4>
+                        <div id="restaurantVegetarianChart" class="chart"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Guests Tab -->
         <div id="guests" class="tab-content">
             <h2>Guest Voting</h2>
+            <div id="guestStateMessage" class="state-message" style="display: none;"></div>
             <div class="guest-section">
                 <div class="voting-form">
                     <div class="form-group">

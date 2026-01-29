@@ -82,29 +82,7 @@ app.post('/api/guest-votes', async (req, res) => {
   }
 });
 
-// Get meal plan
-app.get('/api/meal-plan', async (req, res) => {
-  try {
-    const data = db.getMealPlan();
-    res.json(data);
-  } catch (error) {
-    console.error('Error reading meal plan:', error);
-    res.status(500).json({ error: 'Failed to read meal plan' });
-  }
-});
-
-// Save meal plan
-app.post('/api/meal-plan', async (req, res) => {
-  try {
-    db.saveMealPlan(req.body);
-    res.json({ success: true, message: 'Meal plan saved successfully' });
-  } catch (error) {
-    console.error('Error saving meal plan:', error);
-    res.status(500).json({ error: 'Failed to save meal plan' });
-  }
-});
-
-// Reset system - delete weekly options, guest votes, and meal plan
+// Reset system - delete weekly options and guest votes
 app.post('/api/reset', async (req, res) => {
   try {
     db.resetSystem();

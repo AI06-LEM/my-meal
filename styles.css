@@ -126,6 +126,10 @@ header p {
 }
 
 /* Restaurant styles */
+.restaurant-section {
+    margin-bottom: 30px;
+}
+
 .category-section {
     margin-bottom: 30px;
     background: #f8f9ff;
@@ -353,6 +357,34 @@ button:disabled {
     background: #d1ecf1;
     color: #0c5460;
     border: 1px solid #bee5eb;
+}
+
+.warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+/* State messages for tabs when prerequisites not met */
+.state-message {
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.state-message.info {
+    background: #e2e8f4;
+    color: #4a5568;
+    border: 2px dashed #a0aec0;
+}
+
+/* Selection requirements hint */
+.selection-requirements {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 15px;
 }
 
 /* Meal plan result */

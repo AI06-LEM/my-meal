@@ -303,12 +303,15 @@ function getMealsDatabase() {
 
 /**
  * Save weekly options
+ * Per spec: saving weekly options also deletes all existing guest votes
  */
 function saveWeeklyOptions(data) {
   runTransaction(() => {
     // Clear existing weekly options
     db.exec('DELETE FROM weekly_options');
-    resetSequences(['weekly_options']);
+    // Delete guest votes when restaurant saves new weekly options (per spec 3 step 2, spec 7)
+    db.exec('DELETE FROM guest_votes');
+    resetSequences(['weekly_options', 'guest_votes']);
 
     // Prepare insert statement
     const insert = db.prepare(`
@@ -334,12 +337,19 @@ function saveWeeklyOptions(data) {
       }
     }
 
-    // Update metadata
+    // Update metadata for weekly options
     const updateMetadata = db.prepare(`
       INSERT OR REPLACE INTO metadata (key, value, updated_at)
       VALUES ('weekly_options_updated', ?, CURRENT_TIMESTAMP)
     `);
     updateMetadata.run(new Date().toISOString());
+    
+    // Update metadata for guest votes (since they were deleted)
+    const updateVotesMetadata = db.prepare(`
+      INSERT OR REPLACE INTO metadata (key, value, updated_at)
+      VALUES ('guest_votes_updated', ?, CURRENT_TIMESTAMP)
+    `);
+    updateVotesMetadata.run(new Date().toISOString());
   });
 }
 
@@ -572,6 +582,8 @@ function resetSystem() {
 }
 
 // Export functions
+// Note: Meal plan functions are kept in the file for database compatibility but not exported
+// as the meal plan feature is not part of the specification
 module.exports = {
   db,
   saveMealsDatabase,
@@ -580,7 +592,5 @@ module.exports = {
   getWeeklyOptions,
   saveGuestVotes,
   getGuestVotes,
-  saveMealPlan,
-  getMealPlan,
   resetSystem
 };
