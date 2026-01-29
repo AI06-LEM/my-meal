@@ -162,8 +162,8 @@ Feature: Guest Voting
 
   @selection
   Scenario: Vegetarian options use checkboxes (multiple selectable)
-    When I select vegetarian option "Vegetarian Burger"
-    And I select vegetarian option "Pasta Primavera"
+    When I select vegetarian option "Lasagna"
+    And I select vegetarian option "Curry"
     Then I should have 2 vegetarian options selected
 
   @selection

@@ -80,8 +80,8 @@ Feature: System Reset
     And I go to the "Restaurant" tab
     And I select "Burger" as a meat option
     And I select "Pasta" as a fish option
-    And I select "Mushroom Risotto" as a vegetarian option
-    And I select "Vegetable Risotto" as a vegetarian option
+    And I select "Risotto" as a vegetarian option
+    And I select "Lasagna" as a vegetarian option
     And I save the weekly options
     And I go to the "Guests" tab
     And I enter my name as "ResetTestVoter"

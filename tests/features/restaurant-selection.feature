@@ -26,7 +26,7 @@ Feature: Restaurant Weekly Options Selection
   Scenario: Restaurant selects a complete set of weekly options
     When I select "Burger" as a meat option
     And I select "Pasta" as a fish option
-    And I select "Vegetable Risotto" as a vegetarian option
+    And I select "Risotto" as a vegetarian option
     And I save the weekly options
     Then the weekly options should be saved successfully
 
@@ -52,7 +52,7 @@ Feature: Restaurant Weekly Options Selection
   Scenario: Selected options persist after saving
     When I select "Burger" as a meat option
     And I select "Pasta" as a fish option
-    And I select "Mushroom Risotto" as a vegetarian option
+    And I select "Risotto" as a vegetarian option
     And I save the weekly options
     Then "Burger" should be selected
     And "Pasta" should be selected
@@ -74,7 +74,7 @@ Feature: Restaurant Weekly Options Selection
   Scenario: Weekly options persist across page refresh
     Given I select "Burger" as a meat option
     And I select "Pasta" as a fish option
-    And I select "Mushroom Risotto" as a vegetarian option
+    And I select "Risotto" as a vegetarian option
     And I save the weekly options
     When I refresh the page
     And I go to the "Restaurant" tab
