@@ -21,7 +21,7 @@ Bio-Vollkornreis aus der Camargue
 
 
 ## Pizza
-### Pizza Baguette mit Salami
+### Pizzabaguette mit Salami
 Brot von Pain et tradition, Salami von Sud-Viande,
 Käse vom Schank-Haff
 
@@ -29,7 +29,7 @@ Käse vom Schank-Haff
 Brot von Pain et Tradition, Gemüse von Geméisw
 
 
-##  Poke Bowl
+## Poke Bowl
 ### Vegetarische Poke Bowl
 Reis aus der Camargue, Gemüse von Geméiswierk
 
