@@ -72,6 +72,105 @@ class AdminPage extends BasePage {
     return status.includes('successfully');
   }
 
+  /**
+   * Upload an invalid JSON file (for validation testing)
+   */
+  async uploadInvalidJson() {
+    // Create a temporary invalid JSON file using a data URL approach
+    const invalidJson = 'this is not valid json {{{';
+    const buffer = Buffer.from(invalidJson);
+    
+    const fileInput = this.page.locator('#databaseFile');
+    await fileInput.setInputFiles({
+      name: 'invalid.json',
+      mimeType: 'application/json',
+      buffer: buffer
+    });
+    
+    await this.page.getByRole('button', { name: 'Upload Database' }).click();
+    
+    // Wait for error message
+    await this.page.locator('#uploadStatus:not(:empty)').waitFor({ 
+      state: 'visible',
+      timeout: 10000
+    });
+  }
+
+  /**
+   * Upload a JSON file missing meal_combinations (for validation testing)
+   */
+  async uploadJsonMissingMealCombinations() {
+    const jsonWithoutCombinations = JSON.stringify({
+      meals: []
+    });
+    const buffer = Buffer.from(jsonWithoutCombinations);
+    
+    const fileInput = this.page.locator('#databaseFile');
+    await fileInput.setInputFiles({
+      name: 'missing_combinations.json',
+      mimeType: 'application/json',
+      buffer: buffer
+    });
+    
+    await this.page.getByRole('button', { name: 'Upload Database' }).click();
+    
+    await this.page.locator('#uploadStatus:not(:empty)').waitFor({ 
+      state: 'visible',
+      timeout: 10000
+    });
+  }
+
+  /**
+   * Upload a JSON file with a combination lacking vegetarian meal (for warning testing)
+   */
+  async uploadJsonWithoutVegetarianMeal() {
+    const jsonWithNoVeg = JSON.stringify({
+      meals: [],
+      meal_combinations: [
+        {
+          name: "Test Combo",
+          meals: [
+            { name: "Beef Steak", category: "meat", vegan: false }
+          ]
+        }
+      ]
+    });
+    const buffer = Buffer.from(jsonWithNoVeg);
+    
+    const fileInput = this.page.locator('#databaseFile');
+    await fileInput.setInputFiles({
+      name: 'no_veg.json',
+      mimeType: 'application/json',
+      buffer: buffer
+    });
+    
+    await this.page.getByRole('button', { name: 'Upload Database' }).click();
+    
+    await this.page.locator('#uploadStatus:not(:empty)').waitFor({ 
+      state: 'visible',
+      timeout: 10000
+    });
+  }
+
+  /**
+   * Get upload error message
+   */
+  async getUploadError() {
+    const statusElement = this.page.locator('#uploadStatus');
+    await statusElement.waitFor({ state: 'visible', timeout: 5000 });
+    return await statusElement.textContent();
+  }
+
+  /**
+   * Get upload warning message
+   */
+  async getUploadWarning() {
+    // Check for warning class or text in status
+    const statusElement = this.page.locator('#uploadStatus');
+    await statusElement.waitFor({ state: 'visible', timeout: 5000 });
+    return await statusElement.textContent();
+  }
+
   // ==================== System Status ====================
 
   /**
@@ -154,6 +253,33 @@ class AdminPage extends BasePage {
     }
     
     return data;
+  }
+
+  /**
+   * Check if vote results have a category section
+   * @param {string} category - 'meat', 'fish', or 'vegetarian'
+   */
+  async hasVoteResultCategory(category) {
+    const chartContainer = this.page.locator('#voteCharts');
+    // Check for category heading or chart section
+    const categorySection = chartContainer.locator(`text=${category}`, { exact: false });
+    return await categorySection.count() > 0;
+  }
+
+  /**
+   * Check if a category shows no votes
+   * @param {string} category - 'meat', 'fish', or 'vegetarian'
+   */
+  async categoryShowsNoVotes(category) {
+    const chartContainer = this.page.locator('#voteCharts');
+    // Check for "no votes" or "0 votes" text in the category section
+    const noVotesText = chartContainer.locator(`text=/no votes|0 votes/i`);
+    if (await noVotesText.count() > 0) {
+      return true;
+    }
+    // Alternative: check if chart data shows all zeros
+    const chartData = await this.getChartData(category);
+    return chartData.length === 0 || chartData.every(item => item.value === 0);
   }
 
   // ==================== Final Meal Plan ====================

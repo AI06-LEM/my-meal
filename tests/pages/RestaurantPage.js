@@ -257,6 +257,34 @@ class RestaurantPage extends BasePage {
       }
     }
   }
+
+  /**
+   * Try to save weekly options (clicks save but doesn't confirm dialog if one appears)
+   * Used for testing warning dialogs
+   */
+  async trySaveWeeklyOptions() {
+    // Set up dialog handler to capture but not accept
+    let dialogMessage = null;
+    this.page.once('dialog', async dialog => {
+      dialogMessage = dialog.message();
+      await dialog.dismiss();
+    });
+    
+    await this.page.getByRole('button', { name: 'Save Weekly Options' }).click();
+    
+    // Store the dialog message for later verification
+    this._lastDialogMessage = dialogMessage;
+    
+    // Wait briefly for dialog to be handled
+    await this.page.waitForTimeout(500);
+  }
+
+  /**
+   * Get the vote deletion warning message (from dialog)
+   */
+  async getVoteDeletionWarning() {
+    return this._lastDialogMessage;
+  }
 }
 
 module.exports = { RestaurantPage };

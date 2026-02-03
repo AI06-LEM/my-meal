@@ -257,3 +257,16 @@ Then('meal options should be displayed', async function() {
 Then('I should see meal options from the database', async function() {
   await expect(this.page.locator('#meatOptions .meal-card')).toHaveCount(expect.any(Number));
 });
+
+// ==================== Vote Warning ====================
+
+When('I try to save the weekly options', async function() {
+  const restaurantPage = new RestaurantPage(this.page);
+  await restaurantPage.trySaveWeeklyOptions();
+});
+
+Then('I should see a warning about vote deletion', async function() {
+  const restaurantPage = new RestaurantPage(this.page);
+  const warning = await restaurantPage.getVoteDeletionWarning();
+  expect(warning).toBeTruthy();
+});

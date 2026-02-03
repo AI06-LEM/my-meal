@@ -226,3 +226,52 @@ Given('the system is fully configured with weekly options', async function() {
   // Store that database was uploaded for use in restaurant step
   this.testData.databaseUploaded = true;
 });
+
+// ==================== JSON Validation ====================
+
+When('I upload an invalid JSON file', async function() {
+  const adminPage = new AdminPage(this.page);
+  await adminPage.uploadInvalidJson();
+});
+
+When('I upload a JSON file missing meal_combinations', async function() {
+  const adminPage = new AdminPage(this.page);
+  await adminPage.uploadJsonMissingMealCombinations();
+});
+
+When('I upload a JSON file with combination lacking vegetarian meal', async function() {
+  const adminPage = new AdminPage(this.page);
+  await adminPage.uploadJsonWithoutVegetarianMeal();
+});
+
+Then('I should see an error about invalid JSON', async function() {
+  const adminPage = new AdminPage(this.page);
+  const error = await adminPage.getUploadError();
+  expect(error.toLowerCase()).toContain('json');
+});
+
+Then('I should see an error about missing meal_combinations', async function() {
+  const adminPage = new AdminPage(this.page);
+  const error = await adminPage.getUploadError();
+  expect(error.toLowerCase()).toContain('meal_combinations');
+});
+
+Then('I should see a warning about missing vegetarian meal', async function() {
+  const adminPage = new AdminPage(this.page);
+  const warning = await adminPage.getUploadWarning();
+  expect(warning.toLowerCase()).toContain('vegetarian');
+});
+
+// ==================== Vote Result Details ====================
+
+Then('I should see vote results grouped by {string}', async function(category) {
+  const adminPage = new AdminPage(this.page);
+  const hasCategory = await adminPage.hasVoteResultCategory(category);
+  expect(hasCategory).toBe(true);
+});
+
+Then('I should see that no votes exist for {string}', async function(category) {
+  const adminPage = new AdminPage(this.page);
+  const noVotes = await adminPage.categoryShowsNoVotes(category);
+  expect(noVotes).toBe(true);
+});

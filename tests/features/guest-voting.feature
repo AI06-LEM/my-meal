@@ -32,7 +32,6 @@ Feature: Guest Voting
     And I select 2 vegetarian options
     And I submit my vote
     Then my vote should be recorded
-    And my vote should be recorded
 
   @happy-path
   Scenario: Guest votes for specific meal options

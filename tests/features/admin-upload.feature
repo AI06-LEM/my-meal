@@ -64,3 +64,101 @@ Feature: Admin Database Upload
     # Obsolete button for now
 #    And the "Save Final Meal Plan" button should be visible
     And the "Reset System" button should be visible
+
+  # ====================
+  # JSON Validation
+  # ====================
+
+  @validation @json
+  Scenario: Admin cannot upload invalid JSON file
+    When I go to the "System Admin" tab
+    And I upload an invalid JSON file
+    Then I should see an error about invalid JSON
+
+  @validation @json
+  Scenario: Admin cannot upload JSON without meal_combinations
+    When I go to the "System Admin" tab
+    And I upload a JSON file missing meal_combinations
+    Then I should see an error about missing meal_combinations
+
+  @validation @json
+  Scenario: Admin sees warning for combination without vegetarian meal
+    When I go to the "System Admin" tab
+    And I upload a JSON file with combination lacking vegetarian meal
+    Then I should see a warning about missing vegetarian meal
+    And the database should be uploaded successfully
+
+  # ====================
+  # Vote Results Display
+  # ====================
+
+  @vote-results
+  Scenario: Vote results are grouped by category
+    Given the restaurant has selected weekly options with:
+      | category    | meal                |
+      | meat        | Burger              |
+      | meat        | Meatballs           |
+      | fish        | Fish and Chips      |
+      | fish        | Pasta               |
+      | vegetarian  | Lasagna             |
+      | vegetarian  | Stir Fry            |
+      | vegetarian  | Salad               |
+      | vegetarian  | Curry               |
+    And "Voter1" has already voted with:
+      | category    | meal                |
+      | meat        | Burger              |
+      | fish        | Pasta               |
+      | vegetarian  | Lasagna             |
+      | vegetarian  | Curry               |
+    When I go to the "System Admin" tab
+    And I click show vote results
+    Then I should see vote results grouped by "meat"
+    And I should see vote results grouped by "fish"
+    And I should see vote results grouped by "vegetarian"
+
+  @vote-results
+  Scenario: Vote results are sorted by vote count within category
+    Given the restaurant has selected weekly options with:
+      | category    | meal                |
+      | meat        | Burger              |
+      | meat        | Meatballs           |
+      | fish        | Fish and Chips      |
+      | fish        | Pasta               |
+      | vegetarian  | Lasagna             |
+      | vegetarian  | Stir Fry            |
+      | vegetarian  | Salad               |
+      | vegetarian  | Curry               |
+    And "Voter1" has already voted with:
+      | category    | meal                |
+      | meat        | Burger              |
+      | fish        | Pasta               |
+      | vegetarian  | Lasagna             |
+      | vegetarian  | Curry               |
+    And "Voter2" has already voted with:
+      | category    | meal                |
+      | meat        | Burger              |
+      | fish        | Fish and Chips      |
+      | vegetarian  | Lasagna             |
+      | vegetarian  | Stir Fry            |
+    When I go to the "System Admin" tab
+    And I click show vote results
+    Then the "meat" chart should show "Burger" with 2 votes
+    And the "meat" chart should show "Meatballs" with 0 votes
+
+  @vote-results
+  Scenario: Zero votes in category shows this fact
+    Given the restaurant has selected weekly options with:
+      | category    | meal                |
+      | meat        | Burger              |
+      | meat        | Meatballs           |
+      | fish        | Fish and Chips      |
+      | fish        | Pasta               |
+      | vegetarian  | Lasagna             |
+      | vegetarian  | Stir Fry            |
+      | vegetarian  | Salad               |
+      | vegetarian  | Curry               |
+    When I go to the "System Admin" tab
+    And I click show vote results
+    Then I should see that no votes exist for "meat"
+    And I should see that no votes exist for "fish"
+    And I should see that no votes exist for "vegetarian"
