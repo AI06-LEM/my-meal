@@ -195,10 +195,33 @@ function saveMealsDatabase(data) {
 
     // Insert meal combinations and their constituent meals
     if (data.meal_combinations && Array.isArray(data.meal_combinations)) {
+      // Track combination IDs to handle duplicates with sequential numbering
+      const combinationIdCounter = new Map();
+      
       for (const combo of data.meal_combinations) {
         // Generate ID for combination if missing
         if (!combo.id) {
-          combo.id = generateIdFromName(combo.name);
+          let baseId = generateIdFromName(combo.name);
+          
+          if (combinationIdCounter.has(baseId)) {
+            // Duplicate detected - append counter
+            const count = combinationIdCounter.get(baseId);
+            combinationIdCounter.set(baseId, count + 1);
+            combo.id = `${baseId}_${count + 1}`;
+          } else {
+            // First occurrence
+            combinationIdCounter.set(baseId, 1);
+            combo.id = baseId;
+          }
+        } else {
+          // Manual ID provided - still track it to handle potential conflicts
+          const baseId = combo.id.replace(/_\d+$/, ''); // Remove trailing _N if present
+          if (combinationIdCounter.has(baseId)) {
+            const count = combinationIdCounter.get(baseId);
+            combinationIdCounter.set(baseId, count + 1);
+          } else {
+            combinationIdCounter.set(baseId, 1);
+          }
         }
 
         insertCombination.run(combo.id, combo.name);
