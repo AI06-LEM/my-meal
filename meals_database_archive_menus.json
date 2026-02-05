@@ -1,0 +1,230 @@
+{
+  "meals": [],
+  "meal_combinations": [
+    {
+      "name": "Lasagne",
+      "meals": [
+        {
+          "name": "Lasagne",
+          "vegan": false,
+          "category": "meat"
+        },
+        {
+          "name": "Lasagne mit Champignons",
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Curry oder Linsenfrikadelle",
+      "meals": [
+        {
+          "name": "Curry mit Kürbis und Reis",
+          "vegan": true,
+          "category": "vegetarian"
+        },
+        {
+          "name": "Linsenfrikadelle mit Reis",
+          "vegan": true,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Pizza",
+      "meals": [
+        {
+          "name": "Pizzabaguette mit Salami",
+          "vegan": false,
+          "category": "meat"
+        },
+        {
+          "name": "Pizzabaguette mit Gemüse",
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Poke Bowl",
+      "meals": [
+        {
+          "name": "Vegetarische Poke Bowl",
+          "vegan": true,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Pasta",
+      "meals": [
+        {
+          "name": "Pasta Carbonara",
+          "vegan": false,
+          "category": "meat"
+        },
+        {
+          "name": "Pasta mit Pesto",
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Käsespätzle",
+      "meals": [
+        {
+          "name": "Käsespätzle",
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Grillhähnchen oder Kohlroularden",
+      "meals": [
+        {
+          "name": "Grillhähnchen mit Süßkartoffeln und Gemüse",
+          "vegan": false,
+          "category": "meat"
+        },
+        {
+          "name": "Kohlroularden mit Süßkartoffeln",
+          "vegan": true,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Fisch oder Spinat mit Ei",
+      "meals": [
+        {
+          "name": "Fisch der Saison paniert mit Reis und Gemüse",
+          "vegan": false,
+          "category": "fish"
+        },
+        {
+          "name": "Kartoffeln mit Spinat und Ei",
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Spaghetti",
+      "meals": [
+        {
+          "name": "Spaghetti mit Champignons",
+          "vegan": false,
+          "category": "vegetarian"
+        },
+        {
+          "name": "Spaghetti mit Scampis",
+          "vegan": false,
+          "category": "fish"
+        }
+      ]
+    },
+    {
+      "name": "Paella",
+      "meals": [
+        {
+          "name": "Paella mit Fisch",
+          "vegan": false,
+          "category": "fish"
+        },
+        {
+          "name": "Paella vegetarisch",
+          "vegan": true,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Gromperekichelcher",
+      "meals": [
+        {
+          "name": "Gromperekichelcher",
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Rinderbraten oder Spiegelei",
+      "meals": [
+        {
+          "name": "Rinderbraten, Kartoffeln und Sauerkraut",
+          "vegan": false,
+          "category": "meat"
+        },
+        {
+          "name": "Salzkartoffeln, Spiegelei und Gemüse",
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Risotto",
+      "meals": [
+        {
+          "name": "Risotto mit Champignons",
+          "vegan": false,
+          "category": "vegetarian"
+        },
+        {
+          "name": "Risotto mit Kürbis",
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Pasta",
+      "meals": [
+        {
+          "name": "Pasta mit Gemüse-Julienne",
+          "vegan": true,
+          "category": "vegetarian"
+        },
+        {
+          "name": "Pasta mit Pesto",
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Kebab",
+      "meals": [
+        {
+          "name": "Kebab",
+          "vegan": false,
+          "category": "meat"
+        },
+        {
+          "name": "Kebab vegetarisch",
+          "vegan": true,
+          "category": "vegetarian"
+        }
+      ]
+    },
+    {
+      "name": "Kniddelen",
+      "meals": [
+        {
+          "name": "Kniddelen mit Speck und Zwiebeln",
+          "vegan": false,
+          "category": "meat"
+        },
+        {
+          "name": "Kniddelen mit Käsesauce",
+          "vegan": false,
+          "category": "vegetarian"
+        }
+      ]
+    }
+  ]
+}
