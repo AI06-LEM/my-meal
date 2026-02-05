@@ -14,6 +14,7 @@ const { Given, When, Then } = require('@cucumber/cucumber');
 const { expect } = require('@playwright/test');
 const { AdminPage } = require('../pages/AdminPage');
 const config = require('../config');
+const path = require('path');
 
 // Path to the test database file (loaded from centralized config)
 const TEST_DATABASE_PATH = config.TEST_DATABASE_PATH;
@@ -274,4 +275,44 @@ Then('I should see that no votes exist for {string}', async function(category) {
   const adminPage = new AdminPage(this.page);
   const noVotes = await adminPage.categoryShowsNoVotes(category);
   expect(noVotes).toBe(true);
+});
+
+// ==================== Duplicate Meal Combination Names ====================
+
+Then('the database should contain a meal combination with id {string}', async function(expectedId) {
+  // Fetch the meals database via API
+  const response = await this.page.request.get('http://localhost:3000/api/meals-database');
+  expect(response.ok()).toBe(true);
+  
+  const data = await response.json();
+  const combination = data.meal_combinations.find(combo => combo.id === expectedId);
+  
+  expect(combination).toBeDefined();
+  expect(combination.id).toBe(expectedId);
+  
+  // Store the combination for later comparisons
+  if (!this.mealCombinations) {
+    this.mealCombinations = {};
+  }
+  this.mealCombinations[expectedId] = combination;
+});
+
+Then('both combinations should have different meals', async function() {
+  // This step assumes we have stored two combinations (pasta and pasta_2)
+  const pasta1 = this.mealCombinations['pasta'];
+  const pasta2 = this.mealCombinations['pasta_2'];
+  
+  expect(pasta1).toBeDefined();
+  expect(pasta2).toBeDefined();
+  
+  // Both should have the same name but different IDs
+  expect(pasta1.name).toBe(pasta2.name);
+  expect(pasta1.id).not.toBe(pasta2.id);
+  
+  // Extract meal names from both combinations
+  const meals1 = pasta1.meals.map(m => m.name).sort();
+  const meals2 = pasta2.meals.map(m => m.name).sort();
+  
+  // The combinations should have different meals (not identical)
+  expect(meals1).not.toEqual(meals2);
 });

@@ -162,3 +162,16 @@ Feature: Admin Database Upload
     Then I should see that no votes exist for "meat"
     And I should see that no votes exist for "fish"
     And I should see that no votes exist for "vegetarian"
+
+  # ====================
+  # Duplicate Meal Combination Names
+  # ====================
+
+  @validation @duplicates
+  Scenario: Admin uploads database with duplicate meal combination names
+    Given I am on the admin tab
+    When I upload the database file "meals_database_archive_menus.json"
+    Then the database should be uploaded successfully
+    And the database should contain a meal combination with id "pasta"
+    And the database should contain a meal combination with id "pasta_2"
+    And both combinations should have different meals
