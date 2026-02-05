@@ -90,6 +90,7 @@ Either *one of the following two initialisation actions* is performed to initial
   - All meals and meal combinations are overwritten
   - Weekly options and guest votes are deleted
   - Voting result chart is cleared
+  - Duplicate meal combination names are automatically handled with sequential numbering (e.g., `pasta`, `pasta_2`)
 - **UI Feedback:** Success message or validation warnings
 
 #### Option 2: Manual system reset
