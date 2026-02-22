@@ -204,12 +204,29 @@ class RestaurantPage extends BasePage {
     return await selected.count();
   }
 
+  // ==================== Vote Results ====================
+
+  /**
+   * Click the Show Vote Charts button on the Restaurant tab
+   */
+  async showVoteResults() {
+    await this.page.getByRole('button', { name: 'Show Vote Charts' }).click();
+
+    await this.page.locator('#restaurantVoteResultsStatus:not(:empty)').waitFor({
+      state: 'visible',
+      timeout: 10000
+    });
+  }
+
   // ==================== Save Options ====================
 
   /**
    * Save the weekly options
    */
   async saveWeeklyOptions() {
+    // Auto-accept any confirmation dialog (e.g., vote deletion warning)
+    await this.page.evaluate(() => { window.confirm = () => true; });
+
     await this.page.getByRole('button', { name: 'Save Weekly Options' }).click();
     
     // Wait for the status message to appear with actual content
@@ -266,20 +283,21 @@ class RestaurantPage extends BasePage {
    * Used for testing warning dialogs
    */
   async trySaveWeeklyOptions() {
-    // Set up dialog handler to capture but not accept
-    let dialogMessage = null;
-    this.page.once('dialog', async dialog => {
-      dialogMessage = dialog.message();
-      await dialog.dismiss();
+    // Override confirm to capture message and cancel the save
+    await this.page.evaluate(() => {
+      window.__lastConfirmMessage = null;
+      window.confirm = (msg) => {
+        window.__lastConfirmMessage = msg;
+        return false;
+      };
     });
     
     await this.page.getByRole('button', { name: 'Save Weekly Options' }).click();
     
-    // Store the dialog message for later verification
-    this._lastDialogMessage = dialogMessage;
-    
-    // Wait briefly for dialog to be handled
+    // Wait briefly for the confirm to be invoked
     await this.page.waitForTimeout(500);
+
+    this._lastDialogMessage = await this.page.evaluate(() => window.__lastConfirmMessage);
   }
 
   /**

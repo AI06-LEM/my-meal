@@ -290,10 +290,7 @@ class AdminPage extends BasePage {
    * Reset the system (confirms the dialog)
    */
   async resetSystem() {
-    // Set up dialog handler before clicking
-    this.page.once('dialog', async dialog => {
-      await dialog.accept();
-    });
+    await this.page.evaluate(() => { window.confirm = () => true; });
     
     await this.clickResetSystem();
     
@@ -311,9 +308,7 @@ class AdminPage extends BasePage {
     // Clear any existing status messages first (e.g., from Before hook reset)
     await this.page.locator('#resetStatus').evaluate(el => el.textContent = '');
     
-    this.page.once('dialog', async dialog => {
-      await dialog.dismiss();
-    });
+    await this.page.evaluate(() => { window.confirm = () => false; });
     
     await this.clickResetSystem();
     

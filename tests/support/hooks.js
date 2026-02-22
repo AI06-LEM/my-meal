@@ -50,6 +50,16 @@ Before({ tags: '@reset' }, async function() {
 });
 
 /**
+ * Before scenarios tagged with @empty-database:
+ * - Clear the entire database to ensure empty state
+ */
+Before({ tags: '@empty-database' }, async function() {
+  await this.page.request.post(`${this.baseUrl}/api/admin/meals-database`, {
+    data: { meals: [], meal_combinations: [] }
+  });
+});
+
+/**
  * After each scenario:
  * - Take screenshot on failure (for debugging)
  * - Clean up browser resources

@@ -29,24 +29,12 @@ class GuestPage extends BasePage {
   async navigate() {
     await this.goToGuestApp();
     
-    // Wait for the voting form to be loaded
-    // This doesn't guarantee options exist, just that the form is ready
-    await this.page.locator('#guestName').waitFor({ 
-      state: 'visible',
-      timeout: 5000 
-    });
-    
-    // If voting options exist, wait for them to stabilize
-    // Use a short timeout to fail fast if they don't exist
-    try {
-      await this.page.locator('#meatVoting .vote-option').first().waitFor({ 
-        state: 'visible',
-        timeout: 1000 
-      });
-    } catch (error) {
-      // Voting options not available yet (weekly options not set) - this is OK
-      // Just continue without waiting
-    }
+    // Wait for either the voting form or the "not available" state message.
+    // Both start hidden; JS shows one after loading data from the API.
+    await Promise.race([
+      this.page.locator('#meatVoting .vote-option').first().waitFor({ state: 'visible', timeout: 5000 }),
+      this.page.locator('#guestStateMessage').waitFor({ state: 'visible', timeout: 5000 })
+    ]);
   }
 
   // ==================== Name Entry ====================

@@ -76,12 +76,16 @@ Feature: System Reset
   # Redundant test?
   Scenario: Guest can vote again after reset
     When I reset the system
-    # Set up weekly options again
+    # Set up weekly options again (minimum: 2 meat, 2 fish, 4 vegetarian)
     And I go to the "Restaurant" tab
     And I select "Burger" as a meat option
+    And I select "Meatballs" as a meat option
     And I select "Pasta" as a fish option
+    And I select "Fish and Chips" as a fish option
     And I select "Risotto" as a vegetarian option
-    And I select "Lasagna" as a vegetarian option
+    And I select "Bowl" as a vegetarian option
+    And I select "Curry" as a vegetarian option
+    And I select "Salad" as a vegetarian option
     And I save the weekly options
     And I go to the "Guests" tab
     And I enter my name as "ResetTestVoter"

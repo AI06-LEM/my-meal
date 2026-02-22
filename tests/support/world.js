@@ -49,6 +49,7 @@ class PlaywrightWorld extends World {
     // Create a new browser context
     this.context = await this.browser.newContext({
       viewport: config.VIEWPORT,
+      baseURL: this.baseUrl,
       // Record video for debugging (optional)
       // recordVideo: { dir: 'tests/videos/' }
     });

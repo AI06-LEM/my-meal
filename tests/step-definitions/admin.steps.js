@@ -13,6 +13,7 @@
 const { Given, When, Then } = require('@cucumber/cucumber');
 const { expect } = require('@playwright/test');
 const { AdminPage } = require('../pages/AdminPage');
+const { RestaurantPage } = require('../pages/RestaurantPage');
 const config = require('../config');
 const path = require('path');
 
@@ -60,6 +61,9 @@ Given('the system admin has uploaded a meal database', async function() {
 
 When('I upload the meal database', async function() {
   const adminPage = new AdminPage(this.page);
+  if (!this.page.url().includes('/admin/')) {
+    await adminPage.navigate();
+  }
   await adminPage.uploadDatabase(TEST_DATABASE_PATH);
 });
 
@@ -115,12 +119,20 @@ Then('the system status should show meal plan as {string}', async function(expec
 // ==================== Vote Results ====================
 
 When('I click show vote results', async function() {
-  const adminPage = new AdminPage(this.page);
-  await adminPage.showVoteResults();
+  const isRestaurantTab = await this.page.locator('#restaurant.active').count() > 0;
+  if (isRestaurantTab) {
+    const restaurantPage = new RestaurantPage(this.page);
+    await restaurantPage.showVoteResults();
+  } else {
+    const adminPage = new AdminPage(this.page);
+    await adminPage.showVoteResults();
+  }
 });
 
 Then('I should see vote charts', async function() {
-  await expect(this.page.locator('#voteCharts')).toBeVisible();
+  const isRestaurantTab = await this.page.locator('#restaurant.active').count() > 0;
+  const chartsSelector = isRestaurantTab ? '#restaurantVoteCharts' : '#voteCharts';
+  await expect(this.page.locator(chartsSelector)).toBeVisible();
 });
 
 Then('the {string} chart should show {string} with {int} votes', async function(category, mealName, voteCount) {
@@ -180,6 +192,9 @@ Then('the weekly meal plan should be displayed', async function() {
 
 When('I reset the system', async function() {
   const adminPage = new AdminPage(this.page);
+  if (!this.page.url().includes('/admin/')) {
+    await adminPage.navigate();
+  }
   await adminPage.resetSystem();
 });
 
@@ -281,7 +296,7 @@ Then('I should see that no votes exist for {string}', async function(category) {
 
 Then('the database should contain a meal combination with id {string}', async function(expectedId) {
   // Fetch the meals database via API
-  const response = await this.page.request.get('http://localhost:3000/api/meals-database');
+  const response = await this.page.request.get(`${this.baseUrl}/api/admin/meals-database`);
   expect(response.ok()).toBe(true);
   
   const data = await response.json();

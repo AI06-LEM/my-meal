@@ -596,7 +596,7 @@ function updateSystemStatus() {
     document.getElementById('dbStatus').textContent = hasDatabase ? 'Loaded' : 'Empty';
     document.getElementById('optionsStatus').textContent = 
         (weeklyOptions.meat_options.length > 0 || weeklyOptions.fish_options.length > 0 || weeklyOptions.vegetarian_options.length > 0) 
-        ? 'Set' : 'Unset';
+        ? 'Set' : 'Not set';
     document.getElementById('votesStatus').textContent = 
         guestVotes.votes.length > 0 ? `${guestVotes.votes.length} votes` : 'No votes';
 }
