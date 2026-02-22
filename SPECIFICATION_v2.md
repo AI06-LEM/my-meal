@@ -135,33 +135,57 @@ Either *one of the following two initialisation actions* is performed to initial
 
 ## 4. User Interface
 
-### System Admin Tab
+### Application Architecture
+
+The application is split into two separate apps with a shared landing page:
+
+| URL | App | Users |
+|-----|-----|-------|
+| `/` | Landing Page | All users - gateway to select app |
+| `/admin/` | Admin App | System Admin and Restaurant staff |
+| `/guest/` | Guest App | Guests (students, teachers) |
+
+Both apps share the same backend server and SQLite database.
+
+### Landing Page (Gateway)
+
+Simple selection page with two links:
+- **Restaurant Staff** → navigates to `/admin/`
+- **Guest Voting** → navigates to `/guest/`
+
+### Admin App (`/admin/`)
+
+Contains two tabs: **System Admin** and **Restaurant**.
+
+#### System Admin Tab
 Multiple sections with different settings and information displayed.
 
-#### Upload Meal Database
+##### Upload Meal Database
 Form for uploading JSON file and feedback messages.
 
-#### Current Status
+##### Current Status
 Status messages on
  - Database: Empty or Loaded
  - Weekly Options: Unset or Set
  - Votes: Number of votes submitted
 
-#### Vote Results
+##### Vote Results
 Section for displaying vote results upon button press.
 
-#### Reset System
+##### Reset System
 Section for reset button and messages.
 
-### Restaurant Tab
+#### Restaurant Tab
 
-#### Vote Results
+##### Vote Results
 Section for displaying vote results upon button press.
 
-#### Weekly Options Selection
+##### Weekly Options Selection
 Section to select weekly options (sorted by category), saving and feedback messages.
 
-### Guests Tab
+### Guest App (`/guest/`)
+
+Standalone app for guest voting (no tabs).
 
 #### Guest Voting
 Section for voting on meal combinations (sorted by category), saving and feedback messages.
@@ -169,27 +193,27 @@ Section for voting on meal combinations (sorted by category), saving and feedbac
 
 ## 5. System States
 
-The UI sections of a tab are always shown for simplicity (prototype). Below are details on how certain sections change for different system states.
+The UI sections are always shown for simplicity (prototype). Below are details on how certain sections change for different system states.
 
 ### State 1: Empty (No Database)
 
-- **Admin tab:** Shows in Current Status section that database is empty (plus unset status of weekly options and votes)
-- **Restaurant tab:** Shows message "Please upload a meal database first"
-- **Guest tab:** Shows message "Voting is not yet available. Please wait for restaurant to select options."
+- **Admin App - System Admin tab:** Shows in Current Status section that database is empty (plus unset status of weekly options and votes)
+- **Admin App - Restaurant tab:** Shows message "Please upload a meal database first"
+- **Guest App:** Shows message "Voting is not yet available. Please wait for restaurant to select options."
 
 **Note:** This state is only possible, if no SQLite database file exists at system startup. Otherwise, at least the database of meals and meal combinations is not empty, but preserved from a previous system run.
 
 ### State 2: Database Loaded, No Options Selected
 
-- **Admin tab:** Shows in Current Status section that database is loaded (plus unset of weekly options and votes)
-- **Restaurant tab:** Allows meal selection
-- **Guest tab:** Shows "Voting is not yet available. Please wait for restaurant to select options."
+- **Admin App - System Admin tab:** Shows in Current Status section that database is loaded (plus unset of weekly options and votes)
+- **Admin App - Restaurant tab:** Allows meal selection
+- **Guest App:** Shows "Voting is not yet available. Please wait for restaurant to select options."
 
-### FIX State 3: Options Selected (Voting Open)
+### State 3: Options Selected (Voting Open)
 
-- **Admin tab:** Shows chart in Vote Results section
-- **Restaurant tab:** Shows chart and selected options
-- **Guest tab:** Shows voting form
+- **Admin App - System Admin tab:** Shows chart in Vote Results section
+- **Admin App - Restaurant tab:** Shows chart and selected options
+- **Guest App:** Shows voting form
 
 ---
 
@@ -260,6 +284,24 @@ The prototype targets modern browsers (Chrome, Firefox, Safari, ...) on desktop 
 ### Port Configuration
 The server port is configurable via command line. Default port: 3000.
 
+### API Structure
+
+The server provides separate API endpoints for each app:
+
+**Admin API (`/api/admin/*`)** - For admin and restaurant users:
+- `GET/POST /api/admin/meals-database` - Manage meals database
+- `GET/POST /api/admin/weekly-options` - Manage weekly options
+- `GET/POST /api/admin/guest-votes` - View/manage all votes
+- `POST /api/admin/reset` - Reset system
+
+**Guest API (`/api/guest/*`)** - For guests (limited access):
+- `GET /api/guest/weekly-options` - Get available options (read-only)
+- `GET /api/guest/meals` - Get meal details for display (read-only)
+- `GET /api/guest/votes` - Get existing votes (for duplicate name check)
+- `POST /api/guest/vote` - Submit a single vote
+
+Legacy API endpoints at `/api/*` (without prefix) are maintained for backward compatibility.
+
 ---
 
 ## 9. Edge Cases and Error Handling
@@ -287,12 +329,15 @@ The server port is configurable via command line. Default port: 3000.
 ## 10. Prototype vs. Later Version
 
 ### Prototype (Current)
-- Single app with three tabs (Admin, Restaurant, Guest)
+- Two separate apps with shared landing page:
+  - Admin App (`/admin/`) with System Admin and Restaurant tabs
+  - Guest App (`/guest/`) for voting only
+- Guests are separated from admin/restaurant functionality
 - No authentication for admin or restaurant
 - Guests identify with a name (must be unique, but no login process)
 
 ### Later Version
-- Two separate apps: one for admin/restaurant, one for guests
-- All users must log in
+- All users must log in to their respective apps
+- Authentication layer to enforce access control
 
 ---

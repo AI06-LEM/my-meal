@@ -1,5 +1,10 @@
 # Feature: Complete End-to-End Workflow
-# Tests the entire application flow from database upload to meal plan creation.
+# Tests the entire application flow from database upload to viewing vote results.
+#
+# Application Structure:
+# - Landing page at /
+# - Admin app at /admin/ (with System Admin and Restaurant tabs)
+# - Guest app at /guest/
 
 @e2e
 Feature: End-to-End Workflow
@@ -12,8 +17,9 @@ Feature: End-to-End Workflow
   # ====================
 
   @smoke @quick
-  Scenario: Quick sanity check - all tabs accessible
+  Scenario: Quick sanity check - all apps accessible
     Given I am on the home page
+    Then I should see "My Meal"
     When I go to the "System Admin" tab
     Then I should see the heading "System Administration"
     When I go to the "Restaurant" tab
@@ -50,7 +56,7 @@ Feature: End-to-End Workflow
     And I save the weekly options
     Then the weekly options should be saved successfully
 
-    # Step 3: Guests vote for their preferences
+    # Step 3: Guests vote for their preferences (navigate to Guest app)
     When I go to the "Guests" tab
     And I enter my name as "Student Alice"
     And I select meat option "Burger"
@@ -60,19 +66,11 @@ Feature: End-to-End Workflow
     And I submit my vote
     Then my vote should be recorded
 
-    # Step 4: Admin views results and creates meal plan
+    # Step 4: Admin views results (navigate back to Admin app)
     When I go to the "System Admin" tab
     Then the system status should show 1 votes
     When I click show vote results
     Then I should see vote charts
-    
-    # When I select "Burger" for Monday
-    # And I select "Pasta" for Tuesday
-    # And I select "Mushroom Risotto" for Wednesday
-    # And I select "Vegetable Risotto" for Thursday
-    # And I save the final meal plan
-    # Then the meal plan should be saved successfully
-    # And the weekly meal plan should be displayed
 
   @multiple-voters
   Scenario: Multiple guests can vote and results are aggregated
@@ -87,7 +85,7 @@ Feature: End-to-End Workflow
       | vegetarian  | Salad               |
       | vegetarian  | Curry               |
 
-    # First voter
+    # First voter (Guest app)
     When I go to the "Guests" tab
     And I enter my name as "Voter 1"
     And I select meat option "Burger"
@@ -97,9 +95,8 @@ Feature: End-to-End Workflow
     And I submit my vote
     Then my vote should be recorded
 
-    # Second voter
+    # Second voter (refresh Guest app for new vote)
     When I refresh the page
-    And I go to the "Guests" tab
     And I enter my name as "Voter 2"
     And I select meat option "Meatballs"
     And I select fish option "Pasta"
@@ -108,6 +105,6 @@ Feature: End-to-End Workflow
     And I submit my vote
     Then my vote should be recorded
 
-    # Verify vote count
+    # Verify vote count (Admin app)
     When I go to the "System Admin" tab
     Then the system status should show 2 votes

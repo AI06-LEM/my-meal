@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Meal - Seefood Restaurant</title>
+    <link rel="stylesheet" href="common/styles-common.css">
+    <style>
+        /* Landing page specific styles */
+        .landing-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .landing-container header {
+            margin-bottom: 50px;
+        }
+
+        .app-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .app-link {
+            display: block;
+            padding: 30px;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+        }
+
+        .app-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .app-link:hover h2 {
+            color: white;
+        }
+
+        .app-link h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            transition: color 0.3s ease;
+        }
+
+        .app-link p {
+            color: #666;
+            margin: 0;
+        }
+
+        .app-link:hover p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .admin-link {
+            border-color: #667eea;
+        }
+
+        .guest-link {
+            border-color: #28a745;
+        }
+
+        .guest-link:hover {
+            background: #28a745;
+            border-color: #28a745;
+        }
+
+        .guest-link h2 {
+            color: #28a745;
+        }
+
+        .guest-link:hover h2 {
+            color: white;
+        }
+
+        @media (min-width: 600px) {
+            .app-selection {
+                flex-direction: row;
+            }
+
+            .app-link {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <header>
+            <h1>🍽️ My Meal</h1>
+            <p>Seefood Restaurant - Weekly Meal Planning System</p>
+        </header>
+
+        <nav class="app-selection">
+            <a href="/admin/" class="app-link admin-link">
+                <h2>🔧 Restaurant Staff</h2>
+                <p>Administration & meal options management</p>
+            </a>
+            <a href="/guest/" class="app-link guest-link">
+                <h2>🗳️ Guest Voting</h2>
+                <p>Vote for your preferred meals</p>
+            </a>
+        </nav>
+    </div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+/* Guest app specific styles */
+
+/* Guest voting styles */
+.guest-section {
+    margin-bottom: 30px;
+}
+
+.voting-form {
+    background: #f8f9ff;
+    padding: 25px;
+    border-radius: 10px;
+    border-left: 4px solid #28a745;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #28a745;
+}
+
+.vote-category {
+    margin-bottom: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.vote-category h4 {
+    color: #28a745;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.voting-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.vote-option {
+    background: white;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.vote-option:hover {
+    border-color: #28a745;
+    background: #f0fff4;
+}
+
+.vote-option.selected {
+    border-color: #28a745;
+    background: #d4edda;
+}
+
+.vote-option input[type="radio"],
+.vote-option input[type="checkbox"] {
+    margin-right: 8px;
+    accent-color: #28a745;
+}
+
+.vote-option label {
+    cursor: pointer;
+    display: inline;
+}
+
+.counterpart-info {
+    display: block;
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Submit button override for guest app */
+#submitVote {
+    background: #28a745;
+    margin-top: 20px;
+}
+
+#submitVote:hover {
+    background: #218838;
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .voting-form {
+        padding: 15px;
+    }
+    
+    .voting-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .vote-option {
+        padding: 15px;
+    }
+}

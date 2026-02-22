@@ -1,12 +1,13 @@
 /**
- * AdminPage - Page Object for System Admin Tab
+ * AdminPage - Page Object for System Admin Tab (within Admin App)
  * 
  * Encapsulates all interactions with the System Admin interface:
  * - Database upload
  * - System status display
  * - Vote results and charts
- * - Final meal plan creation
  * - System reset
+ * 
+ * Located at: /admin/ (System Admin tab)
  * 
  * Selector Strategy: Uses semantic selectors (getByRole, getByLabel) as primary,
  * with fallback to IDs for dynamically generated content.
@@ -23,9 +24,11 @@ class AdminPage extends BasePage {
   // ==================== Navigation ====================
 
   /**
-   * Navigate to Admin tab and wait for it to be ready
+   * Navigate to Admin app and System Admin tab
    */
   async navigate() {
+    await this.goToAdminApp();
+    // System Admin tab is active by default, but ensure it
     await this.goToAdminTab();
   }
 
@@ -195,21 +198,13 @@ class AdminPage extends BasePage {
   }
 
   /**
-   * Get the meal plan status text
-   */
-  async getPlanStatus() {
-    return await this.page.locator('#planStatus').textContent();
-  }
-
-  /**
    * Get all system status as an object
    */
   async getSystemStatus() {
     return {
       database: await this.getDatabaseStatus(),
       options: await this.getOptionsStatus(),
-      votes: await this.getVotesStatus(),
-      plan: await this.getPlanStatus()
+      votes: await this.getVotesStatus()
     };
   }
 
@@ -280,87 +275,6 @@ class AdminPage extends BasePage {
     // Alternative: check if chart data shows all zeros
     const chartData = await this.getChartData(category);
     return chartData.length === 0 || chartData.every(item => item.value === 0);
-  }
-
-  // ==================== Final Meal Plan ====================
-
-  /**
-   * Select a meal for a specific day
-   * @param {string} day - 'monday', 'tuesday', 'wednesday', or 'thursday'
-   * @param {string} mealName - The meal name to select
-   */
-  async selectMealForDay(day, mealName) {
-    const selectId = `${day}Select`;
-    const select = this.page.getByLabel(new RegExp(day, 'i'));
-    await select.selectOption({ label: mealName });
-  }
-
-  /**
-   * Select Monday (Meat) meal
-   */
-  async selectMondayMeal(mealName) {
-    await this.page.getByLabel('Monday (Meat):').selectOption({ label: mealName });
-  }
-
-  /**
-   * Select Tuesday (Fish) meal
-   */
-  async selectTuesdayMeal(mealName) {
-    await this.page.getByLabel('Tuesday (Fish):').selectOption({ label: mealName });
-  }
-
-  /**
-   * Select Wednesday (Vegetarian) meal
-   */
-  async selectWednesdayMeal(mealName) {
-    await this.page.getByLabel('Wednesday (Vegetarian):').selectOption({ label: mealName });
-  }
-
-  /**
-   * Select Thursday (Vegetarian) meal
-   */
-  async selectThursdayMeal(mealName) {
-    await this.page.getByLabel('Thursday (Vegetarian):').selectOption({ label: mealName });
-  }
-
-  /**
-   * Save the final meal plan
-   */
-  async saveFinalPlan() {
-    await this.page.getByRole('button', { name: 'Save Final Meal Plan' }).click();
-    
-    // Wait for the status message to appear with actual content
-    await this.page.locator('#finalPlanStatus:not(:empty)').waitFor({ 
-      state: 'visible',
-      timeout: 10000
-    });
-  }
-
-  /**
-   * Get the final plan status message
-   */
-  async getFinalPlanStatus() {
-    return await this.getStatusText('finalPlanStatus');
-  }
-
-  /**
-   * Get the displayed meal plan
-   */
-  async getMealPlanDisplay() {
-    const result = this.page.locator('#mealPlanResult');
-    const days = {};
-    
-    const dayDivs = result.locator('.meal-plan-day');
-    const count = await dayDivs.count();
-    
-    for (let i = 0; i < count; i++) {
-      const dayDiv = dayDivs.nth(i);
-      const dayName = await dayDiv.locator('.day-name').textContent();
-      const mealName = await dayDiv.locator('.meal-name').textContent();
-      days[dayName.toLowerCase()] = mealName;
-    }
-    
-    return days;
   }
 
   // ==================== System Reset ====================

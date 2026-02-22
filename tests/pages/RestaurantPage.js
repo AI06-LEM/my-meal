@@ -1,10 +1,12 @@
 /**
- * RestaurantPage - Page Object for Restaurant Tab
+ * RestaurantPage - Page Object for Restaurant Tab (within Admin App)
  * 
  * Encapsulates all interactions with the Restaurant interface:
  * - Viewing available meals from the database
  * - Selecting weekly meal options (meat, fish, vegetarian)
  * - Saving weekly options
+ * 
+ * Located at: /admin/ (Restaurant tab)
  * 
  * Selector Strategy: Uses semantic selectors where possible.
  * Falls back to data attributes for dynamically generated meal cards.
@@ -20,9 +22,10 @@ class RestaurantPage extends BasePage {
   // ==================== Navigation ====================
 
   /**
-   * Navigate to Restaurant tab and wait for it to be ready
+   * Navigate to Admin app and Restaurant tab
    */
   async navigate() {
+    await this.goToAdminApp();
     await this.goToRestaurantTab();
   }
 

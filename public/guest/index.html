@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote - My Meal</title>
+    <link rel="stylesheet" href="/common/styles-common.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">Back to Home</a>
+        
+        <header>
+            <h1>🗳️ Guest Voting</h1>
+            <p>Vote for your preferred meals this week</p>
+        </header>
+
+        <main>
+            <div id="guestStateMessage" class="state-message" style="display: none;"></div>
+            
+            <div id="votingSection" class="guest-section">
+                <div class="voting-form">
+                    <div class="form-group">
+                        <label for="guestName">Your Name:</label>
+                        <input type="text" id="guestName" placeholder="Enter your name" required>
+                    </div>
+                    
+                    <div class="voting-options">
+                        <div class="vote-category">
+                            <h4>Select 1 Meat Option:</h4>
+                            <div id="meatVoting" class="voting-grid"></div>
+                        </div>
+                        
+                        <div class="vote-category">
+                            <h4>Select 1 Fish Option:</h4>
+                            <div id="fishVoting" class="voting-grid"></div>
+                        </div>
+                        
+                        <div class="vote-category">
+                            <h4>Select 2 Vegetarian Options:</h4>
+                            <div id="vegetarianVoting" class="voting-grid"></div>
+                        </div>
+                    </div>
+                    
+                    <button id="submitVote">Submit Vote</button>
+                    <div id="voteStatus" role="alert"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

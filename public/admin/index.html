@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - My Meal</title>
+    <link rel="stylesheet" href="/common/styles-common.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">Back to Home</a>
+        
+        <header>
+            <h1>🍽️ My Meal - Administration</h1>
+            <p>Restaurant staff area - Manage meals and view results</p>
+        </header>
+
+        <nav class="tab-navigation">
+            <button class="tab-button active" data-tab="admin">System Admin</button>
+            <button class="tab-button" data-tab="restaurant">Restaurant</button>
+        </nav>
+
+        <!-- Admin Tab -->
+        <div id="admin" class="tab-content active">
+            <h2>System Administration</h2>
+            <div class="admin-section">
+                <h3>Upload Meal Database</h3>
+                <div class="upload-area">
+                    <input type="file" id="databaseFile" accept=".json" />
+                    <button id="uploadDatabase">Upload Database</button>
+                </div>
+                <div id="uploadStatus" role="alert"></div>
+            </div>
+            
+            <div class="admin-section">
+                <h3>Current Status</h3>
+                <div id="systemStatus">
+                    <p>Database: <span id="dbStatus">Empty</span></p>
+                    <p>Weekly Options: <span id="optionsStatus">Unset</span></p>
+                    <p>Votes: <span id="votesStatus">No votes</span></p>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>Vote Results (Charts)</h3>
+                <p>See how guests voted for each category.</p>
+                <button id="showVoteResults">Show Vote Charts</button>
+                <div id="voteResultsStatus" role="alert"></div>
+                <div id="voteCharts" class="charts-container">
+                    <div class="chart-category">
+                        <h4>Meat Options</h4>
+                        <div id="meatChart" class="chart"></div>
+                    </div>
+                    <div class="chart-category">
+                        <h4>Fish Options</h4>
+                        <div id="fishChart" class="chart"></div>
+                    </div>
+                    <div class="chart-category">
+                        <h4>Vegetarian Options</h4>
+                        <div id="vegetarianChart" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>Reset System</h3>
+                <p>This will delete all weekly options and guest votes. The meal database will be preserved.</p>
+                <button id="resetSystem" class="danger-button">Reset System</button>
+                <div id="resetStatus" role="alert"></div>
+            </div>
+        </div>
+
+        <!-- Restaurant Tab -->
+        <div id="restaurant" class="tab-content">
+            <h2>Restaurant - Weekly Options</h2>
+            <div id="restaurantStateMessage" class="state-message" style="display: none;"></div>
+            <div class="restaurant-section">
+                <h3>Select Meals for This Week</h3>
+                <p class="selection-requirements">Required: at least 2 meat, 2 fish, and 4 vegetarian options.</p>
+                <div id="mealSelection">
+                    <div class="category-section">
+                        <h4>Meat Options</h4>
+                        <div id="meatOptions" class="meal-grid"></div>
+                    </div>
+                    <div class="category-section">
+                        <h4>Fish Options</h4>
+                        <div id="fishOptions" class="meal-grid"></div>
+                    </div>
+                    <div class="category-section">
+                        <h4>Vegetarian Options</h4>
+                        <div id="vegetarianOptions" class="meal-grid"></div>
+                    </div>
+                </div>
+                <button id="saveWeeklyOptions">Save Weekly Options</button>
+                <div id="saveStatus" role="alert"></div>
+            </div>
+
+            <div class="restaurant-section">
+                <h3>Vote Results</h3>
+                <p>View how guests have voted for each category.</p>
+                <button id="restaurantShowVoteResults">Show Vote Charts</button>
+                <div id="restaurantVoteResultsStatus" role="alert"></div>
+                <div id="restaurantVoteCharts" class="charts-container">
+                    <div class="chart-category">
+                        <h4>Meat Options</h4>
+                        <div id="restaurantMeatChart" class="chart"></div>
+                    </div>
+                    <div class="chart-category">
+                        <h4>Fish Options</h4>
+                        <div id="restaurantFishChart" class="chart"></div>
+                    </div>
+                    <div class="chart-category">
+                        <h4>Vegetarian Options</h4>
+                        <div id="restaurantVegetarianChart" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,11 +1,13 @@
 /**
- * GuestPage - Page Object for Guest Voting Tab
+ * GuestPage - Page Object for Guest Voting App
  * 
  * Encapsulates all interactions with the Guest voting interface:
  * - Entering guest name
  * - Selecting meal preferences (meat, fish, vegetarian)
  * - Submitting votes
  * - Viewing vote status
+ * 
+ * Located at: /guest/
  * 
  * Selector Strategy: Uses semantic selectors (getByLabel, getByRole) as primary.
  * Falls back to locators for dynamically generated voting options.
@@ -21,11 +23,11 @@ class GuestPage extends BasePage {
   // ==================== Navigation ====================
 
   /**
-   * Navigate to Guests tab and wait for it to be ready
+   * Navigate to Guest app and wait for it to be ready
    * Waits for voting options if they exist (weekly options have been set)
    */
   async navigate() {
-    await this.goToGuestsTab();
+    await this.goToGuestApp();
     
     // Wait for the voting form to be loaded
     // This doesn't guarantee options exist, just that the form is ready
