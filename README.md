@@ -293,19 +293,18 @@ The application includes a comprehensive BDD test suite using Cucumber.js and Pl
 
 **Test Commands:**
 
+See tests/README.md for details.
+
 Windows:
 ```powershell
 # Run all tests
-npm test
+npm.cmd test
 
 # Run quick smoke tests
-npm run test:smoke
+npm.cmd run test:smoke
 
 # Run with visible browser (for debugging)
-npm run test:debug
-
-# Run tests with specific tag
-npm run test:tag -- "@tagname"
+npm.cmd run test:debug
 ```
 
 MacOS/Linux:
